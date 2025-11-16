@@ -1,12 +1,12 @@
-# Clino Evaluation System
+# Clica Evaluation System
 
-This directory contains the evaluation system for benchmarking Clino against various coding evaluation frameworks.
+This directory contains the evaluation system for benchmarking Clica against various coding evaluation frameworks.
 
 ## Overview
 
-The Clino Evaluation System allows you to:
+The Clica Evaluation System allows you to:
 
-1. Run Clino against standardized coding benchmarks
+1. Run Clica against standardized coding benchmarks
 2. Collect comprehensive metrics on performance
 3. Generate detailed reports on evaluation results
 4. Compare performance across different models and benchmarks
@@ -48,7 +48,7 @@ evals/                            # Main directory for evaluation system
 ### Prerequisites
 
 - Node.js 16+
-- VSCode with Clino extension installed
+- VSCode with Clica extension installed
 - Git
 
 ### Installation
@@ -86,7 +86,7 @@ Options:
 - `--benchmark`: Specific benchmark to run (default: exercism)
 - `--count`: Number of tasks to run (default: all available tasks)
 
-**Note:** Model selection is currently configured through the Clino CLI itself, not through evaluation flags.
+**Note:** Model selection is currently configured through the Clica CLI itself, not through evaluation flags.
 
 #### Generating Reports
 
@@ -118,7 +118,7 @@ Multi-file software engineering tasks from the Multi-SWE-Bench repository.
 
 ## Diff Edit Evaluations
 
-The Clino Evaluation System includes a specialized suite for evaluating how well models can make precise edits to files using the `replace_in_file` tool.
+The Clica Evaluation System includes a specialized suite for evaluating how well models can make precise edits to files using the `replace_in_file` tool.
 
 ### Overview
 

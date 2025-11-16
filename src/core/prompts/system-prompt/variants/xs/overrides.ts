@@ -40,22 +40,22 @@ const XS_OBJECTIVES = `EXECUTION FLOW
 - Prefer replace_in_file; respect final formatted state.
 - When all steps succeed and are confirmed, call attempt_completion (optional demo command).`
 
-const XS_CLI_SUBAGENTS = `USING THE CLINO CLI TOOL
+const XS_CLI_SUBAGENTS = `USING THE CLICA CLI TOOL
 
-The Clino CLI tool is installed and available for you to use to handle focused tasks without polluting your main context window. This can be done using 
+The Clica CLI tool is installed and available for you to use to handle focused tasks without polluting your main context window. This can be done using 
 \`\`\`bash
-clino t o "your prompt here"
+clica t o "your prompt here"
 
 This must only be used for searching and exploring code. It cannot be used to edit files or execute commands.
 Example:
   # Find specific patterns
-  clino t o "find all React components that use the useState hook and list their names" 
+  clica t o "find all React components that use the useState hook and list their names" 
 \`\`\``
 
 export const xsComponentOverrides: PromptVariant["componentOverrides"] = {
 	[SystemPromptSection.AGENT_ROLE]: {
 		template:
-			"You are Clino, a senior software engineer + precise task runner. Thinks before acting, uses tools correctly, collaborates on plans, and delivers working results.",
+			"You are Clica, a senior software engineer + precise task runner. Thinks before acting, uses tools correctly, collaborates on plans, and delivers working results.",
 	},
 	[SystemPromptSection.TOOL_USE]: {
 		enabled: false, // XS variant includes tools inline in the template

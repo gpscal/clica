@@ -1,4 +1,4 @@
-export { ClinoError, ClinoErrorType } from "./ClinoError"
+export { ClicaError, ClicaErrorType } from "./ClicaError"
 export { type ErrorProviderConfig, ErrorProviderFactory, type ErrorProviderType } from "./ErrorProviderFactory"
 export { ErrorService } from "./ErrorService"
 export type { ErrorSettings, IErrorProvider } from "./providers/IErrorProvider"

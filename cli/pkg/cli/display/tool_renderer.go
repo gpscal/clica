@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/clino/cli/pkg/cli/types"
+	"github.com/clica/cli/pkg/cli/types"
 )
 
 // ToolRenderer provides unified rendering for tool and command messages
@@ -22,7 +22,7 @@ func NewToolRenderer(mdRenderer *MarkdownRenderer, outputFormat string) *ToolRen
 	}
 }
 
-// RenderToolApprovalRequest renders a tool approval request ("Clino wants to...")
+// RenderToolApprovalRequest renders a tool approval request ("Clica wants to...")
 func (tr *ToolRenderer) RenderToolApprovalRequest(tool *types.ToolMessage) string {
 	var output strings.Builder
 
@@ -42,7 +42,7 @@ func (tr *ToolRenderer) RenderToolApprovalRequest(tool *types.ToolMessage) strin
 	return output.String()
 }
 
-// RenderToolExecution renders a completed tool execution ("Clino is ...ing")
+// RenderToolExecution renders a completed tool execution ("Clica is ...ing")
 func (tr *ToolRenderer) RenderToolExecution(tool *types.ToolMessage) string {
 	var output strings.Builder
 
@@ -88,7 +88,7 @@ func (tr *ToolRenderer) generateToolHeader(tool *types.ToolMessage, verbTense st
 		} else {
 			action = "is editing"
 		}
-		return fmt.Sprintf("### Clino %s `%s`", action, tool.Path)
+		return fmt.Sprintf("### Clica %s `%s`", action, tool.Path)
 
 	case string(types.ToolTypeNewFileCreated):
 		if verbTense == "wants to" {
@@ -96,7 +96,7 @@ func (tr *ToolRenderer) generateToolHeader(tool *types.ToolMessage, verbTense st
 		} else {
 			action = "is writing"
 		}
-		return fmt.Sprintf("### Clino %s `%s`", action, tool.Path)
+		return fmt.Sprintf("### Clica %s `%s`", action, tool.Path)
 
 	case string(types.ToolTypeReadFile):
 		if verbTense == "wants to" {
@@ -104,7 +104,7 @@ func (tr *ToolRenderer) generateToolHeader(tool *types.ToolMessage, verbTense st
 		} else {
 			action = "is reading"
 		}
-		return fmt.Sprintf("### Clino %s `%s`", action, tool.Path)
+		return fmt.Sprintf("### Clica %s `%s`", action, tool.Path)
 
 	case string(types.ToolTypeListFilesTopLevel):
 		if verbTense == "wants to" {
@@ -112,7 +112,7 @@ func (tr *ToolRenderer) generateToolHeader(tool *types.ToolMessage, verbTense st
 		} else {
 			action = "is listing files in"
 		}
-		return fmt.Sprintf("### Clino %s `%s`", action, tool.Path)
+		return fmt.Sprintf("### Clica %s `%s`", action, tool.Path)
 
 	case string(types.ToolTypeListFilesRecursive):
 		if verbTense == "wants to" {
@@ -120,7 +120,7 @@ func (tr *ToolRenderer) generateToolHeader(tool *types.ToolMessage, verbTense st
 		} else {
 			action = "is recursively listing files in"
 		}
-		return fmt.Sprintf("### Clino %s `%s`", action, tool.Path)
+		return fmt.Sprintf("### Clica %s `%s`", action, tool.Path)
 
 	case string(types.ToolTypeSearchFiles):
 		if tool.Regex != "" && tool.Path != "" {
@@ -129,19 +129,19 @@ func (tr *ToolRenderer) generateToolHeader(tool *types.ToolMessage, verbTense st
 			} else {
 				action = "is searching for"
 			}
-			return fmt.Sprintf("### Clino %s `%s` in `%s`", action, tool.Regex, tool.Path)
+			return fmt.Sprintf("### Clica %s `%s` in `%s`", action, tool.Regex, tool.Path)
 		} else if tool.Regex != "" {
 			if verbTense == "wants to" {
 				action = "wants to search for"
 			} else {
 				action = "is searching for"
 			}
-			return fmt.Sprintf("### Clino %s `%s`", action, tool.Regex)
+			return fmt.Sprintf("### Clica %s `%s`", action, tool.Regex)
 		} else {
 			if verbTense == "wants to" {
-				return "### Clino wants to search files"
+				return "### Clica wants to search files"
 			} else {
-				return "### Clino is searching files"
+				return "### Clica is searching files"
 			}
 		}
 
@@ -151,7 +151,7 @@ func (tr *ToolRenderer) generateToolHeader(tool *types.ToolMessage, verbTense st
 		} else {
 			action = "is fetching"
 		}
-		return fmt.Sprintf("### Clino %s `%s`", action, tool.Path)
+		return fmt.Sprintf("### Clica %s `%s`", action, tool.Path)
 
 	case string(types.ToolTypeListCodeDefinitionNames):
 		if verbTense == "wants to" {
@@ -159,13 +159,13 @@ func (tr *ToolRenderer) generateToolHeader(tool *types.ToolMessage, verbTense st
 		} else {
 			action = "is listing code definitions in"
 		}
-		return fmt.Sprintf("### Clino %s `%s`", action, tool.Path)
+		return fmt.Sprintf("### Clica %s `%s`", action, tool.Path)
 
 	case string(types.ToolTypeSummarizeTask):
 		if verbTense == "wants to" {
-			return "### Clino wants to condense the conversation"
+			return "### Clica wants to condense the conversation"
 		} else {
-			return "### Clino condensed the conversation"
+			return "### Clica condensed the conversation"
 		}
 
 	default:
@@ -174,7 +174,7 @@ func (tr *ToolRenderer) generateToolHeader(tool *types.ToolMessage, verbTense st
 		} else {
 			verb = "is using"
 		}
-		return fmt.Sprintf("### Clino %s tool: %s", verb, tool.Tool)
+		return fmt.Sprintf("### Clica %s tool: %s", verb, tool.Tool)
 	}
 }
 
@@ -275,7 +275,7 @@ func (tr *ToolRenderer) RenderCommandApprovalRequest(command string, autoApprova
 	}
 
 	// Generate header
-	header := fmt.Sprintf("### Clino wants to run `%s`", command)
+	header := fmt.Sprintf("### Clica wants to run `%s`", command)
 	rendered := tr.renderMarkdown(header)
 	output.WriteString(rendered)
 	output.WriteString("\n")
@@ -297,7 +297,7 @@ func (tr *ToolRenderer) RenderCommandApprovalRequest(command string, autoApprova
 // RenderCommandExecution renders a command execution announcement
 func (tr *ToolRenderer) RenderCommandExecution(command string) string {
 	command = strings.TrimSpace(command)
-	header := fmt.Sprintf("### Clino is running `%s`", command)
+	header := fmt.Sprintf("### Clica is running `%s`", command)
 	rendered := tr.renderMarkdown(header)
 	return "\n" + rendered + "\n"
 }
@@ -360,7 +360,7 @@ func (tr *ToolRenderer) renderMarkdown(markdown string) string {
 
 // GenerateAskFollowupHeader generates the header for followup questions
 func (tr *ToolRenderer) GenerateAskFollowupHeader() string {
-	return "### Clino has a question\n"
+	return "### Clica has a question\n"
 }
 
 // GenerateAskFollowupBody generates the body content for followup questions
@@ -401,7 +401,7 @@ func (tr *ToolRenderer) GenerateAskFollowupBody(messageText string) string {
 
 // GeneratePlanModeRespondHeader generates the header for plan mode responses
 func (tr *ToolRenderer) GeneratePlanModeRespondHeader() string {
-	return "### Clino has a plan\n"
+	return "### Clica has a plan\n"
 }
 
 // GeneratePlanModeRespondBody generates the body content for plan mode responses

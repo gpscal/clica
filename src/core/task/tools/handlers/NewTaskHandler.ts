@@ -2,14 +2,14 @@ import type { ToolUse } from "@core/assistant-message"
 import { formatResponse } from "@core/prompts/responses"
 import { processFilesIntoText } from "@integrations/misc/extract-text"
 import { showSystemNotification } from "@integrations/notifications"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaDefaultTool } from "@/shared/tools"
 import type { ToolResponse } from "../../index"
 import type { IPartialBlockHandler, IToolHandler } from "../ToolExecutorCoordinator"
 import type { TaskConfig } from "../types/TaskConfig"
 import type { StronglyTypedUIHelpers } from "../types/UIHelpers"
 
 export class NewTaskHandler implements IToolHandler, IPartialBlockHandler {
-	readonly name = ClinoDefaultTool.NEW_TASK
+	readonly name = ClicaDefaultTool.NEW_TASK
 	constructor() {}
 
 	getDescription(block: ToolUse): string {
@@ -38,8 +38,8 @@ export class NewTaskHandler implements IToolHandler, IPartialBlockHandler {
 		// Show notification if auto-approval is enabled
 		if (config.autoApprovalSettings.enabled && config.autoApprovalSettings.enableNotifications) {
 			showSystemNotification({
-				subtitle: "Clino wants to start a new task...",
-				message: `Clino is suggesting to start a new task with: ${context}`,
+				subtitle: "Clica wants to start a new task...",
+				message: `Clica is suggesting to start a new task with: ${context}`,
 			})
 		}
 

@@ -1,7 +1,7 @@
 import { discoverChromeInstances } from "@services/browser/BrowserDiscovery"
 import { BrowserSession } from "@services/browser/BrowserSession"
-import { BrowserConnection } from "@shared/proto/clino/browser"
-import { StringRequest } from "@shared/proto/clino/common"
+import { BrowserConnection } from "@shared/proto/clica/browser"
+import { StringRequest } from "@shared/proto/clica/common"
 import { Controller } from "../index"
 
 /**

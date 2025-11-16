@@ -1,4 +1,4 @@
-import { ClinoIgnoreController } from "@core/ignore/ClinoIgnoreController"
+import { ClicaIgnoreController } from "@core/ignore/ClicaIgnoreController"
 import * as childProcess from "child_process"
 import * as path from "path"
 import * as readline from "readline"
@@ -103,7 +103,7 @@ export async function regexSearchFiles(
 	directoryPath: string,
 	regex: string,
 	filePattern?: string,
-	clineIgnoreController?: ClinoIgnoreController,
+	clineIgnoreController?: ClicaIgnoreController,
 ): Promise<string> {
 	const args = ["--json", "-e", regex, "--glob", filePattern || "*", "--context", "1", directoryPath]
 
@@ -149,7 +149,7 @@ export async function regexSearchFiles(
 		results.push(currentResult as SearchResult)
 	}
 
-	// Filter results using ClinoIgnoreController if provided
+	// Filter results using ClicaIgnoreController if provided
 	const filteredResults = clineIgnoreController
 		? results.filter((result) => clineIgnoreController.validateAccess(result.filePath))
 		: results

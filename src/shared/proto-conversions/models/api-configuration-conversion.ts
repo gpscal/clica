@@ -6,7 +6,7 @@ import {
 	ApiProvider as ProtoApiProvider,
 	OcaModelInfo as ProtoOcaModelInfo,
 	ThinkingConfig,
-} from "@shared/proto/clino/models"
+} from "@shared/proto/clica/models"
 import {
 	ApiConfiguration,
 	ApiProvider,
@@ -347,7 +347,7 @@ export function convertProtoToApiProvider(provider: ProtoApiProvider): ApiProvid
 			return "mistral"
 		case ProtoApiProvider.VSCODE_LM:
 			return "vscode-lm"
-		case ProtoApiProvider.CLINO:
+		case ProtoApiProvider.CLICA:
 			return "anthropic"
 		case ProtoApiProvider.LITELLM:
 			return "litellm"

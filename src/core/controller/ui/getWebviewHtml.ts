@@ -1,4 +1,4 @@
-import { EmptyRequest, String } from "@shared/proto/clino/common"
+import { EmptyRequest, String } from "@shared/proto/clica/common"
 import { WebviewProvider } from "@/core/webview"
 import type { Controller } from "../index"
 

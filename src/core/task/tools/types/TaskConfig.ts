@@ -1,17 +1,17 @@
 import type { ApiHandler } from "@core/api"
 import type { FileContextTracker } from "@core/context/context-tracking/FileContextTracker"
-import type { ClinoIgnoreController } from "@core/ignore/ClinoIgnoreController"
+import type { ClicaIgnoreController } from "@core/ignore/ClicaIgnoreController"
 import type { DiffViewProvider } from "@integrations/editor/DiffViewProvider"
 import type { BrowserSession } from "@services/browser/BrowserSession"
 import type { UrlContentFetcher } from "@services/browser/UrlContentFetcher"
 import type { McpHub } from "@services/mcp/McpHub"
 import type { AutoApprovalSettings } from "@shared/AutoApprovalSettings"
 import type { BrowserSettings } from "@shared/BrowserSettings"
-import type { ClinoAsk, ClinoSay } from "@shared/ExtensionMessage"
+import type { ClicaAsk, ClicaSay } from "@shared/ExtensionMessage"
 import type { FocusChainSettings } from "@shared/FocusChainSettings"
 import type { Mode } from "@shared/storage/types"
-import type { ClinoDefaultTool } from "@shared/tools"
-import type { ClinoAskResponse } from "@shared/WebviewMessage"
+import type { ClicaDefaultTool } from "@shared/tools"
+import type { ClicaAskResponse } from "@shared/WebviewMessage"
 import * as vscode from "vscode"
 import { WorkspaceRootManager } from "@/core/workspace"
 import type { ContextManager } from "../../../context/context-management/ContextManager"
@@ -69,7 +69,7 @@ export interface TaskServices {
 	urlContentFetcher: UrlContentFetcher
 	diffViewProvider: DiffViewProvider
 	fileContextTracker: FileContextTracker
-	clineIgnoreController: ClinoIgnoreController
+	clineIgnoreController: ClicaIgnoreController
 	contextManager: ContextManager
 	stateManager: StateManager
 }
@@ -78,14 +78,14 @@ export interface TaskServices {
  * All callback functions available to tool handlers
  */
 export interface TaskCallbacks {
-	say: (type: ClinoSay, text?: string, images?: string[], files?: string[], partial?: boolean) => Promise<number | undefined>
+	say: (type: ClicaSay, text?: string, images?: string[], files?: string[], partial?: boolean) => Promise<number | undefined>
 
 	ask: (
-		type: ClinoAsk,
+		type: ClicaAsk,
 		text?: string,
 		partial?: boolean,
 	) => Promise<{
-		response: ClinoAskResponse
+		response: ClicaAskResponse
 		text?: string
 		images?: string[]
 		files?: string[]
@@ -93,9 +93,9 @@ export interface TaskCallbacks {
 
 	saveCheckpoint: (isAttemptCompletionMessage?: boolean, completionMessageTs?: number) => Promise<void>
 
-	sayAndCreateMissingParamError: (toolName: ClinoDefaultTool, paramName: string, relPath?: string) => Promise<any>
+	sayAndCreateMissingParamError: (toolName: ClicaDefaultTool, paramName: string, relPath?: string) => Promise<any>
 
-	removeLastPartialMessageIfExistsWithType: (type: "ask" | "say", askOrSay: ClinoAsk | ClinoSay) => Promise<void>
+	removeLastPartialMessageIfExistsWithType: (type: "ask" | "say", askOrSay: ClicaAsk | ClicaSay) => Promise<void>
 
 	executeCommandTool: (command: string, timeoutSeconds: number | undefined) => Promise<[boolean, any]>
 
@@ -103,8 +103,8 @@ export interface TaskCallbacks {
 
 	updateFCListFromToolResponse: (taskProgress: string | undefined) => Promise<void>
 
-	shouldAutoApproveTool: (toolName: ClinoDefaultTool) => boolean | [boolean, boolean]
-	shouldAutoApproveToolWithPath: (toolName: ClinoDefaultTool, path?: string) => Promise<boolean>
+	shouldAutoApproveTool: (toolName: ClicaDefaultTool) => boolean | [boolean, boolean]
+	shouldAutoApproveToolWithPath: (toolName: ClicaDefaultTool, path?: string) => Promise<boolean>
 
 	// Additional callbacks for task management
 	postStateToWebview: () => Promise<void>

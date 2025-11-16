@@ -15,11 +15,11 @@ DATE=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
 BUILT_BY="${USER:-unknown}"
 
 # Build ldflags to inject version info
-LDFLAGS="-X 'github.com/clino/cli/pkg/cli/global.Version=${CORE_VERSION}' \
-         -X 'github.com/clino/cli/pkg/cli/global.CliVersion=${CLI_VERSION}' \
-         -X 'github.com/clino/cli/pkg/cli/global.Commit=${COMMIT}' \
-         -X 'github.com/clino/cli/pkg/cli/global.Date=${DATE}' \
-         -X 'github.com/clino/cli/pkg/cli/global.BuiltBy=${BUILT_BY}'"
+LDFLAGS="-X 'github.com/clica/cli/pkg/cli/global.Version=${CORE_VERSION}' \
+         -X 'github.com/clica/cli/pkg/cli/global.CliVersion=${CLI_VERSION}' \
+         -X 'github.com/clica/cli/pkg/cli/global.Commit=${COMMIT}' \
+         -X 'github.com/clica/cli/pkg/cli/global.Date=${DATE}' \
+         -X 'github.com/clica/cli/pkg/cli/global.BuiltBy=${BUILT_BY}'"
 
 cd cli
 
@@ -38,22 +38,22 @@ for platform in "${PLATFORMS[@]}"; do
   
   echo "Building for $GOOS/$GOARCH..."
   
-  # Build clino binary
-  OUTPUT_NAME="bin/clino-${GOOS}-${GOARCH}"
+  # Build clica binary
+  OUTPUT_NAME="bin/clica-${GOOS}-${GOARCH}"
   if [ "$GOOS" = "windows" ]; then
     OUTPUT_NAME="${OUTPUT_NAME}.exe"
   fi
   
-  GO111MODULE=on GOOS=$GOOS GOARCH=$GOARCH go build -ldflags "$LDFLAGS" -o "$OUTPUT_NAME" ./cmd/clino
+  GO111MODULE=on GOOS=$GOOS GOARCH=$GOARCH go build -ldflags "$LDFLAGS" -o "$OUTPUT_NAME" ./cmd/clica
   echo "  ✓ $OUTPUT_NAME built"
   
-  # Build clino-host binary
-  OUTPUT_NAME="bin/clino-host-${GOOS}-${GOARCH}"
+  # Build clica-host binary
+  OUTPUT_NAME="bin/clica-host-${GOOS}-${GOARCH}"
   if [ "$GOOS" = "windows" ]; then
     OUTPUT_NAME="${OUTPUT_NAME}.exe"
   fi
   
-  GO111MODULE=on GOOS=$GOOS GOARCH=$GOARCH go build -ldflags "$LDFLAGS" -o "$OUTPUT_NAME" ./cmd/clino-host
+  GO111MODULE=on GOOS=$GOOS GOARCH=$GOARCH go build -ldflags "$LDFLAGS" -o "$OUTPUT_NAME" ./cmd/clica-host
   echo "  ✓ $OUTPUT_NAME built"
 done
 
@@ -63,5 +63,5 @@ echo "All platform binaries built successfully!"
 # Copy binaries to dist-standalone/bin
 cd ..
 mkdir -p dist-standalone/bin
-cp cli/bin/clino-* dist-standalone/bin/
+cp cli/bin/clica-* dist-standalone/bin/
 echo 'Copied all platform binaries to dist-standalone/bin/'

@@ -1,11 +1,11 @@
 import { buildApiHandler } from "@core/api"
 
-import { Empty } from "@shared/proto/clino/common"
+import { Empty } from "@shared/proto/clica/common"
 import {
 	PlanActMode,
 	OpenaiReasoningEffort as ProtoOpenaiReasoningEffort,
 	UpdateSettingsRequestCli,
-} from "@shared/proto/clino/state"
+} from "@shared/proto/clica/state"
 import { convertProtoToApiProvider } from "@shared/proto-conversions/models/api-configuration-conversion"
 import { Settings } from "@shared/storage/state-keys"
 import { TelemetrySetting } from "@shared/TelemetrySetting"

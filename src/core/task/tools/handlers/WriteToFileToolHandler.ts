@@ -5,12 +5,12 @@ import { constructNewFileContent, validateDiffBlocks } from "@core/assistant-mes
 import { formatResponse } from "@core/prompts/responses"
 import { getWorkspaceBasename, resolveWorkspacePath } from "@core/workspace"
 import { processFilesIntoText } from "@integrations/misc/extract-text"
-import { ClinoSayTool } from "@shared/ExtensionMessage"
+import { ClicaSayTool } from "@shared/ExtensionMessage"
 import { fileExistsAtPath } from "@utils/fs"
 import { arePathsEqual, getReadablePath, isLocatedInWorkspace } from "@utils/path"
 import { fixModelHtmlEscaping, removeInvalidChars } from "@utils/string"
 import { telemetryService } from "@/services/telemetry"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaDefaultTool } from "@/shared/tools"
 import type { ToolResponse } from "../../index"
 import { showNotificationForApprovalIfAutoApprovalEnabled } from "../../utils"
 import type { IFullyManagedTool } from "../ToolExecutorCoordinator"
@@ -21,7 +21,7 @@ import { ToolDisplayUtils } from "../utils/ToolDisplayUtils"
 import { ToolResultUtils } from "../utils/ToolResultUtils"
 
 export class WriteToFileToolHandler implements IFullyManagedTool {
-	readonly name = ClinoDefaultTool.FILE_NEW // This handler supports write_to_file, replace_in_file, and new_rule
+	readonly name = ClicaDefaultTool.FILE_NEW // This handler supports write_to_file, replace_in_file, and new_rule
 
 	constructor(private validator: ToolValidator) {}
 
@@ -52,7 +52,7 @@ export class WriteToFileToolHandler implements IFullyManagedTool {
 			const { relPath, absolutePath, fileExists, diff, content, newContent } = result
 
 			// Create and show partial UI message
-			const sharedMessageProps: ClinoSayTool = {
+			const sharedMessageProps: ClicaSayTool = {
 				tool: fileExists ? "editedExistingFile" : "newFileCreated",
 				path: getReadablePath(config.cwd, uiHelpers.removeClosingTag(block, "path", relPath)),
 				content: diff || content,
@@ -125,7 +125,7 @@ export class WriteToFileToolHandler implements IFullyManagedTool {
 			const { relPath, absolutePath, fileExists, diff, content, newContent, workspaceContext } = result
 
 			// Handle approval flow
-			const sharedMessageProps: ClinoSayTool = {
+			const sharedMessageProps: ClicaSayTool = {
 				tool: fileExists ? "editedExistingFile" : "newFileCreated",
 				path: getReadablePath(config.cwd, relPath),
 				content: diff || content,
@@ -155,7 +155,7 @@ export class WriteToFileToolHandler implements IFullyManagedTool {
 				// 		newContent,
 				// 	)
 				// : undefined,
-			} satisfies ClinoSayTool)
+			} satisfies ClicaSayTool)
 
 			if (await config.callbacks.shouldAutoApproveToolWithPath(block.name, relPath)) {
 				// Auto-approval flow
@@ -172,7 +172,7 @@ export class WriteToFileToolHandler implements IFullyManagedTool {
 				await setTimeoutPromise(3_500)
 			} else {
 				// Manual approval flow with detailed feedback handling
-				const notificationMessage = `Clino wants to ${fileExists ? "edit" : "create"} ${getWorkspaceBasename(relPath, "WriteToFile.notification")}`
+				const notificationMessage = `Clica wants to ${fileExists ? "edit" : "create"} ${getWorkspaceBasename(relPath, "WriteToFile.notification")}`
 
 				// Show notification
 				showNotificationForApprovalIfAutoApprovalEnabled(
@@ -255,7 +255,7 @@ export class WriteToFileToolHandler implements IFullyManagedTool {
 				}
 			}
 
-			// Mark the file as edited by Clino
+			// Mark the file as edited by Clica
 			config.services.fileContextTracker.markFileAsEditedByCline(relPath)
 
 			// Save the changes and get the result
@@ -331,7 +331,7 @@ export class WriteToFileToolHandler implements IFullyManagedTool {
 		}
 
 		// Check clineignore access first
-		const accessValidation = this.validator.checkClinoIgnorePath(resolvedPath)
+		const accessValidation = this.validator.checkClicaIgnorePath(resolvedPath)
 		if (!accessValidation.ok) {
 			// Show error and return early (full original behavior)
 			await config.callbacks.say("clineignore_error", resolvedPath)
@@ -414,7 +414,7 @@ export class WriteToFileToolHandler implements IFullyManagedTool {
 				}
 			}
 
-			// open the editor if not done already.  This is to fix diff error when model provides correct search-replace text but Clino throws error
+			// open the editor if not done already.  This is to fix diff error when model provides correct search-replace text but Clica throws error
 			// because file is not open.
 			if (!config.services.diffViewProvider.isEditing) {
 				await config.services.diffViewProvider.open(absolutePath, { displayPath: relPath })

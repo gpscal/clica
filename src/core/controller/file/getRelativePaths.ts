@@ -1,4 +1,4 @@
-import { RelativePaths, RelativePathsRequest } from "@shared/proto/clino/file"
+import { RelativePaths, RelativePathsRequest } from "@shared/proto/clica/file"
 import * as path from "path"
 import { URI } from "vscode-uri"
 import { isDirectory } from "@/utils/fs"

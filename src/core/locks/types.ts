@@ -10,7 +10,7 @@ export interface LockRow {
 
 export interface SqliteLockManagerOptions {
 	dbPath: string
-	instanceAddress: string // clino core address
+	instanceAddress: string // clica core address
 }
 
 export interface FolderLockOptions {

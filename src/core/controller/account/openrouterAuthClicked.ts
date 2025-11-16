@@ -1,4 +1,4 @@
-import { Empty, EmptyRequest } from "@shared/proto/clino/common"
+import { Empty, EmptyRequest } from "@shared/proto/clica/common"
 import { HostProvider } from "@/hosts/host-provider"
 import { openExternal } from "@/utils/env"
 import { Controller } from ".."

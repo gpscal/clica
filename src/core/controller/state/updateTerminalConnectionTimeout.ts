@@ -1,4 +1,4 @@
-import { UpdateTerminalConnectionTimeoutRequest, UpdateTerminalConnectionTimeoutResponse } from "@shared/proto/clino/state"
+import { UpdateTerminalConnectionTimeoutRequest, UpdateTerminalConnectionTimeoutResponse } from "@shared/proto/clica/state"
 import { Controller } from "../index"
 
 export async function updateTerminalConnectionTimeout(

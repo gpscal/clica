@@ -4,7 +4,7 @@
  * CLI Provider Definition Generator
  * ==================================
  *
- * This script generates Go code for the CLI version of Clino by extracting provider
+ * This script generates Go code for the CLI version of Clica by extracting provider
  * metadata from the TypeScript source (src/shared/api.ts) and converting it to Go
  * structs. It serves as the bridge between the VSCode extension's TypeScript API
  * definitions and the CLI's Go-based setup wizard.
@@ -345,7 +345,7 @@ function parseConfigurationFields(optionsContent, providerApiKeyMap, apiSecretsF
 			"requesty",
 			"together",
 			"claudecode",
-			"clino",
+			"clica",
 		]
 
 		// If field name starts with or contains a provider prefix, categorize it as provider-specific
@@ -874,7 +874,7 @@ function getProviderDisplayName(providerId) {
 		doubao: "Doubao",
 		mistral: "Mistral AI",
 		"vscode-lm": "VSCode Language Models",
-		clino: "Clino",
+		clica: "Clica",
 		litellm: "LiteLLM",
 		moonshot: "Moonshot AI",
 		nebius: "Nebius AI",

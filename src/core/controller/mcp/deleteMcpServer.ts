@@ -1,5 +1,5 @@
-import { StringRequest } from "@shared/proto/clino/common"
-import { McpServers } from "@shared/proto/clino/mcp"
+import { StringRequest } from "@shared/proto/clica/common"
+import { McpServers } from "@shared/proto/clica/mcp"
 import { convertMcpServersToProtoMcpServers } from "../../../shared/proto-conversions/mcp/mcp-server-conversion"
 import type { Controller } from "../index"
 

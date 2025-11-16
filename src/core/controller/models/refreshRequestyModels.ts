@@ -1,5 +1,5 @@
-import { EmptyRequest } from "@shared/proto/clino/common"
-import { OpenRouterCompatibleModelInfo, OpenRouterModelInfo } from "@shared/proto/clino/models"
+import { EmptyRequest } from "@shared/proto/clica/common"
+import { OpenRouterCompatibleModelInfo, OpenRouterModelInfo } from "@shared/proto/clica/models"
 import axios from "axios"
 import { toRequestyServiceUrl } from "@/shared/providers/requesty"
 import { Controller } from ".."

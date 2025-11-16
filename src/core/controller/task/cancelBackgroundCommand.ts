@@ -1,4 +1,4 @@
-import { Empty, EmptyRequest } from "@shared/proto/clino/common"
+import { Empty, EmptyRequest } from "@shared/proto/clica/common"
 import { Controller } from ".."
 
 export async function cancelBackgroundCommand(controller: Controller, _request: EmptyRequest): Promise<Empty> {

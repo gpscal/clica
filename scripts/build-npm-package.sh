@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Script to build the Clino NPM package with telemetry keys injected
+# Script to build the Clica NPM package with telemetry keys injected
 # This script ensures all environment variables are properly set and builds are successful
 
 set -e  # Exit on error
@@ -25,7 +25,7 @@ OPTIONAL_VARS=(
 )
 
 echo -e "${BLUE}========================================${NC}"
-echo -e "${BLUE}Clino NPM Package Build Script${NC}"
+echo -e "${BLUE}Clica NPM Package Build Script${NC}"
 echo -e "${BLUE}========================================${NC}"
 echo ""
 
@@ -92,9 +92,9 @@ if npm run compile-cli-all-platforms; then
   echo -e "${GREEN}✓ Go CLI binaries built successfully${NC}"
   
   # Verify binaries were created
-  if ls cli/bin/clino-* 1> /dev/null 2>&1; then
+  if ls cli/bin/clica-* 1> /dev/null 2>&1; then
     echo -e "${GREEN}✓ CLI binaries verified:${NC}"
-    ls -lh cli/bin/clino-* | awk '{print "  " $9 " (" $5 ")"}'
+    ls -lh cli/bin/clica-* | awk '{print "  " $9 " (" $5 ")"}'
   else
     echo -e "${RED}✗ No CLI binaries found in cli/bin/${NC}"
     exit 1
@@ -117,16 +117,16 @@ fi
 echo -e "\n${BLUE}Step 6: Verifying telemetry keys were injected...${NC}"
 
 # Check if the compiled file still has process.env references (bad)
-if grep -q "process.env.TELEMETRY_SERVICE_API_KEY" dist-standalone/clino-core.js; then
+if grep -q "process.env.TELEMETRY_SERVICE_API_KEY" dist-standalone/clica-core.js; then
   echo -e "${RED}✗ Keys were NOT injected! Found 'process.env.TELEMETRY_SERVICE_API_KEY' in compiled code${NC}"
   echo -e "${YELLOW}This means the environment variables were not replaced during build${NC}"
   exit 1
 fi
 
 # Check if actual keys are present (good)
-if grep -q "data.clino.bot" dist-standalone/clino-core.js; then
+if grep -q "data.clica.bot" dist-standalone/clica-core.js; then
   # Extract a snippet of the PostHog config
-  POSTHOG_CONFIG=$(grep -A 3 "data.clino.bot" dist-standalone/clino-core.js | head -5)
+  POSTHOG_CONFIG=$(grep -A 3 "data.clica.bot" dist-standalone/clica-core.js | head -5)
   if echo "$POSTHOG_CONFIG" | grep -q "apiKey.*phc_"; then
     echo -e "${GREEN}✓ Telemetry keys successfully injected into compiled code${NC}"
   else
@@ -148,7 +148,7 @@ echo -e "${GREEN}Package version:${NC} $(node -p "require('./dist-standalone/pac
 echo ""
 echo -e "${BLUE}Next steps:${NC}"
 echo -e "1. Test locally:  ${YELLOW}cd dist-standalone && npm link${NC}"
-echo -e "2. Verify:        ${YELLOW}clino version${NC}"
+echo -e "2. Verify:        ${YELLOW}clica version${NC}"
 echo -e "3. Publish:       ${YELLOW}cd dist-standalone && npm publish${NC}"
 echo ""
-echo -e "${YELLOW}Note: Check PostHog dashboard after running clino commands to verify telemetry${NC}"
+echo -e "${YELLOW}Note: Check PostHog dashboard after running clica commands to verify telemetry${NC}"

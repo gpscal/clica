@@ -1,5 +1,5 @@
-import { AuthState, UserInfo } from "@shared/proto/clino/account"
-import { type EmptyRequest, String } from "@shared/proto/clino/common"
+import { AuthState, UserInfo } from "@shared/proto/clica/account"
+import { type EmptyRequest, String } from "@shared/proto/clica/common"
 import { Controller } from "@/core/controller"
 import { getRequestRegistry, type StreamingResponseHandler } from "@/core/controller/grpc-handler"
 import { LogoutReason } from "./types"
@@ -74,7 +74,7 @@ export class AuthService {
 
 	async createAuthRequest(): Promise<String> {
 		return String.create({
-			value: "Clino account authentication has been removed. Configure your preferred provider API keys in Settings.",
+			value: "Clica account authentication has been removed. Configure your preferred provider API keys in Settings.",
 		})
 	}
 

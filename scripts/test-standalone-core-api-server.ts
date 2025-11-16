@@ -1,9 +1,9 @@
 #!/usr/bin/env npx tsx
 
 /**
- * Simple Clino gRPC Server
+ * Simple Clica gRPC Server
  *
- * This script provides a minimal way to run the Clino core gRPC service
+ * This script provides a minimal way to run the Clica core gRPC service
  * without requiring the full installation, while automatically mocking all external services. Simply run:
  *
  *   # One-time setup (generates protobuf files)
@@ -12,13 +12,13 @@
  *
  * The following components are started automatically:
  *   1. HostBridge test server
- *   2. ClinoApiServerMock (mock implementation of the Clino API)
+ *   2. ClicaApiServerMock (mock implementation of the Clica API)
  *   3. Local authentication stubs (no external account required)
  *
  * Environment Variables for Customization:
  *   PROJECT_ROOT - Override project root directory (default: parent of scripts dir)
  *   CLINE_DIST_DIR - Override distribution directory (default: PROJECT_ROOT/dist-standalone)
- *   CLINE_CORE_FILE - Override core file name (default: clino-core.js)
+ *   CLINE_CORE_FILE - Override core file name (default: clica-core.js)
  *   PROTOBUS_PORT - gRPC server port (default: 26040)
  *   HOSTBRIDGE_PORT - HostBridge server port (default: 26041)
  *   WORKSPACE_DIR - Working directory (default: current directory)
@@ -33,7 +33,7 @@ import { mkdtempSync, rmSync } from "node:fs"
 import * as os from "node:os"
 import { ChildProcess, execSync, spawn } from "child_process"
 import * as path from "path"
-import { ClinoApiServerMock } from "../src/test/e2e/fixtures/server/index"
+import { ClicaApiServerMock } from "../src/test/e2e/fixtures/server/index"
 
 const PROTOBUS_PORT = process.env.PROTOBUS_PORT || "26040"
 const HOSTBRIDGE_PORT = process.env.HOSTBRIDGE_PORT || "26041"
@@ -45,13 +45,13 @@ const USE_C8 = process.env.USE_C8 === "true"
 // Locate the standalone build directory and core file with flexible path resolution
 const projectRoot = process.env.PROJECT_ROOT || path.resolve(__dirname, "..")
 const distDir = process.env.CLINE_DIST_DIR || path.join(projectRoot, "dist-standalone")
-const clineCoreFile = process.env.CLINE_CORE_FILE || "clino-core.js"
+const clineCoreFile = process.env.CLINE_CORE_FILE || "clica-core.js"
 const coreFile = path.join(distDir, clineCoreFile)
 
 const childProcesses: ChildProcess[] = []
 
 async function main(): Promise<void> {
-	console.log("Starting Simple Clino gRPC Server...")
+	console.log("Starting Simple Clica gRPC Server...")
 	console.log(`Project Root: ${projectRoot}`)
 	console.log(`Workspace: ${WORKSPACE_DIR}`)
 	console.log(`ProtoBus Port: ${PROTOBUS_PORT}`)
@@ -71,16 +71,16 @@ async function main(): Promise<void> {
 	}
 
 	try {
-		await ClinoApiServerMock.startGlobalServer()
-		console.log("Clino API Server started in-process")
+		await ClicaApiServerMock.startGlobalServer()
+		console.log("Clica API Server started in-process")
 	} catch (error) {
-		console.error("Failed to start Clino API Server:", error)
+		console.error("Failed to start Clica API Server:", error)
 		process.exit(1)
 	}
 
 	const extensionsDir = path.join(distDir, "vsce-extension")
 	const userDataDir = mkdtempSync(path.join(os.tmpdir(), "vsce"))
-	const clineTestWorkspace = mkdtempSync(path.join(os.tmpdir(), "clino-test-workspace-"))
+	const clineTestWorkspace = mkdtempSync(path.join(os.tmpdir(), "clica-test-workspace-"))
 
 	console.log("Starting HostBridge test server...")
 	const hostbridge: ChildProcess = spawn("npx", ["tsx", path.join(__dirname, "test-hostbridge-server.ts")], {
@@ -115,11 +115,11 @@ async function main(): Promise<void> {
 
 	const covDir = path.join(projectRoot, `coverage/coverage-core-${PROTOBUS_PORT}`)
 
-	const baseArgs = ["--enable-source-maps", path.join(distDir, "clino-core.js")]
+	const baseArgs = ["--enable-source-maps", path.join(distDir, "clica-core.js")]
 
 	const spawnArgs = USE_C8 ? ["c8", "--report-dir", covDir, "node", ...baseArgs] : ["node", ...baseArgs]
 
-	console.log(`Starting Clino Core Service... (useC8=${USE_C8})`)
+	console.log(`Starting Clica Core Service... (useC8=${USE_C8})`)
 
 	const coreService: ChildProcess = spawn("npx", spawnArgs, {
 		cwd: projectRoot,
@@ -148,7 +148,7 @@ async function main(): Promise<void> {
 			}
 		}
 
-		await ClinoApiServerMock.stopGlobalServer()
+		await ClicaApiServerMock.stopGlobalServer()
 
 		try {
 			rmSync(userDataDir, { recursive: true, force: true })
@@ -173,13 +173,13 @@ async function main(): Promise<void> {
 		shutdown()
 	})
 
-	console.log(`Clino gRPC Server is running on 127.0.0.1:${PROTOBUS_PORT}`)
+	console.log(`Clica gRPC Server is running on 127.0.0.1:${PROTOBUS_PORT}`)
 	console.log("Press Ctrl+C to stop")
 }
 
 if (require.main === module) {
 	main().catch((err) => {
-		console.error("Failed to start simple Clino server:", err)
+		console.error("Failed to start simple Clica server:", err)
 		process.exit(1)
 	})
 }

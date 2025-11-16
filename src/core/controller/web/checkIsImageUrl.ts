@@ -1,6 +1,6 @@
 import { detectImageUrl } from "@integrations/misc/link-preview"
-import { StringRequest } from "@shared/proto/clino/common"
-import { IsImageUrl } from "@shared/proto/clino/web"
+import { StringRequest } from "@shared/proto/clica/common"
+import { IsImageUrl } from "@shared/proto/clica/web"
 import { Controller } from "../index"
 
 /**

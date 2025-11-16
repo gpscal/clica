@@ -1,4 +1,4 @@
-module github.com/clino/cli
+module github.com/clica/cli
 
 go 1.23.0
 
@@ -9,7 +9,7 @@ require (
 	github.com/charmbracelet/glamour v0.10.0
 	github.com/charmbracelet/huh v0.7.1-0.20251005153135-a01a1e304532
 	github.com/charmbracelet/lipgloss v1.1.1-0.20250404203927-76690c660834
-	github.com/clino/grpc-go v0.0.0
+	github.com/clica/grpc-go v0.0.0
 	github.com/glebarez/go-sqlite v1.22.0
 	github.com/muesli/termenv v0.16.0
 	github.com/spf13/cobra v1.8.0
@@ -18,7 +18,7 @@ require (
 	google.golang.org/protobuf v1.36.6
 )
 
-replace github.com/clino/grpc-go => ../src/generated/grpc-go
+replace github.com/clica/grpc-go => ../src/generated/grpc-go
 
 require (
 	github.com/alecthomas/chroma/v2 v2.14.0 // indirect

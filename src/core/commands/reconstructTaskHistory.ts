@@ -1,6 +1,6 @@
-import { getSavedClinoMessages, getTaskMetadata, readTaskHistoryFromState, writeTaskHistoryToState } from "@core/storage/disk"
+import { getSavedClicaMessages, getTaskMetadata, readTaskHistoryFromState, writeTaskHistoryToState } from "@core/storage/disk"
 import { HostProvider } from "@hosts/host-provider"
-import { ClinoMessage } from "@shared/ExtensionMessage"
+import { ClicaMessage } from "@shared/ExtensionMessage"
 import { HistoryItem } from "@shared/HistoryItem"
 import { ShowMessageType } from "@shared/proto/host/window"
 import { fileExistsAtPath } from "@utils/fs"
@@ -153,8 +153,8 @@ async function scanTaskDirectories(tasksDir: string): Promise<string[]> {
 async function reconstructTaskHistoryItem(taskId: string): Promise<HistoryItem | null> {
 	try {
 		// Load UI messages to extract task info
-		const clinoMessages = await getSavedClinoMessages(taskId)
-		if (clinoMessages.length === 0) {
+		const clicaMessages = await getSavedClicaMessages(taskId)
+		if (clicaMessages.length === 0) {
 			return null // Skip empty tasks
 		}
 
@@ -162,7 +162,7 @@ async function reconstructTaskHistoryItem(taskId: string): Promise<HistoryItem |
 		const metadata = await getTaskMetadata(taskId)
 
 		// Extract task information
-		const taskInfo = extractTaskInformation(clinoMessages, metadata)
+		const taskInfo = extractTaskInformation(clicaMessages, metadata)
 
 		// Create HistoryItem
 		const historyItem: HistoryItem = {
@@ -200,12 +200,12 @@ interface TaskInfo {
 	conversationHistoryDeletedRange?: [number, number]
 }
 
-function extractTaskInformation(clinoMessages: ClinoMessage[], metadata: any): TaskInfo {
+function extractTaskInformation(clicaMessages: ClicaMessage[], metadata: any): TaskInfo {
 	// Find the first user message (task description)
-	const firstUserMessage = clinoMessages.find((msg) => msg.type === "say" && msg.say === "text" && msg.text)
+	const firstUserMessage = clicaMessages.find((msg) => msg.type === "say" && msg.say === "text" && msg.text)
 
 	// Extract timestamp from first message or use task ID as fallback
-	const timestamp = clinoMessages.length > 0 ? clinoMessages[0].ts : Date.now()
+	const timestamp = clicaMessages.length > 0 ? clicaMessages[0].ts : Date.now()
 
 	// Extract task description
 	let taskDescription = "Untitled Task"
@@ -230,7 +230,7 @@ function extractTaskInformation(clinoMessages: ClinoMessage[], metadata: any): T
 	let totalCost = 0
 
 	// Look for api_req_started messages with token info
-	const apiReqMessages = clinoMessages.filter((msg) => msg.type === "say" && msg.say === "api_req_started" && msg.text)
+	const apiReqMessages = clicaMessages.filter((msg) => msg.type === "say" && msg.say === "api_req_started" && msg.text)
 
 	for (const msg of apiReqMessages) {
 		try {
@@ -269,7 +269,7 @@ function extractTaskInformation(clinoMessages: ClinoMessage[], metadata: any): T
 	}
 
 	// Calculate approximate size (rough estimate)
-	const messageSize = JSON.stringify(clinoMessages).length
+	const messageSize = JSON.stringify(clicaMessages).length
 	const size = Math.floor(messageSize / 1024) // KB
 
 	return {

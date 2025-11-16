@@ -1,5 +1,5 @@
-import { StringRequest } from "@shared/proto/clino/common"
-import { OpenGraphData } from "@shared/proto/clino/web"
+import { StringRequest } from "@shared/proto/clica/common"
+import { OpenGraphData } from "@shared/proto/clica/web"
 import { fetchOpenGraphData as fetchOGData } from "../../../integrations/misc/link-preview"
 import { convertDomainOpenGraphDataToProto } from "../../../shared/proto-conversions/web/open-graph-conversion"
 import { Controller } from ".."

@@ -1,4 +1,4 @@
-import { McpServers, UpdateMcpTimeoutRequest } from "@shared/proto/clino/mcp"
+import { McpServers, UpdateMcpTimeoutRequest } from "@shared/proto/clica/mcp"
 import { convertMcpServersToProtoMcpServers } from "@/shared/proto-conversions/mcp/mcp-server-conversion"
 import { Controller } from ".."
 

@@ -4,7 +4,7 @@ import { ExtensionContext } from "vscode"
 import { Controller } from "@/core/controller"
 import { DEFAULT_AUTO_APPROVAL_SETTINGS } from "@/shared/AutoApprovalSettings"
 import { DEFAULT_BROWSER_SETTINGS } from "@/shared/BrowserSettings"
-import { ClinoRulesToggles } from "@/shared/clino-rules"
+import { ClicaRulesToggles } from "@/shared/clica-rules"
 import { DEFAULT_DICTATION_SETTINGS, DictationSettings } from "@/shared/DictationSettings"
 import { DEFAULT_FOCUS_CHAIN_SETTINGS } from "@/shared/FocusChainSettings"
 import { DEFAULT_MCP_DISPLAY_MODE } from "@/shared/McpDisplayMode"
@@ -128,13 +128,13 @@ export async function readSecretsFromDisk(context: ExtensionContext): Promise<Se
 }
 
 export async function readWorkspaceStateFromDisk(context: ExtensionContext): Promise<LocalState> {
-	const localClinoRulesToggles = context.workspaceState.get("localClinoRulesToggles") as ClinoRulesToggles | undefined
-	const localWindsurfRulesToggles = context.workspaceState.get("localWindsurfRulesToggles") as ClinoRulesToggles | undefined
-	const localCursorRulesToggles = context.workspaceState.get("localCursorRulesToggles") as ClinoRulesToggles | undefined
-	const localWorkflowToggles = context.workspaceState.get("workflowToggles") as ClinoRulesToggles | undefined
+	const localClicaRulesToggles = context.workspaceState.get("localClicaRulesToggles") as ClicaRulesToggles | undefined
+	const localWindsurfRulesToggles = context.workspaceState.get("localWindsurfRulesToggles") as ClicaRulesToggles | undefined
+	const localCursorRulesToggles = context.workspaceState.get("localCursorRulesToggles") as ClicaRulesToggles | undefined
+	const localWorkflowToggles = context.workspaceState.get("workflowToggles") as ClicaRulesToggles | undefined
 
 	return {
-		localClinoRulesToggles: localClinoRulesToggles || {},
+		localClicaRulesToggles: localClicaRulesToggles || {},
 		localWindsurfRulesToggles: localWindsurfRulesToggles || {},
 		localCursorRulesToggles: localCursorRulesToggles || {},
 		workflowToggles: localWorkflowToggles || {},
@@ -199,8 +199,8 @@ export async function readGlobalStateFromDisk(context: ExtensionContext): Promis
 		const planActSeparateModelsSettingRaw =
 			context.globalState.get<GlobalStateAndSettings["planActSeparateModelsSetting"]>("planActSeparateModelsSetting")
 		const favoritedModelIds = context.globalState.get<GlobalStateAndSettings["favoritedModelIds"]>("favoritedModelIds")
-		const globalClinoRulesToggles =
-			context.globalState.get<GlobalStateAndSettings["globalClinoRulesToggles"]>("globalClinoRulesToggles")
+		const globalClicaRulesToggles =
+			context.globalState.get<GlobalStateAndSettings["globalClicaRulesToggles"]>("globalClicaRulesToggles")
 		const requestTimeoutMs = context.globalState.get<GlobalStateAndSettings["requestTimeoutMs"]>("requestTimeoutMs")
 		const shellIntegrationTimeout =
 			context.globalState.get<GlobalStateAndSettings["shellIntegrationTimeout"]>("shellIntegrationTimeout")
@@ -451,7 +451,7 @@ export async function readGlobalStateFromDisk(context: ExtensionContext): Promis
 		const workspaceRoots = context.globalState.get<GlobalStateAndSettings["workspaceRoots"]>("workspaceRoots")
 		/**
 		 * Get primary root index from global state.
-		 * The primary root is the main workspace folder that Clino focuses on when dealing with
+		 * The primary root is the main workspace folder that Clica focuses on when dealing with
 		 * multi-root workspaces. In VS Code, you can have multiple folders open in one workspace,
 		 * and the primary root index indicates which folder (by its position in the array, 0-based)
 		 * should be treated as the main/default working directory for operations.
@@ -582,7 +582,7 @@ export async function readGlobalStateFromDisk(context: ExtensionContext): Promis
 			lastShownAnnouncementId,
 			taskHistory: taskHistory || [],
 			autoApprovalSettings: autoApprovalSettings || DEFAULT_AUTO_APPROVAL_SETTINGS, // default value can be 0 or empty string
-			globalClinoRulesToggles: globalClinoRulesToggles || {},
+			globalClicaRulesToggles: globalClicaRulesToggles || {},
 			browserSettings: { ...DEFAULT_BROWSER_SETTINGS, ...browserSettings }, // this will ensure that older versions of browserSettings (e.g. before remoteBrowserEnabled was added) are merged with the default values (false for remoteBrowserEnabled)
 			preferredLanguage: preferredLanguage || "English",
 			openaiReasoningEffort: (openaiReasoningEffort as OpenaiReasoningEffort) || "medium",

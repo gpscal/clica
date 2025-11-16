@@ -9,8 +9,8 @@ import (
 	"text/tabwriter"
 	"time"
 
-	"github.com/clino/cli/pkg/cli/display"
-	"github.com/clino/cli/pkg/cli/global"
+	"github.com/clica/cli/pkg/cli/display"
+	"github.com/clica/cli/pkg/cli/global"
 	"github.com/spf13/cobra"
 )
 
@@ -25,8 +25,8 @@ func NewLogsCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "logs",
 		Aliases: []string{"log", "l"},
-		Short:   "Manage Clino log files",
-		Long:    `List and manage log files created by Clino instances.`,
+		Short:   "Manage Clica log files",
+		Long:    `List and manage log files created by Clica instances.`,
 	}
 
 	cmd.AddCommand(newLogsListCommand())
@@ -41,7 +41,7 @@ func newLogsListCommand() *cobra.Command {
 		Use:     "list",
 		Aliases: []string{"l", "ls"},
 		Short:   "List all log files",
-		Long:    `List all log files in the Clino logs directory with their sizes and ages.`,
+		Long:    `List all log files in the Clica logs directory with their sizes and ages.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if global.Config == nil {
 				return fmt.Errorf("config not initialized")
@@ -149,7 +149,7 @@ func newLogsPathCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "path",
 		Short: "Print the logs directory path",
-		Long:  `Print the absolute path to the Clino logs directory.`,
+		Long:  `Print the absolute path to the Clica logs directory.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if global.Config == nil {
 				return fmt.Errorf("config not initialized")
@@ -217,8 +217,8 @@ func listLogFiles(logsDir string) ([]logFileInfo, error) {
 }
 
 func parseTimestampFromFilename(filename string) (time.Time, error) {
-	// Expected format: clino-core-2025-10-12-21-30-45-localhost-51051.log
-	// or: clino-host-2025-10-12-21-30-45-localhost-52051.log
+	// Expected format: clica-core-2025-10-12-21-30-45-localhost-51051.log
+	// or: clica-host-2025-10-12-21-30-45-localhost-52051.log
 
 	parts := strings.Split(filename, "-")
 	if len(parts) < 8 {

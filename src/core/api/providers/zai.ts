@@ -42,8 +42,8 @@ export class ZAiHandler implements ApiHandler {
 					baseURL: this.useChinaApi() ? "https://open.bigmodel.cn/api/paas/v4" : "https://api.z.ai/api/paas/v4",
 					apiKey: this.options.zaiApiKey,
 					defaultHeaders: {
-						"X-Title": "Clino",
-						"X-Clino-Version": extensionVersion,
+						"X-Title": "Clica",
+						"X-Clica-Version": extensionVersion,
 					},
 				})
 			} catch (error: any) {

@@ -74,8 +74,8 @@ export async function initializeGitRepository(workspacePath: string): Promise<bo
 	Logger.log(`Initializing Git repository in ${workspacePath}`)
 	try {
 		await execa("git", ["init"], { cwd: workspacePath })
-		await execa("git", ["config", "user.name", "Clino Evaluation"], { cwd: workspacePath })
-		await execa("git", ["config", "user.email", "clino@example.com"], { cwd: workspacePath })
+		await execa("git", ["config", "user.name", "Clica Evaluation"], { cwd: workspacePath })
+		await execa("git", ["config", "user.email", "clica@example.com"], { cwd: workspacePath })
 
 		// Try to create an initial commit, but don't fail if there are no files to commit
 		try {

@@ -1,14 +1,14 @@
 import { ApiHandler } from "@core/api"
 import { FileContextTracker } from "@core/context/context-tracking/FileContextTracker"
-import { ClinoIgnoreController } from "@core/ignore/ClinoIgnoreController"
+import { ClicaIgnoreController } from "@core/ignore/ClicaIgnoreController"
 import { DiffViewProvider } from "@integrations/editor/DiffViewProvider"
 import { BrowserSession } from "@services/browser/BrowserSession"
 import { UrlContentFetcher } from "@services/browser/UrlContentFetcher"
 import { featureFlagsService } from "@services/feature-flags"
 import { McpHub } from "@services/mcp/McpHub"
-import { ClinoAsk, ClinoSay } from "@shared/ExtensionMessage"
-import { ClinoDefaultTool } from "@shared/tools"
-import { ClinoAskResponse } from "@shared/WebviewMessage"
+import { ClicaAsk, ClicaSay } from "@shared/ExtensionMessage"
+import { ClicaDefaultTool } from "@shared/tools"
+import { ClicaAskResponse } from "@shared/WebviewMessage"
 import * as vscode from "vscode"
 import { modelDoesntSupportWebp } from "@/utils/model-utils"
 import { ToolUse } from "../assistant-message"
@@ -51,12 +51,12 @@ export class ToolExecutor {
 	private coordinator: ToolExecutorCoordinator
 
 	// Auto-approval methods using the AutoApprove class
-	private shouldAutoApproveTool(toolName: ClinoDefaultTool): boolean | [boolean, boolean] {
+	private shouldAutoApproveTool(toolName: ClicaDefaultTool): boolean | [boolean, boolean] {
 		return this.autoApprover.shouldAutoApproveTool(toolName)
 	}
 
 	private async shouldAutoApproveToolWithPath(
-		blockname: ClinoDefaultTool,
+		blockname: ClicaDefaultTool,
 		autoApproveActionpath: string | undefined,
 	): Promise<boolean> {
 		return this.autoApprover.shouldAutoApproveToolWithPath(blockname, autoApproveActionpath)
@@ -73,7 +73,7 @@ export class ToolExecutor {
 		private diffViewProvider: DiffViewProvider,
 		private mcpHub: McpHub,
 		private fileContextTracker: FileContextTracker,
-		private clineIgnoreController: ClinoIgnoreController,
+		private clineIgnoreController: ClicaIgnoreController,
 		private contextManager: ContextManager,
 		private stateManager: StateManager,
 
@@ -89,25 +89,25 @@ export class ToolExecutor {
 
 		// Callbacks to the Task (Entity)
 		private say: (
-			type: ClinoSay,
+			type: ClicaSay,
 			text?: string,
 			images?: string[],
 			files?: string[],
 			partial?: boolean,
 		) => Promise<number | undefined>,
 		private ask: (
-			type: ClinoAsk,
+			type: ClicaAsk,
 			text?: string,
 			partial?: boolean,
 		) => Promise<{
-			response: ClinoAskResponse
+			response: ClicaAskResponse
 			text?: string
 			images?: string[]
 			files?: string[]
 		}>,
 		private saveCheckpoint: (isAttemptCompletionMessage?: boolean, completionMessageTs?: number) => Promise<void>,
-		private sayAndCreateMissingParamError: (toolName: ClinoDefaultTool, paramName: string, relPath?: string) => Promise<any>,
-		private removeLastPartialMessageIfExistsWithType: (type: "ask" | "say", askOrSay: ClinoAsk | ClinoSay) => Promise<void>,
+		private sayAndCreateMissingParamError: (toolName: ClicaDefaultTool, paramName: string, relPath?: string) => Promise<any>,
+		private removeLastPartialMessageIfExistsWithType: (type: "ask" | "say", askOrSay: ClicaAsk | ClicaSay) => Promise<void>,
 		private executeCommandTool: (command: string, timeoutSeconds: number | undefined) => Promise<[boolean, any]>,
 		private doesLatestTaskCompletionHaveNewChanges: () => Promise<boolean>,
 		private updateFCListFromToolResponse: (taskProgress: string | undefined) => Promise<void>,
@@ -191,9 +191,9 @@ export class ToolExecutor {
 
 		// Register WriteToFileToolHandler for all three file tools with proper typing
 		const writeHandler = new WriteToFileToolHandler(validator)
-		this.coordinator.register(writeHandler) // registers as "write_to_file" (ClinoDefaultTool.FILE_NEW)
-		this.coordinator.register(new SharedToolHandler(ClinoDefaultTool.FILE_EDIT, writeHandler))
-		this.coordinator.register(new SharedToolHandler(ClinoDefaultTool.NEW_RULE, writeHandler))
+		this.coordinator.register(writeHandler) // registers as "write_to_file" (ClicaDefaultTool.FILE_NEW)
+		this.coordinator.register(new SharedToolHandler(ClicaDefaultTool.FILE_EDIT, writeHandler))
+		this.coordinator.register(new SharedToolHandler(ClicaDefaultTool.NEW_RULE, writeHandler))
 
 		this.coordinator.register(new ListCodeDefinitionNamesToolHandler(validator))
 		this.coordinator.register(new SearchFilesToolHandler(validator))
@@ -258,10 +258,10 @@ export class ToolExecutor {
 	/**
 	 * Tools that are restricted in plan mode and can only be used in act mode
 	 */
-	private static readonly PLAN_MODE_RESTRICTED_TOOLS: ClinoDefaultTool[] = [
-		ClinoDefaultTool.FILE_NEW,
-		ClinoDefaultTool.FILE_EDIT,
-		ClinoDefaultTool.NEW_RULE,
+	private static readonly PLAN_MODE_RESTRICTED_TOOLS: ClicaDefaultTool[] = [
+		ClicaDefaultTool.FILE_NEW,
+		ClicaDefaultTool.FILE_EDIT,
+		ClicaDefaultTool.NEW_RULE,
 	]
 
 	/**
@@ -332,7 +332,7 @@ export class ToolExecutor {
 	/**
 	 * Check if a tool is restricted in plan mode
 	 */
-	private isPlanModeToolRestricted(toolName: ClinoDefaultTool): boolean {
+	private isPlanModeToolRestricted(toolName: ClicaDefaultTool): boolean {
 		return ToolExecutor.PLAN_MODE_RESTRICTED_TOOLS.includes(toolName)
 	}
 

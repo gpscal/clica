@@ -1,5 +1,5 @@
 import { ModelFamily } from "@/shared/prompts"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaDefaultTool } from "@/shared/tools"
 import type { ClineToolSpec } from "../spec"
 
 /**
@@ -20,7 +20,7 @@ Checklist here (If you have presented the user with concrete steps or requiremen
 </plan_mode_respond>
  */
 
-const id = ClinoDefaultTool.PLAN_MODE
+const id = ClicaDefaultTool.PLAN_MODE
 
 const generic: ClineToolSpec = {
 	variant: ModelFamily.GENERIC,
@@ -49,7 +49,7 @@ However, if while writing your response you realize you actually need to do more
 			instruction:
 				" A checklist showing task progress after this tool use is completed. (See 'Updating Task Progress' section for more details)",
 			usage: "Checklist here (If you have presented the user with concrete steps or requirements, you can optionally include a todo list outlining these steps.)",
-			dependencies: [ClinoDefaultTool.TODO],
+			dependencies: [ClicaDefaultTool.TODO],
 		},
 	],
 }

@@ -6,11 +6,11 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/clino/grpc-go/clino"
+	"github.com/clica/grpc-go/clica"
 )
 
-// ClinoMessage represents a conversation message in the CLI
-type ClinoMessage struct {
+// ClicaMessage represents a conversation message in the CLI
+type ClicaMessage struct {
 	Type                        MessageType `json:"type"`
 	Text                        string      `json:"text"`
 	Timestamp                   int64       `json:"ts"`
@@ -145,64 +145,64 @@ type APIRequestRetryStatus struct {
 }
 
 // GetTimestamp returns a formatted timestamp string
-func (m *ClinoMessage) GetTimestamp() string {
+func (m *ClicaMessage) GetTimestamp() string {
 	return time.Unix(m.Timestamp/1000, 0).Format("15:04:05")
 }
 
 // IsAsk returns true if this is an ASK message
-func (m *ClinoMessage) IsAsk() bool {
+func (m *ClicaMessage) IsAsk() bool {
 	return m.Type == MessageTypeAsk
 }
 
 // IsSay returns true if this is a SAY message
-func (m *ClinoMessage) IsSay() bool {
+func (m *ClicaMessage) IsSay() bool {
 	return m.Type == MessageTypeSay
 }
 
 // GetMessageKey returns a unique key for this message based on timestamp
-func (m *ClinoMessage) GetMessageKey() string {
+func (m *ClicaMessage) GetMessageKey() string {
 	return strconv.FormatInt(m.Timestamp, 10)
 }
 
 // ExtractMessagesFromStateJSON parses the state JSON and extracts messages
-func ExtractMessagesFromStateJSON(stateJson string) ([]*ClinoMessage, error) {
-	// Parse the state JSON to extract clinoMessages
+func ExtractMessagesFromStateJSON(stateJson string) ([]*ClicaMessage, error) {
+	// Parse the state JSON to extract clicaMessages
 	var rawState map[string]interface{}
 	if err := json.Unmarshal([]byte(stateJson), &rawState); err != nil {
 		return nil, fmt.Errorf("failed to parse state JSON: %w", err)
 	}
 
-	// Try to extract clinoMessages
-	clinoMessagesRaw, exists := rawState["clinoMessages"]
+	// Try to extract clicaMessages
+	clicaMessagesRaw, exists := rawState["clicaMessages"]
 	if !exists {
-		return []*ClinoMessage{}, nil
+		return []*ClicaMessage{}, nil
 	}
 
 	// Convert to JSON and back to get proper Message structs
-	clinoMessagesJson, err := json.Marshal(clinoMessagesRaw)
+	clicaMessagesJson, err := json.Marshal(clicaMessagesRaw)
 	if err != nil {
-		return nil, fmt.Errorf("failed to marshal clinoMessages: %w", err)
+		return nil, fmt.Errorf("failed to marshal clicaMessages: %w", err)
 	}
 
-	var messages []*ClinoMessage
-	if err := json.Unmarshal(clinoMessagesJson, &messages); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal clinoMessages: %w", err)
+	var messages []*ClicaMessage
+	if err := json.Unmarshal(clicaMessagesJson, &messages); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal clicaMessages: %w", err)
 	}
 
 	return messages, nil
 }
 
-// ConvertProtoToMessage converts a protobuf ClinoMessage to our local Message struct
-func ConvertProtoToMessage(protoMsg *clino.ClinoMessage) *ClinoMessage {
+// ConvertProtoToMessage converts a protobuf ClicaMessage to our local Message struct
+func ConvertProtoToMessage(protoMsg *clica.ClicaMessage) *ClicaMessage {
 	var msgType MessageType
 	var say, ask string
 
 	// Convert message type
 	switch protoMsg.Type {
-	case clino.ClinoMessageType_ASK:
+	case clica.ClicaMessageType_ASK:
 		msgType = MessageTypeAsk
 		ask = convertProtoAskType(protoMsg.Ask)
-	case clino.ClinoMessageType_SAY:
+	case clica.ClicaMessageType_SAY:
 		msgType = MessageTypeSay
 		say = convertProtoSayType(protoMsg.Say)
 	default:
@@ -210,7 +210,7 @@ func ConvertProtoToMessage(protoMsg *clino.ClinoMessage) *ClinoMessage {
 		say = "unknown"
 	}
 
-	return &ClinoMessage{
+	return &ClicaMessage{
 		Type:                        msgType,
 		Text:                        protoMsg.Text,
 		Timestamp:                   protoMsg.Ts,
@@ -225,39 +225,39 @@ func ConvertProtoToMessage(protoMsg *clino.ClinoMessage) *ClinoMessage {
 }
 
 // convertProtoAskType converts protobuf ask type to string
-func convertProtoAskType(askType clino.ClinoAsk) string {
+func convertProtoAskType(askType clica.ClicaAsk) string {
 	switch askType {
-	case clino.ClinoAsk_FOLLOWUP:
+	case clica.ClicaAsk_FOLLOWUP:
 		return string(AskTypeFollowup)
-	case clino.ClinoAsk_PLAN_MODE_RESPOND:
+	case clica.ClicaAsk_PLAN_MODE_RESPOND:
 		return string(AskTypePlanModeRespond)
-	case clino.ClinoAsk_COMMAND:
+	case clica.ClicaAsk_COMMAND:
 		return string(AskTypeCommand)
-	case clino.ClinoAsk_COMMAND_OUTPUT:
+	case clica.ClicaAsk_COMMAND_OUTPUT:
 		return string(AskTypeCommandOutput)
-	case clino.ClinoAsk_COMPLETION_RESULT:
+	case clica.ClicaAsk_COMPLETION_RESULT:
 		return string(AskTypeCompletionResult)
-	case clino.ClinoAsk_TOOL:
+	case clica.ClicaAsk_TOOL:
 		return string(AskTypeTool)
-	case clino.ClinoAsk_API_REQ_FAILED:
+	case clica.ClicaAsk_API_REQ_FAILED:
 		return string(AskTypeAPIReqFailed)
-	case clino.ClinoAsk_RESUME_TASK:
+	case clica.ClicaAsk_RESUME_TASK:
 		return string(AskTypeResumeTask)
-	case clino.ClinoAsk_RESUME_COMPLETED_TASK:
+	case clica.ClicaAsk_RESUME_COMPLETED_TASK:
 		return string(AskTypeResumeCompletedTask)
-	case clino.ClinoAsk_MISTAKE_LIMIT_REACHED:
+	case clica.ClicaAsk_MISTAKE_LIMIT_REACHED:
 		return string(AskTypeMistakeLimitReached)
-	case clino.ClinoAsk_AUTO_APPROVAL_MAX_REQ_REACHED:
+	case clica.ClicaAsk_AUTO_APPROVAL_MAX_REQ_REACHED:
 		return string(AskTypeAutoApprovalMaxReached)
-	case clino.ClinoAsk_BROWSER_ACTION_LAUNCH:
+	case clica.ClicaAsk_BROWSER_ACTION_LAUNCH:
 		return string(AskTypeBrowserActionLaunch)
-	case clino.ClinoAsk_USE_MCP_SERVER:
+	case clica.ClicaAsk_USE_MCP_SERVER:
 		return string(AskTypeUseMcpServer)
-	case clino.ClinoAsk_NEW_TASK:
+	case clica.ClicaAsk_NEW_TASK:
 		return string(AskTypeNewTask)
-	case clino.ClinoAsk_CONDENSE:
+	case clica.ClicaAsk_CONDENSE:
 		return string(AskTypeCondense)
-	case clino.ClinoAsk_REPORT_BUG:
+	case clica.ClicaAsk_REPORT_BUG:
 		return string(AskTypeReportBug)
 	default:
 		return "unknown"
@@ -265,65 +265,65 @@ func convertProtoAskType(askType clino.ClinoAsk) string {
 }
 
 // convertProtoSayType converts protobuf say type to string
-func convertProtoSayType(sayType clino.ClinoSay) string {
+func convertProtoSayType(sayType clica.ClicaSay) string {
 	switch sayType {
-	case clino.ClinoSay_TASK:
+	case clica.ClicaSay_TASK:
 		return string(SayTypeTask)
-	case clino.ClinoSay_ERROR:
+	case clica.ClicaSay_ERROR:
 		return string(SayTypeError)
-	case clino.ClinoSay_API_REQ_STARTED:
+	case clica.ClicaSay_API_REQ_STARTED:
 		return string(SayTypeAPIReqStarted)
-	case clino.ClinoSay_API_REQ_FINISHED:
+	case clica.ClicaSay_API_REQ_FINISHED:
 		return string(SayTypeAPIReqFinished)
-	case clino.ClinoSay_TEXT:
+	case clica.ClicaSay_TEXT:
 		return string(SayTypeText)
-	case clino.ClinoSay_REASONING:
+	case clica.ClicaSay_REASONING:
 		return string(SayTypeReasoning)
-	case clino.ClinoSay_COMPLETION_RESULT_SAY:
+	case clica.ClicaSay_COMPLETION_RESULT_SAY:
 		return string(SayTypeCompletionResult)
-	case clino.ClinoSay_USER_FEEDBACK:
+	case clica.ClicaSay_USER_FEEDBACK:
 		return string(SayTypeUserFeedback)
-	case clino.ClinoSay_USER_FEEDBACK_DIFF:
+	case clica.ClicaSay_USER_FEEDBACK_DIFF:
 		return string(SayTypeUserFeedbackDiff)
-	case clino.ClinoSay_API_REQ_RETRIED:
+	case clica.ClicaSay_API_REQ_RETRIED:
 		return string(SayTypeAPIReqRetried)
-	case clino.ClinoSay_ERROR_RETRY:
+	case clica.ClicaSay_ERROR_RETRY:
 		return string(SayTypeErrorRetry)
-	case clino.ClinoSay_COMMAND_SAY:
+	case clica.ClicaSay_COMMAND_SAY:
 		return string(SayTypeCommand)
-	case clino.ClinoSay_COMMAND_OUTPUT_SAY:
+	case clica.ClicaSay_COMMAND_OUTPUT_SAY:
 		return string(SayTypeCommandOutput)
-	case clino.ClinoSay_TOOL_SAY:
+	case clica.ClicaSay_TOOL_SAY:
 		return string(SayTypeTool)
-	case clino.ClinoSay_SHELL_INTEGRATION_WARNING:
+	case clica.ClicaSay_SHELL_INTEGRATION_WARNING:
 		return string(SayTypeShellIntegrationWarning)
-	case clino.ClinoSay_BROWSER_ACTION_LAUNCH_SAY:
+	case clica.ClicaSay_BROWSER_ACTION_LAUNCH_SAY:
 		return string(SayTypeBrowserActionLaunch)
-	case clino.ClinoSay_BROWSER_ACTION:
+	case clica.ClicaSay_BROWSER_ACTION:
 		return string(SayTypeBrowserAction)
-	case clino.ClinoSay_BROWSER_ACTION_RESULT:
+	case clica.ClicaSay_BROWSER_ACTION_RESULT:
 		return string(SayTypeBrowserActionResult)
-	case clino.ClinoSay_MCP_SERVER_REQUEST_STARTED:
+	case clica.ClicaSay_MCP_SERVER_REQUEST_STARTED:
 		return string(SayTypeMcpServerRequestStarted)
-	case clino.ClinoSay_MCP_SERVER_RESPONSE:
+	case clica.ClicaSay_MCP_SERVER_RESPONSE:
 		return string(SayTypeMcpServerResponse)
-	case clino.ClinoSay_MCP_NOTIFICATION:
+	case clica.ClicaSay_MCP_NOTIFICATION:
 		return string(SayTypeMcpNotification)
-	case clino.ClinoSay_USE_MCP_SERVER_SAY:
+	case clica.ClicaSay_USE_MCP_SERVER_SAY:
 		return string(SayTypeUseMcpServer)
-	case clino.ClinoSay_DIFF_ERROR:
+	case clica.ClicaSay_DIFF_ERROR:
 		return string(SayTypeDiffError)
-	case clino.ClinoSay_DELETED_API_REQS:
+	case clica.ClicaSay_DELETED_API_REQS:
 		return string(SayTypeDeletedAPIReqs)
-	case clino.ClinoSay_CLINEIGNORE_ERROR:
+	case clica.ClicaSay_CLINEIGNORE_ERROR:
 		return string(SayTypeClineignoreError)
-	case clino.ClinoSay_CHECKPOINT_CREATED:
+	case clica.ClicaSay_CHECKPOINT_CREATED:
 		return string(SayTypeCheckpointCreated)
-	case clino.ClinoSay_LOAD_MCP_DOCUMENTATION:
+	case clica.ClicaSay_LOAD_MCP_DOCUMENTATION:
 		return string(SayTypeLoadMcpDocumentation)
-	case clino.ClinoSay_INFO:
+	case clica.ClicaSay_INFO:
 		return string(SayTypeInfo)
-	case clino.ClinoSay_TASK_PROGRESS:
+	case clica.ClicaSay_TASK_PROGRESS:
 		return string(SayTypeTaskProgress)
 	default:
 		return "unknown"

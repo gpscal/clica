@@ -6,7 +6,7 @@ import { PostHogClientProvider } from "@/services/telemetry/providers/posthog/Po
 import { Setting } from "@/shared/proto/index.host"
 import * as pkg from "../../../../package.json"
 import { PostHogClientValidConfig } from "../../../shared/services/config/posthog-config"
-import { ClinoError } from "../ClinoError"
+import { ClicaError } from "../ClicaError"
 import type { ErrorSettings, IErrorProvider } from "./IErrorProvider"
 
 const isDev = process.env.IS_DEV === "true"
@@ -54,7 +54,7 @@ export class PostHogErrorProvider implements IErrorProvider {
 		}
 
 		// Check extension-specific telemetry setting
-		const config = vscode.workspace.getConfiguration("clino")
+		const config = vscode.workspace.getConfiguration("clica")
 		if (config.get("telemetrySetting") === "disabled") {
 			this.errorSettings.enabled = false
 		}
@@ -63,7 +63,7 @@ export class PostHogErrorProvider implements IErrorProvider {
 		return this
 	}
 
-	public logException(error: Error | ClinoError, properties: Record<string, unknown> = {}): void {
+	public logException(error: Error | ClicaError, properties: Record<string, unknown> = {}): void {
 		if (!this.isEnabled() || this.errorSettings.level === "off") {
 			return
 		}
@@ -77,7 +77,7 @@ export class PostHogErrorProvider implements IErrorProvider {
 			...properties,
 		}
 
-		if (error instanceof ClinoError) {
+		if (error instanceof ClicaError) {
 			Object.assign(errorDetails, {
 				modelId: error.modelId,
 				providerId: error.providerId,

@@ -1,6 +1,6 @@
-# Clino
+# Clica
 
-A CLI-only autonomous coding agent powered by Claude Sonnet and other AI models. Clino can create and edit files, run terminal commands, use the browser, and extend its capabilities through the Model Context Protocol (MCP).
+A CLI-only autonomous coding agent powered by Claude Sonnet and other AI models. Clica can create and edit files, run terminal commands, use the browser, and extend its capabilities through the Model Context Protocol (MCP).
 
 ## Features
 
@@ -17,16 +17,16 @@ A CLI-only autonomous coding agent powered by Claude Sonnet and other AI models.
 ### Installation
 
 ```bash
-npm install -g clino
+npm install -g clica
 ```
 
 ### Usage
 
 ```bash
-clino
+clica
 ```
 
-This will start the Clino CLI interface where you can interact with the autonomous coding agent.
+This will start the Clica CLI interface where you can interact with the autonomous coding agent.
 
 ## Requirements
 
@@ -36,7 +36,7 @@ This will start the Clino CLI interface where you can interact with the autonomo
 
 ## Configuration
 
-Clino can be configured through:
+Clica can be configured through:
 - Environment variables
 - Configuration files
 - Command-line arguments

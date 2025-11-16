@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package host;
 
-import "clino/common.proto";
+import "clica/common.proto";
 
-option go_package = "github.com/clino/grpc-go/host";
+option go_package = "github.com/clica/grpc-go/host";
 option java_multiple_files = true;
-option java_package = "bot.clino.host.proto";
+option java_package = "bot.clica.host.proto";
 
 // Provides methods for working with workspaces/projects.
 service WorkspaceService {
@@ -27,8 +27,8 @@ service WorkspaceService {
   // Opens the IDE file explorer panel and selects a file or directory.
   rpc openInFileExplorerPanel(OpenInFileExplorerPanelRequest) returns (OpenInFileExplorerPanelResponse);
 
-  // Opens and focuses the Clino sidebar panel in the host IDE.
-  rpc openClineSidebarPanel(OpenClinoSidebarPanelRequest) returns (OpenClinoSidebarPanelResponse);
+  // Opens and focuses the Clica sidebar panel in the host IDE.
+  rpc openClineSidebarPanel(OpenClicaSidebarPanelRequest) returns (OpenClicaSidebarPanelResponse);
 
   // Opens and focuses the terminal panel.
   rpc openTerminalPanel(OpenTerminalRequest) returns (OpenTerminalResponse);
@@ -39,7 +39,7 @@ service WorkspaceService {
 
 message GetWorkspacePathsRequest {
   // The unique ID for the workspace/project.
-  // This is currently optional in vscode. It is required in other environments where clino is running at
+  // This is currently optional in vscode. It is required in other environments where clica is running at
   // the application level, and the user can open multiple projects.
   optional string id = 1;
 }
@@ -59,11 +59,11 @@ message SaveOpenDocumentIfDirtyResponse {
 }
 
 message GetDiagnosticsRequest {
-  optional clino.Metadata metadata = 1;
+  optional clica.Metadata metadata = 1;
 }
 
 message GetDiagnosticsResponse {
-  repeated clino.FileDiagnostics file_diagnostics = 1;
+  repeated clica.FileDiagnostics file_diagnostics = 1;
 }
 
 // Request for host-side workspace search (files/folders) used by mentions autocomplete
@@ -94,8 +94,8 @@ message OpenInFileExplorerPanelRequest {
   string path = 1;
 }
 message OpenInFileExplorerPanelResponse {}
-message OpenClinoSidebarPanelRequest {}
-message OpenClinoSidebarPanelResponse {}
+message OpenClicaSidebarPanelRequest {}
+message OpenClicaSidebarPanelResponse {}
 message OpenTerminalRequest {}
 message OpenTerminalResponse {}
 

@@ -1,4 +1,4 @@
-import { BooleanRequest, KeyValuePair } from "@shared/proto/clino/common"
+import { BooleanRequest, KeyValuePair } from "@shared/proto/clica/common"
 import { Controller } from ".."
 
 /**

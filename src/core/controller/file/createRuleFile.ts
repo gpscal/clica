@@ -1,7 +1,7 @@
-import { refreshClinoRulesToggles } from "@core/context/instructions/user-instructions/clino-rules"
+import { refreshClicaRulesToggles } from "@core/context/instructions/user-instructions/clica-rules"
 import { createRuleFile as createRuleFileImpl } from "@core/context/instructions/user-instructions/rule-helpers"
 import { getWorkspaceBasename } from "@core/workspace"
-import { RuleFile, RuleFileRequest } from "@shared/proto/clino/file"
+import { RuleFile, RuleFileRequest } from "@shared/proto/clica/file"
 import { refreshWorkflowToggles } from "@/core/context/instructions/user-instructions/workflows"
 import { HostProvider } from "@/hosts/host-provider"
 import { ShowMessageType } from "@/shared/proto/host/window"
@@ -53,7 +53,7 @@ export async function createRuleFile(controller: Controller, request: RuleFileRe
 		if (request.type === "workflow") {
 			await refreshWorkflowToggles(controller, cwd)
 		} else {
-			await refreshClinoRulesToggles(controller, cwd)
+			await refreshClicaRulesToggles(controller, cwd)
 		}
 		await controller.postStateToWebview()
 

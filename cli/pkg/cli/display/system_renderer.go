@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/clino/cli/pkg/cli/clerror"
+	"github.com/clica/cli/pkg/cli/clerror"
 )
 
 // ErrorSeverity represents the severity level of an error
@@ -73,7 +73,7 @@ func (sr *SystemMessageRenderer) RenderError(severity ErrorSeverity, title, body
 }
 
 // RenderBalanceError renders a special balance/credits error with helpful info
-func (sr *SystemMessageRenderer) RenderBalanceError(err *clerror.ClinoError) error {
+func (sr *SystemMessageRenderer) RenderBalanceError(err *clerror.ClicaError) error {
 	var parts []string
 
 	// Header
@@ -130,7 +130,7 @@ func (sr *SystemMessageRenderer) RenderBalanceError(err *clerror.ClinoError) err
 }
 
 // RenderAuthError renders an authentication error with helpful guidance
-func (sr *SystemMessageRenderer) RenderAuthError(err *clerror.ClinoError) error {
+func (sr *SystemMessageRenderer) RenderAuthError(err *clerror.ClicaError) error {
 	var parts []string
 
 	// Header
@@ -148,7 +148,7 @@ func (sr *SystemMessageRenderer) RenderAuthError(err *clerror.ClinoError) error 
 	// Guidance
 	parts = append(parts, "**Next Steps:**")
 	parts = append(parts, "- Check your API key configuration")
-	parts = append(parts, "- Run `clino auth` to authenticate")
+	parts = append(parts, "- Run `clica auth` to authenticate")
 	parts = append(parts, "- Verify your API key configuration")
 
 	// Request ID
@@ -165,7 +165,7 @@ func (sr *SystemMessageRenderer) RenderAuthError(err *clerror.ClinoError) error 
 }
 
 // RenderRateLimitError renders a rate limit error with request ID
-func (sr *SystemMessageRenderer) RenderRateLimitError(err *clerror.ClinoError) error {
+func (sr *SystemMessageRenderer) RenderRateLimitError(err *clerror.ClicaError) error {
 	var parts []string
 
 	// Header
@@ -197,7 +197,7 @@ func (sr *SystemMessageRenderer) RenderRateLimitError(err *clerror.ClinoError) e
 }
 
 // RenderAPIError renders a generic API error with all available details
-func (sr *SystemMessageRenderer) RenderAPIError(err *clerror.ClinoError) error {
+func (sr *SystemMessageRenderer) RenderAPIError(err *clerror.ClicaError) error {
 	var parts []string
 
 	// Header

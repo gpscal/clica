@@ -1,5 +1,5 @@
-import { BrowserConnectionInfo } from "@shared/proto/clino/browser"
-import { EmptyRequest } from "@shared/proto/clino/common"
+import { BrowserConnectionInfo } from "@shared/proto/clica/browser"
+import { EmptyRequest } from "@shared/proto/clica/common"
 import { Controller } from "../index"
 
 /**

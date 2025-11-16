@@ -1,9 +1,9 @@
-import { Boolean } from "@shared/proto/clino/common"
+import { Boolean } from "@shared/proto/clica/common"
 import { isClineCliInstalled } from "@/utils/cli-detector"
 import { Controller } from ".."
 
 /**
- * Check if the Clino CLI is installed
+ * Check if the Clica CLI is installed
  * @param controller The controller instance
  * @returns Boolean indicating if CLI is installed
  */

@@ -1,16 +1,16 @@
 import { getWorkspaceBasename } from "@core/workspace"
-import type { ToggleClinoRuleRequest } from "@shared/proto/clino/file"
-import { ToggleClinoRules } from "@shared/proto/clino/file"
+import type { ToggleClicaRuleRequest } from "@shared/proto/clica/file"
+import { ToggleClicaRules } from "@shared/proto/clica/file"
 import { telemetryService } from "@/services/telemetry"
 import type { Controller } from "../index"
 
 /**
- * Toggles a Clino rule (enable or disable)
+ * Toggles a Clica rule (enable or disable)
  * @param controller The controller instance
  * @param request The toggle request
- * @returns The updated Clino rule toggles
+ * @returns The updated Clica rule toggles
  */
-export async function toggleClineRule(controller: Controller, request: ToggleClinoRuleRequest): Promise<ToggleClinoRules> {
+export async function toggleClineRule(controller: Controller, request: ToggleClicaRuleRequest): Promise<ToggleClicaRules> {
 	const { isGlobal, rulePath, enabled } = request
 
 	if (!rulePath || typeof enabled !== "boolean" || typeof isGlobal !== "boolean") {
@@ -24,13 +24,13 @@ export async function toggleClineRule(controller: Controller, request: ToggleCli
 
 	// This is the same core logic as in the original handler
 	if (isGlobal) {
-		const toggles = controller.stateManager.getGlobalSettingsKey("globalClinoRulesToggles")
+		const toggles = controller.stateManager.getGlobalSettingsKey("globalClicaRulesToggles")
 		toggles[rulePath] = enabled
-		controller.stateManager.setGlobalState("globalClinoRulesToggles", toggles)
+		controller.stateManager.setGlobalState("globalClicaRulesToggles", toggles)
 	} else {
-		const toggles = controller.stateManager.getWorkspaceStateKey("localClinoRulesToggles")
+		const toggles = controller.stateManager.getWorkspaceStateKey("localClicaRulesToggles")
 		toggles[rulePath] = enabled
-		controller.stateManager.setWorkspaceState("localClinoRulesToggles", toggles)
+		controller.stateManager.setWorkspaceState("localClicaRulesToggles", toggles)
 	}
 
 	// Track rule toggle telemetry with current task context
@@ -41,11 +41,11 @@ export async function toggleClineRule(controller: Controller, request: ToggleCli
 	}
 
 	// Get the current state to return in the response
-	const globalToggles = controller.stateManager.getGlobalSettingsKey("globalClinoRulesToggles")
-	const localToggles = controller.stateManager.getWorkspaceStateKey("localClinoRulesToggles")
+	const globalToggles = controller.stateManager.getGlobalSettingsKey("globalClicaRulesToggles")
+	const localToggles = controller.stateManager.getWorkspaceStateKey("localClicaRulesToggles")
 
-	return ToggleClinoRules.create({
-		globalClinoRulesToggles: { toggles: globalToggles },
-		localClinoRulesToggles: { toggles: localToggles },
+	return ToggleClicaRules.create({
+		globalClicaRulesToggles: { toggles: globalToggles },
+		localClicaRulesToggles: { toggles: localToggles },
 	})
 }

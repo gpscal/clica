@@ -1,7 +1,7 @@
 import { AutoApprovalSettings } from "@shared/AutoApprovalSettings"
 import { ApiProvider, ModelInfo, type OcaModelInfo } from "@shared/api"
 import { BrowserSettings } from "@shared/BrowserSettings"
-import { ClinoRulesToggles } from "@shared/clino-rules"
+import { ClicaRulesToggles } from "@shared/clica-rules"
 import { DictationSettings } from "@shared/DictationSettings"
 import { FocusChainSettings } from "@shared/FocusChainSettings"
 import { HistoryItem } from "@shared/HistoryItem"
@@ -68,8 +68,8 @@ export interface Settings {
 	azureApiVersion: string | undefined
 	openRouterProviderSorting: string | undefined
 	autoApprovalSettings: AutoApprovalSettings
-	globalClinoRulesToggles: ClinoRulesToggles
-	globalWorkflowToggles: ClinoRulesToggles
+	globalClicaRulesToggles: ClicaRulesToggles
+	globalWorkflowToggles: ClicaRulesToggles
 	browserSettings: BrowserSettings
 	liteLlmBaseUrl: string | undefined
 	liteLlmUsePromptCache: boolean | undefined
@@ -236,8 +236,8 @@ export interface Secrets {
 }
 
 export interface LocalState {
-	localClinoRulesToggles: ClinoRulesToggles
-	localCursorRulesToggles: ClinoRulesToggles
-	localWindsurfRulesToggles: ClinoRulesToggles
-	workflowToggles: ClinoRulesToggles
+	localClicaRulesToggles: ClicaRulesToggles
+	localCursorRulesToggles: ClicaRulesToggles
+	localWindsurfRulesToggles: ClicaRulesToggles
+	workflowToggles: ClicaRulesToggles
 }

@@ -1,9 +1,9 @@
-import { ClinoError } from "./ClinoError"
+import { ClicaError } from "./ClicaError"
 import { ErrorProviderFactory } from "./ErrorProviderFactory"
 import { IErrorProvider } from "./providers/IErrorProvider"
 
 /**
- * ErrorService handles error logging and tracking for the Clino extension
+ * ErrorService handles error logging and tracking for the Clica extension
  * Uses an abstracted error provider to support multiple error tracking backends
  * Respects user privacy settings and VSCode's global telemetry configuration
  */
@@ -39,7 +39,7 @@ export class ErrorService {
 		this.provider = provider
 	}
 
-	public logException(error: Error | ClinoError, properties?: Record<string, unknown>): void {
+	public logException(error: Error | ClicaError, properties?: Record<string, unknown>): void {
 		this.provider.logException(error, properties)
 		console.error("[ErrorService] Logging exception", error)
 	}
@@ -52,8 +52,8 @@ export class ErrorService {
 		this.provider.logMessage(message, level, properties)
 	}
 
-	public toClinoError(rawError: unknown, modelId?: string, providerId?: string): ClinoError {
-		const transformed = ClinoError.transform(rawError, modelId, providerId)
+	public toClicaError(rawError: unknown, modelId?: string, providerId?: string): ClicaError {
+		const transformed = ClicaError.transform(rawError, modelId, providerId)
 		this.logException(transformed, { modelId, providerId })
 		return transformed
 	}

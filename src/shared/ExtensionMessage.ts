@@ -6,8 +6,8 @@ import type { Environment } from "../config"
 import { AutoApprovalSettings } from "./AutoApprovalSettings"
 import { ApiConfiguration } from "./api"
 import { BrowserSettings } from "./BrowserSettings"
-import { ClinoFeatureSetting } from "./ClinoFeatureSetting"
-import { ClinoRulesToggles } from "./clino-rules"
+import { ClicaFeatureSetting } from "./ClicaFeatureSetting"
+import { ClicaRulesToggles } from "./clica-rules"
 import { DictationSettings } from "./DictationSettings"
 import { FocusChainSettings } from "./FocusChainSettings"
 import { HistoryItem } from "./HistoryItem"
@@ -33,7 +33,7 @@ export type Platform = "aix" | "darwin" | "freebsd" | "linux" | "openbsd" | "sun
 
 export const DEFAULT_PLATFORM = "unknown"
 
-export const COMMAND_CANCEL_TOKEN = "__clino_command_cancel__"
+export const COMMAND_CANCEL_TOKEN = "__clica_command_cancel__"
 
 export interface ExtensionState {
 	isNewUser: boolean
@@ -46,7 +46,7 @@ export interface ExtensionState {
 	openaiReasoningEffort?: OpenaiReasoningEffort
 	mode: Mode
 	checkpointManagerErrorMessage?: string
-	clinoMessages: ClinoMessage[]
+	clicaMessages: ClicaMessage[]
 	currentTaskItem?: HistoryItem
 	currentFocusChainChecklist?: string | null
 	mcpMarketplaceEnabled?: boolean
@@ -71,12 +71,12 @@ export interface ExtensionState {
 	userInfo?: UserInfo
 	version: string
 	distinctId: string
-	globalClinoRulesToggles: ClinoRulesToggles
-	localClinoRulesToggles: ClinoRulesToggles
-	localWorkflowToggles: ClinoRulesToggles
-	globalWorkflowToggles: ClinoRulesToggles
-	localCursorRulesToggles: ClinoRulesToggles
-	localWindsurfRulesToggles: ClinoRulesToggles
+	globalClicaRulesToggles: ClicaRulesToggles
+	localClicaRulesToggles: ClicaRulesToggles
+	localWorkflowToggles: ClicaRulesToggles
+	globalWorkflowToggles: ClicaRulesToggles
+	localCursorRulesToggles: ClicaRulesToggles
+	localWindsurfRulesToggles: ClicaRulesToggles
 	mcpResponsesCollapsed?: boolean
 	strictPlanModeEnabled?: boolean
 	yoloModeToggled?: boolean
@@ -90,20 +90,20 @@ export interface ExtensionState {
 	workspaceRoots: WorkspaceRoot[]
 	primaryRootIndex: number
 	isMultiRootWorkspace: boolean
-	multiRootSetting: ClinoFeatureSetting
+	multiRootSetting: ClicaFeatureSetting
 	lastDismissedInfoBannerVersion: number
 	lastDismissedModelBannerVersion: number
 	lastDismissedCliBannerVersion: number
-	hooksEnabled?: ClinoFeatureSetting
+	hooksEnabled?: ClicaFeatureSetting
 	remoteConfigSettings?: Partial<GlobalStateAndSettings>
 	subagentsEnabled?: boolean
 }
 
-export interface ClinoMessage {
+export interface ClicaMessage {
 	ts: number
 	type: "ask" | "say"
-	ask?: ClinoAsk
-	say?: ClinoSay
+	ask?: ClicaAsk
+	say?: ClicaSay
 	text?: string
 	reasoning?: string
 	images?: string[]
@@ -117,7 +117,7 @@ export interface ClinoMessage {
 	conversationHistoryDeletedRange?: [number, number] // for when conversation history is truncated for API requests
 }
 
-export type ClinoAsk =
+export type ClicaAsk =
 	| "followup"
 	| "plan_mode_respond"
 	| "command"
@@ -136,7 +136,7 @@ export type ClinoAsk =
 	| "summarize_task"
 	| "report_bug"
 
-export type ClinoSay =
+export type ClicaSay =
 	| "task"
 	| "error"
 	| "error_retry"
@@ -168,7 +168,7 @@ export type ClinoSay =
 	| "info" // Added for general informational messages like retry status
 	| "task_progress"
 
-export interface ClinoSayTool {
+export interface ClicaSayTool {
 	tool:
 		| "editedExistingFile"
 		| "newFileCreated"
@@ -191,7 +191,7 @@ export interface ClinoSayTool {
 export const browserActions = ["launch", "click", "type", "scroll_down", "scroll_up", "close"] as const
 export type BrowserAction = (typeof browserActions)[number]
 
-export interface ClinoSayBrowserAction {
+export interface ClicaSayBrowserAction {
 	action: BrowserAction
 	coordinate?: string
 	text?: string
@@ -204,7 +204,7 @@ export type BrowserActionResult = {
 	currentMousePosition?: string
 }
 
-export interface ClinoAskUseMcpServer {
+export interface ClicaAskUseMcpServer {
 	serverName: string
 	type: "use_mcp_tool" | "access_mcp_resource"
 	toolName?: string
@@ -212,30 +212,30 @@ export interface ClinoAskUseMcpServer {
 	uri?: string
 }
 
-export interface ClinoPlanModeResponse {
+export interface ClicaPlanModeResponse {
 	response: string
 	options?: string[]
 	selected?: string
 }
 
-export interface ClinoAskQuestion {
+export interface ClicaAskQuestion {
 	question: string
 	options?: string[]
 	selected?: string
 }
 
-export interface ClinoAskNewTask {
+export interface ClicaAskNewTask {
 	context: string
 }
 
-export interface ClinoApiReqInfo {
+export interface ClicaApiReqInfo {
 	request?: string
 	tokensIn?: number
 	tokensOut?: number
 	cacheWrites?: number
 	cacheReads?: number
 	cost?: number
-	cancelReason?: ClinoApiReqCancelReason
+	cancelReason?: ClicaApiReqCancelReason
 	streamingFailedMessage?: string
 	retryStatus?: {
 		attempt: number
@@ -245,6 +245,6 @@ export interface ClinoApiReqInfo {
 	}
 }
 
-export type ClinoApiReqCancelReason = "streaming_failed" | "user_cancelled" | "retries_exhausted"
+export type ClicaApiReqCancelReason = "streaming_failed" | "user_cancelled" | "retries_exhausted"
 
 export const COMPLETION_RESULT_CHANGES_FLAG = "HAS_CHANGES"

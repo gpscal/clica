@@ -1,8 +1,8 @@
 import type { ToolUse } from "@core/assistant-message"
 import { formatResponse } from "@core/prompts/responses"
-import { ClinoAsk, ClinoAskUseMcpServer } from "@shared/ExtensionMessage"
+import { ClicaAsk, ClicaAskUseMcpServer } from "@shared/ExtensionMessage"
 import { telemetryService } from "@/services/telemetry"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaDefaultTool } from "@/shared/tools"
 import type { ToolResponse } from "../../index"
 import { showNotificationForApprovalIfAutoApprovalEnabled } from "../../utils"
 import type { IFullyManagedTool } from "../ToolExecutorCoordinator"
@@ -11,7 +11,7 @@ import type { StronglyTypedUIHelpers } from "../types/UIHelpers"
 import { ToolResultUtils } from "../utils/ToolResultUtils"
 
 export class AccessMcpResourceHandler implements IFullyManagedTool {
-	readonly name = ClinoDefaultTool.MCP_ACCESS
+	readonly name = ClicaDefaultTool.MCP_ACCESS
 
 	getDescription(block: ToolUse): string {
 		return `[${block.name} for '${block.params.server_name}']`
@@ -27,7 +27,7 @@ export class AccessMcpResourceHandler implements IFullyManagedTool {
 			toolName: undefined,
 			uri: uiHelpers.removeClosingTag(block, "uri", uri),
 			arguments: undefined,
-		} satisfies ClinoAskUseMcpServer)
+		} satisfies ClicaAskUseMcpServer)
 
 		// Check if tool should be auto-approved (access_mcp_resource uses general auto-approval)
 		const shouldAutoApprove = uiHelpers.shouldAutoApproveTool(block.name)
@@ -37,7 +37,7 @@ export class AccessMcpResourceHandler implements IFullyManagedTool {
 			await uiHelpers.say("use_mcp_server" as any, partialMessage, undefined, undefined, block.partial)
 		} else {
 			await uiHelpers.removeLastPartialMessageIfExistsWithType("say", "use_mcp_server")
-			await uiHelpers.ask("use_mcp_server" as ClinoAsk, partialMessage, block.partial).catch(() => {})
+			await uiHelpers.ask("use_mcp_server" as ClicaAsk, partialMessage, block.partial).catch(() => {})
 		}
 	}
 
@@ -48,12 +48,12 @@ export class AccessMcpResourceHandler implements IFullyManagedTool {
 		// Validate required parameters
 		if (!server_name) {
 			config.taskState.consecutiveMistakeCount++
-			return await config.callbacks.sayAndCreateMissingParamError(ClinoDefaultTool.MCP_ACCESS, "server_name")
+			return await config.callbacks.sayAndCreateMissingParamError(ClicaDefaultTool.MCP_ACCESS, "server_name")
 		}
 
 		if (!uri) {
 			config.taskState.consecutiveMistakeCount++
-			return await config.callbacks.sayAndCreateMissingParamError(ClinoDefaultTool.MCP_ACCESS, "uri")
+			return await config.callbacks.sayAndCreateMissingParamError(ClicaDefaultTool.MCP_ACCESS, "uri")
 		}
 
 		config.taskState.consecutiveMistakeCount = 0
@@ -65,7 +65,7 @@ export class AccessMcpResourceHandler implements IFullyManagedTool {
 			toolName: undefined,
 			uri: uri,
 			arguments: undefined,
-		} satisfies ClinoAskUseMcpServer)
+		} satisfies ClicaAskUseMcpServer)
 
 		const shouldAutoApprove = config.callbacks.shouldAutoApproveTool(block.name)
 
@@ -81,7 +81,7 @@ export class AccessMcpResourceHandler implements IFullyManagedTool {
 			telemetryService.captureToolUsage(config.ulid, block.name, config.api.getModel().id, true, true)
 		} else {
 			// Manual approval flow
-			const notificationMessage = `Clino wants to access ${uri || "unknown resource"} on ${server_name || "unknown server"}`
+			const notificationMessage = `Clica wants to access ${uri || "unknown resource"} on ${server_name || "unknown server"}`
 
 			// Show notification
 			showNotificationForApprovalIfAutoApprovalEnabled(

@@ -1,7 +1,7 @@
 export interface FocusChainSettings {
 	// Enable/disable the focus chain feature
 	enabled: boolean
-	// Interval (in messages) to remind Clino about focus chain
+	// Interval (in messages) to remind Clica about focus chain
 	remindClineInterval: number
 }
 

@@ -1,7 +1,7 @@
 import { ApiHandler } from "@core/api"
 import { execSync } from "child_process"
 import { showSystemNotification } from "@/integrations/notifications"
-import { ClinoApiReqCancelReason, ClinoApiReqInfo } from "@/shared/ExtensionMessage"
+import { ClicaApiReqCancelReason, ClicaApiReqInfo } from "@/shared/ExtensionMessage"
 import { calculateApiCostAnthropic } from "@/utils/cost"
 import { MessageStateHandler } from "./message-state"
 
@@ -27,7 +27,7 @@ type UpdateApiReqMsgParams = {
 	cacheReadTokens: number
 	totalCost?: number
 	api: ApiHandler
-	cancelReason?: ClinoApiReqCancelReason
+	cancelReason?: ClicaApiReqCancelReason
 	streamingFailedMessage?: string
 }
 
@@ -35,11 +35,11 @@ type UpdateApiReqMsgParams = {
 // fortunately api_req_finished was always parsed out for the gui anyways, so it remains solely for legacy purposes to keep track of prices in tasks from history
 // (it's worth removing a few months from now)
 export const updateApiReqMsg = async (params: UpdateApiReqMsgParams) => {
-	const clinoMessages = params.messageStateHandler.getClinoMessages()
-	const currentApiReqInfo: ClinoApiReqInfo = JSON.parse(clinoMessages[params.lastApiReqIndex].text || "{}")
+	const clicaMessages = params.messageStateHandler.getClicaMessages()
+	const currentApiReqInfo: ClicaApiReqInfo = JSON.parse(clicaMessages[params.lastApiReqIndex].text || "{}")
 	delete currentApiReqInfo.retryStatus // Clear retry status when request is finalized
 
-	await params.messageStateHandler.updateClinoMessage(params.lastApiReqIndex, {
+	await params.messageStateHandler.updateClicaMessage(params.lastApiReqIndex, {
 		text: JSON.stringify({
 			...currentApiReqInfo, // Spread the modified info (with retryStatus removed)
 			tokensIn: params.inputTokens,
@@ -57,7 +57,7 @@ export const updateApiReqMsg = async (params: UpdateApiReqMsgParams) => {
 				),
 			cancelReason: params.cancelReason,
 			streamingFailedMessage: params.streamingFailedMessage,
-		} satisfies ClinoApiReqInfo),
+		} satisfies ClicaApiReqInfo),
 	})
 }
 

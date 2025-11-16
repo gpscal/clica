@@ -1,4 +1,4 @@
-import { UpdateSettingsRequest } from "@shared/proto/clino/state"
+import { UpdateSettingsRequest } from "@shared/proto/clica/state"
 import * as assert from "assert"
 import * as sinon from "sinon"
 import { Controller } from ".."

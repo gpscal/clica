@@ -1,4 +1,4 @@
-import { EmptyRequest, String as ProtoString } from "@shared/proto/clino/common"
+import { EmptyRequest, String as ProtoString } from "@shared/proto/clica/common"
 import { OcaAuthService } from "@/services/auth/oca/OcaAuthService"
 import { Controller } from "../index"
 

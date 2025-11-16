@@ -171,7 +171,7 @@ export class Controller {
 			await this.postStateToWebview()
 			HostProvider.window.showMessage({
 				type: ShowMessageType.INFORMATION,
-				message: "Successfully logged out of Clino",
+				message: "Successfully logged out of Clica",
 			})
 		} catch (_error) {
 			HostProvider.window.showMessage({
@@ -392,11 +392,11 @@ export class Controller {
 				console.error("Failed to abort task")
 			})
 			if (this.task) {
-				// 'abandoned' will prevent this clino instance from affecting future clino instance gui. this may happen if its hanging on a streaming request
+				// 'abandoned' will prevent this clica instance from affecting future clica instance gui. this may happen if its hanging on a streaming request
 				this.task.taskState.abandoned = true
 			}
 			await this.initTask(undefined, undefined, undefined, historyItem) // clears task again, so we need to abortTask manually above
-			// Dont send the state to the webview, the new Clino instance will send state when it's ready.
+			// Dont send the state to the webview, the new Clica instance will send state when it's ready.
 			// Sending the state here sent an empty messages array to webview leading to virtuoso having to reload the entire list
 		}
 	}
@@ -451,7 +451,7 @@ export class Controller {
 	}
 
 	async handleAuthCallback(_customToken: string, _provider: string | null = null) {
-		console.warn("Auth callback received, but Clino authentication is disabled.")
+		console.warn("Auth callback received, but Clica authentication is disabled.")
 	}
 
 	async handleOcaAuthCallback(code: string, state: string) {
@@ -553,7 +553,7 @@ export class Controller {
 			const response = await axios.get(`${ClineEnv.config().mcpBaseUrl}/marketplace`, {
 				headers: {
 					"Content-Type": "application/json",
-					"User-Agent": "clino-vscode-extension",
+					"User-Agent": "clica-vscode-extension",
 				},
 			})
 
@@ -752,7 +752,7 @@ export class Controller {
 		const telemetrySetting = this.stateManager.getGlobalSettingsKey("telemetrySetting")
 		const planActSeparateModelsSetting = this.stateManager.getGlobalSettingsKey("planActSeparateModelsSetting")
 		const enableCheckpointsSetting = this.stateManager.getGlobalSettingsKey("enableCheckpointsSetting")
-		const globalClinoRulesToggles = this.stateManager.getGlobalSettingsKey("globalClinoRulesToggles")
+		const globalClicaRulesToggles = this.stateManager.getGlobalSettingsKey("globalClicaRulesToggles")
 		const globalWorkflowToggles = this.stateManager.getGlobalSettingsKey("globalWorkflowToggles")
 		const shellIntegrationTimeout = this.stateManager.getGlobalSettingsKey("shellIntegrationTimeout")
 		const terminalReuseEnabled = this.stateManager.getGlobalStateKey("terminalReuseEnabled")
@@ -773,14 +773,14 @@ export class Controller {
 		const lastDismissedCliBannerVersion = this.stateManager.getGlobalStateKey("lastDismissedCliBannerVersion") || 0
 		const subagentsEnabled = this.stateManager.getGlobalSettingsKey("subagentsEnabled")
 
-		const localClinoRulesToggles = this.stateManager.getWorkspaceStateKey("localClinoRulesToggles")
+		const localClicaRulesToggles = this.stateManager.getWorkspaceStateKey("localClicaRulesToggles")
 		const localWindsurfRulesToggles = this.stateManager.getWorkspaceStateKey("localWindsurfRulesToggles")
 		const localCursorRulesToggles = this.stateManager.getWorkspaceStateKey("localCursorRulesToggles")
 		const workflowToggles = this.stateManager.getWorkspaceStateKey("workflowToggles")
 		const autoCondenseThreshold = this.stateManager.getGlobalSettingsKey("autoCondenseThreshold")
 
 		const currentTaskItem = this.task?.taskId ? (taskHistory || []).find((item) => item.id === this.task?.taskId) : undefined
-		const clinoMessages = this.task?.messageStateHandler.getClinoMessages() || []
+		const clicaMessages = this.task?.messageStateHandler.getClicaMessages() || []
 		const checkpointManagerErrorMessage = this.task?.taskState.checkpointManagerErrorMessage
 
 		const processedTaskHistory = (taskHistory || [])
@@ -805,7 +805,7 @@ export class Controller {
 			version,
 			apiConfiguration,
 			currentTaskItem,
-			clinoMessages,
+			clicaMessages,
 			currentFocusChainChecklist: this.task?.taskState.currentFocusChainChecklist || null,
 			checkpointManagerErrorMessage,
 			autoApprovalSettings,
@@ -827,8 +827,8 @@ export class Controller {
 			platform,
 			environment,
 			distinctId,
-			globalClinoRulesToggles: globalClinoRulesToggles || {},
-			localClinoRulesToggles: localClinoRulesToggles || {},
+			globalClicaRulesToggles: globalClicaRulesToggles || {},
+			localClicaRulesToggles: localClicaRulesToggles || {},
 			localWindsurfRulesToggles: localWindsurfRulesToggles || {},
 			localCursorRulesToggles: localCursorRulesToggles || {},
 			localWorkflowToggles: workflowToggles || {},
@@ -882,9 +882,9 @@ export class Controller {
 	// Caching mechanism to keep track of webview messages + API conversation history per provider instance
 
 	/*
-	Now that we use retainContextWhenHidden, we don't have to store a cache of clino messages in the user's state, but we could to reduce memory footprint in long conversations.
+	Now that we use retainContextWhenHidden, we don't have to store a cache of clica messages in the user's state, but we could to reduce memory footprint in long conversations.
 
-	- We have to be careful of what state is shared between ClineProvider instances since there could be multiple instances of the extension running at once. For example when we cached clino messages using the same key, two instances of the extension could end up using the same key and overwriting each other's messages.
+	- We have to be careful of what state is shared between ClineProvider instances since there could be multiple instances of the extension running at once. For example when we cached clica messages using the same key, two instances of the extension could end up using the same key and overwriting each other's messages.
 	- Some state does need to be shared between the instances, i.e. the API key--however there doesn't seem to be a good way to notify the other instances that the API key has changed.
 
 	We need to use a unique identifier for each ClineProvider instance's message cache since we could be running several instances of the extension outside of just the sidebar i.e. in editor panels.

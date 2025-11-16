@@ -1,5 +1,5 @@
 import { workspaceResolver } from "@core/workspace"
-import { BooleanResponse, StringRequest } from "@shared/proto/clino/common"
+import { BooleanResponse, StringRequest } from "@shared/proto/clica/common"
 import { getWorkspacePath } from "@utils/path"
 import * as fs from "fs"
 import { Controller } from ".."

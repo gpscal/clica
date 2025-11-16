@@ -8,7 +8,7 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/clino/cli/pkg/common"
+	"github.com/clica/cli/pkg/common"
 )
 
 // 9. Mixed localhost vs 127.0.0.1 addresses coexist and are both healthy

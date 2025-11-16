@@ -1,4 +1,4 @@
-import { getSavedApiConversationHistory, getSavedClinoMessages } from "@core/storage/disk"
+import { getSavedApiConversationHistory, getSavedClicaMessages } from "@core/storage/disk"
 import { WebviewProvider } from "@core/webview"
 import { Logger } from "@services/logging/Logger"
 import { AutoApprovalSettings, DEFAULT_AUTO_APPROVAL_SETTINGS } from "@shared/AutoApprovalSettings"
@@ -85,8 +85,8 @@ async function updateAutoApprovalSettings(controller?: Controller) {
  * @returns The created HTTP server instance
  */
 export async function createTestServer(controller: Controller): Promise<http.Server> {
-	// Try to show the Clino sidebar
-	Logger.log("[createTestServer] Opening Clino in sidebar...")
+	// Try to show the Clica sidebar
+	Logger.log("[createTestServer] Opening Clica in sidebar...")
 	vscode.commands.executeCommand(`workbench.view.${ExtensionRegistryInfo.name}-ActivityBar`)
 
 	// Then ensure the webview is focused/loaded
@@ -151,7 +151,7 @@ export async function createTestServer(controller: Controller): Promise<http.Ser
 				const visibleWebview = WebviewProvider.getVisibleInstance()
 				if (!visibleWebview || !visibleWebview.controller) {
 					res.writeHead(500)
-					res.end(JSON.stringify({ error: "No active Clino instance found" }))
+					res.end(JSON.stringify({ error: "No active Clica instance found" }))
 					return
 				}
 
@@ -290,10 +290,10 @@ export async function createTestServer(controller: Controller): Promise<http.Ser
 						let apiConversationHistory: any[] = []
 						try {
 							if (typeof taskId === "string") {
-								messages = await getSavedClinoMessages(taskId)
+								messages = await getSavedClicaMessages(taskId)
 							}
 						} catch (error) {
-							Logger.log(`Error getting saved Clino messages: ${error}`)
+							Logger.log(`Error getting saved Clica messages: ${error}`)
 						}
 
 						try {

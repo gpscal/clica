@@ -10,7 +10,7 @@ import { runDiffEvalHandler } from "./commands/runDiffEval"
 const program = new Command()
 
 // Set up CLI metadata
-program.name("clino-eval").description("CLI tool for orchestrating Clino evaluations across multiple benchmarks").version("0.1.0")
+program.name("clica-eval").description("CLI tool for orchestrating Clino evaluations across multiple benchmarks").version("0.1.0")
 
 // Setup command
 program

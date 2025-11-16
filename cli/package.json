@@ -1,13 +1,13 @@
 {
-	"name": "clino",
+	"name": "clica",
 	"version": "1.0.0-nightly.18",
 	"description": "Autonomous coding agent CLI - capable of creating/editing files, running commands, using the browser, and more",
-	"main": "clino-core.js",
+	"main": "clica-core.js",
 	"bin": {
-		"clino": "./bin/clino",
-		"clino-host": "./bin/clino-host"
+		"clica": "./bin/clica",
+		"clica-host": "./bin/clica-host"
 	},
-	"man": "./man/clino.1",
+	"man": "./man/clica.1",
 	"scripts": {
 		"postinstall": "node postinstall.js"
 	},
@@ -23,7 +23,7 @@
 		"node": ">=18.0.0"
 	},
 	"keywords": [
-		"clino",
+		"clica",
 		"claude",
 		"dev",
 		"mcp",

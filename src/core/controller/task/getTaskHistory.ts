@@ -1,4 +1,4 @@
-import { GetTaskHistoryRequest, TaskHistoryArray } from "@shared/proto/clino/task"
+import { GetTaskHistoryRequest, TaskHistoryArray } from "@shared/proto/clica/task"
 import { arePathsEqual, getWorkspacePath } from "../../../utils/path"
 import { Controller } from ".."
 

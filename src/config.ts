@@ -52,7 +52,7 @@ class ClineEndpoint {
 				this.environment = Environment.production
 				break
 		}
-		console.info("Clino environment updated: ", this.environment)
+		console.info("Clica environment updated: ", this.environment)
 	}
 
 	public getEnvironment(): EnvironmentConfig {
@@ -65,9 +65,9 @@ class ClineEndpoint {
 					mcpBaseUrl: "",
 					firebase: {
 						apiKey: "AIzaSyASSwkwX1kSO8vddjZkE5N19QU9cVQ0CIk",
-						authDomain: "clino-staging.firebaseapp.com",
-						projectId: "clino-staging",
-						storageBucket: "clino-staging.firebasestorage.app",
+						authDomain: "clica-staging.firebaseapp.com",
+						projectId: "clica-staging",
+						storageBucket: "clica-staging.firebasestorage.app",
 						messagingSenderId: "853479478430",
 						appId: "1:853479478430:web:2de0dba1c63c3262d4578f",
 					},
@@ -80,8 +80,8 @@ class ClineEndpoint {
 					mcpBaseUrl: "",
 					firebase: {
 						apiKey: "AIzaSyD8wtkd1I-EICuAg6xgAQpRdwYTvwxZG2w",
-						authDomain: "clino-preview.firebaseapp.com",
-						projectId: "clino-preview",
+						authDomain: "clica-preview.firebaseapp.com",
+						projectId: "clica-preview",
 					},
 				}
 			default:
@@ -92,9 +92,9 @@ class ClineEndpoint {
 					mcpBaseUrl: "",
 					firebase: {
 						apiKey: "AIzaSyC5rx59Xt8UgwdU3PCfzUF7vCwmp9-K2vk",
-						authDomain: "clino-prod.firebaseapp.com",
-						projectId: "clino-prod",
-						storageBucket: "clino-prod.firebasestorage.app",
+						authDomain: "clica-prod.firebaseapp.com",
+						projectId: "clica-prod",
+						storageBucket: "clica-prod.firebasestorage.app",
 						messagingSenderId: "941048379330",
 						appId: "1:941048379330:web:45058eedeefc5cdfcc485b",
 					},

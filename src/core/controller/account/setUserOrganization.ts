@@ -1,5 +1,5 @@
-import { UserOrganizationUpdateRequest } from "@shared/proto/clino/account"
-import { Empty } from "@shared/proto/clino/common"
+import { UserOrganizationUpdateRequest } from "@shared/proto/clica/account"
+import { Empty } from "@shared/proto/clica/common"
 import type { Controller } from "../index"
 
 /**

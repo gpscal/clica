@@ -9,11 +9,11 @@ import (
 	"text/tabwriter"
 	"time"
 
-	"github.com/clino/cli/pkg/cli/display"
-	"github.com/clino/cli/pkg/cli/global"
-	"github.com/clino/cli/pkg/common"
-	client2 "github.com/clino/grpc-go/client"
-	"github.com/clino/grpc-go/clino"
+	"github.com/clica/cli/pkg/cli/display"
+	"github.com/clica/cli/pkg/cli/global"
+	"github.com/clica/cli/pkg/common"
+	client2 "github.com/clica/grpc-go/client"
+	"github.com/clica/grpc-go/clica"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc/health/grpc_health_v1"
 )
@@ -22,7 +22,7 @@ const (
 	platformCLI       = "CLI"
 	platformJetBrains = "JetBrains"
 	platformNA        = "N/A"
-	hostPlatformCLI   = "Clino CLI" // Value returned by host bridge for CLI instances
+	hostPlatformCLI   = "Clica CLI" // Value returned by host bridge for CLI instances
 )
 
 // detectInstancePlatform connects to an instance's host bridge and determines its platform
@@ -32,7 +32,7 @@ func detectInstancePlatform(ctx context.Context, instance *common.CoreInstanceIn
 		return platformNA, err
 	}
 
-	hostClient, err := client2.NewClinoClient(hostTarget)
+	hostClient, err := client2.NewClicaClient(hostTarget)
 	if err != nil {
 		return platformNA, err
 	}
@@ -42,7 +42,7 @@ func detectInstancePlatform(ctx context.Context, instance *common.CoreInstanceIn
 		return platformNA, err
 	}
 
-	hostVersion, err := hostClient.Env.GetHostVersion(ctx, &clino.EmptyRequest{})
+	hostVersion, err := hostClient.Env.GetHostVersion(ctx, &clica.EmptyRequest{})
 	if err != nil {
 		return platformNA, err
 	}
@@ -62,8 +62,8 @@ func NewInstanceCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "instance",
 		Aliases: []string{"i"},
-		Short:   "Manage Clino instances",
-		Long:    `List and manage multiple Clino instances similar to kubectl contexts.`,
+		Short:   "Manage Clica instances",
+		Long:    `List and manage multiple Clica instances similar to kubectl contexts.`,
 	}
 
 	cmd.AddCommand(newInstanceListCommand())
@@ -80,8 +80,8 @@ func newInstanceKillCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "kill <address>",
 		Aliases: []string{"k"},
-		Short:   "Kill a Clino instance by address",
-		Long:    `Kill a running Clino instance and clean up its registry entry.`,
+		Short:   "Kill a Clica instance by address",
+		Long:    `Kill a running Clica instance and clean up its registry entry.`,
 		Args: func(cmd *cobra.Command, args []string) error {
 			if killAllCLI && len(args) > 0 {
 				return fmt.Errorf("cannot specify both --all-cli flag and address argument")
@@ -120,7 +120,7 @@ func killAllCLIInstances(ctx context.Context, registry *global.ClientRegistry) e
 	}
 
 	if len(instances) == 0 {
-		fmt.Println("No Clino instances found to kill.")
+		fmt.Println("No Clica instances found to kill.")
 		return nil
 	}
 
@@ -254,7 +254,7 @@ func killInstanceProcess(ctx context.Context, registry *global.ClientRegistry, a
 		return killResult{address: address, alreadyDead: true, err: nil}
 	}
 
-	processInfo, err := client.State.GetProcessInfo(ctx, &clino.EmptyRequest{})
+	processInfo, err := client.State.GetProcessInfo(ctx, &clica.EmptyRequest{})
 	if err != nil {
 		return killResult{address: address, alreadyDead: true, err: nil}
 	}
@@ -273,8 +273,8 @@ func newInstanceListCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "list",
 		Aliases: []string{"l"},
-		Short:   "List all registered Clino instances",
-		Long:    `List all registered Clino instances with their status and connection details.`,
+		Short:   "List all registered Clica instances",
+		Long:    `List all registered Clica instances with their status and connection details.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if global.Clients == nil {
 				return fmt.Errorf("clients not initialized")
@@ -291,8 +291,8 @@ func newInstanceListCommand() *cobra.Command {
 			defaultInstance := registry.GetDefaultInstance()
 
 			if len(instances) == 0 {
-				fmt.Println("No Clino instances found.")
-				fmt.Println("Run 'clino instance new' to start a new instance, or 'clino task new \"...\"' to auto-start one.")
+				fmt.Println("No Clica instances found.")
+				fmt.Println("Run 'clica instance new' to start a new instance, or 'clica task new \"...\"' to auto-start one.")
 				return nil
 			}
 
@@ -325,7 +325,7 @@ func newInstanceListCommand() *cobra.Command {
 				if instance.Status == grpc_health_v1.HealthCheckResponse_SERVING {
 					// Get PID from core
 					if client, err := registry.GetClient(ctx, instance.Address); err == nil {
-						if processInfo, err := client.State.GetProcessInfo(ctx, &clino.EmptyRequest{}); err == nil {
+						if processInfo, err := client.State.GetProcessInfo(ctx, &clica.EmptyRequest{}); err == nil {
 							pid = fmt.Sprintf("%d", processInfo.ProcessId)
 							// Update version from RPC if available
 							if processInfo.Version != nil && *processInfo.Version != "" && *processInfo.Version != "unknown" {
@@ -422,8 +422,8 @@ func newInstanceDefaultCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "default <address>",
 		Aliases: []string{"d"},
-		Short:   "Set the default Clino instance",
-		Long:    `Set the default Clino instance to use for subsequent commands.`,
+		Short:   "Set the default Clica instance",
+		Long:    `Set the default Clica instance to use for subsequent commands.`,
 		Args:    cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			address := args[0]
@@ -437,7 +437,7 @@ func newInstanceDefaultCommand() *cobra.Command {
 			// Verify the instance exists
 			_, err := registry.GetInstance(address)
 			if err != nil {
-				return fmt.Errorf("instance %s not found. Run 'clino instance list' to see available instances", address)
+				return fmt.Errorf("instance %s not found. Run 'clica instance list' to see available instances", address)
 			}
 
 			// Set as default
@@ -459,8 +459,8 @@ func newInstanceNewCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "new",
 		Aliases: []string{"n"},
-		Short:   "Create a new Clino instance",
-		Long:    `Create a new Clino instance with automatically assigned ports.`,
+		Short:   "Create a new Clica instance",
+		Long:    `Create a new Clica instance with automatically assigned ports.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 
@@ -468,7 +468,7 @@ func newInstanceNewCommand() *cobra.Command {
 				return fmt.Errorf("clients not initialized")
 			}
 
-			fmt.Println("Starting new Clino instance...")
+			fmt.Println("Starting new Clica instance...")
 
 			instance, err := global.Clients.StartNewInstance(ctx)
 			if err != nil {

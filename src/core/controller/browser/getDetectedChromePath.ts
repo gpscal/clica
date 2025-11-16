@@ -1,5 +1,5 @@
-import { ChromePath } from "@shared/proto/clino/browser"
-import { EmptyRequest } from "@shared/proto/clino/common"
+import { ChromePath } from "@shared/proto/clica/browser"
+import { EmptyRequest } from "@shared/proto/clica/common"
 import { BrowserSession } from "../../../services/browser/BrowserSession"
 import { Controller } from "../index"
 

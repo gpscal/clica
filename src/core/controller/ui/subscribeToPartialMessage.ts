@@ -1,10 +1,10 @@
-import { EmptyRequest } from "@shared/proto/clino/common"
-import { ClinoMessage } from "@shared/proto/clino/ui"
+import { EmptyRequest } from "@shared/proto/clica/common"
+import { ClicaMessage } from "@shared/proto/clica/ui"
 import { getRequestRegistry, StreamingResponseHandler } from "../grpc-handler"
 import { Controller } from "../index"
 
 // Keep track of active partial message subscriptions
-const activePartialMessageSubscriptions = new Set<StreamingResponseHandler<ClinoMessage>>()
+const activePartialMessageSubscriptions = new Set<StreamingResponseHandler<ClicaMessage>>()
 
 /**
  * Subscribe to partial message events
@@ -16,7 +16,7 @@ const activePartialMessageSubscriptions = new Set<StreamingResponseHandler<Clino
 export async function subscribeToPartialMessage(
 	_controller: Controller,
 	_request: EmptyRequest,
-	responseStream: StreamingResponseHandler<ClinoMessage>,
+	responseStream: StreamingResponseHandler<ClicaMessage>,
 	requestId?: string,
 ): Promise<void> {
 	// Add this subscription to the active subscriptions
@@ -35,9 +35,9 @@ export async function subscribeToPartialMessage(
 
 /**
  * Send a partial message event to all active subscribers
- * @param partialMessage The ClinoMessage to send
+ * @param partialMessage The ClicaMessage to send
  */
-export async function sendPartialMessageEvent(partialMessage: ClinoMessage): Promise<void> {
+export async function sendPartialMessageEvent(partialMessage: ClicaMessage): Promise<void> {
 	// Send the event to all active subscribers
 	const promises = Array.from(activePartialMessageSubscriptions).map(async (responseStream) => {
 		try {

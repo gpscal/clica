@@ -1,6 +1,6 @@
 import { synchronizeRuleToggles } from "@core/context/instructions/user-instructions/rule-helpers"
 import { ensureWorkflowsDirectoryExists, GlobalFileNames } from "@core/storage/disk"
-import { ClinoRulesToggles } from "@shared/clino-rules"
+import { ClicaRulesToggles } from "@shared/clica-rules"
 import path from "path"
 import { Controller } from "@/core/controller"
 
@@ -11,8 +11,8 @@ export async function refreshWorkflowToggles(
 	controller: Controller,
 	workingDirectory: string,
 ): Promise<{
-	globalWorkflowToggles: ClinoRulesToggles
-	localWorkflowToggles: ClinoRulesToggles
+	globalWorkflowToggles: ClicaRulesToggles
+	localWorkflowToggles: ClicaRulesToggles
 }> {
 	// Global workflows
 	const globalWorkflowToggles = controller.stateManager.getGlobalSettingsKey("globalWorkflowToggles")

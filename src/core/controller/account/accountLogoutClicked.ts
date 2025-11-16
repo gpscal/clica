@@ -1,5 +1,5 @@
-import type { EmptyRequest } from "@shared/proto/clino/common"
-import { Empty } from "@shared/proto/clino/common"
+import type { EmptyRequest } from "@shared/proto/clica/common"
+import { Empty } from "@shared/proto/clica/common"
 import { AuthService } from "@/services/auth/AuthService"
 import { LogoutReason } from "@/services/auth/types"
 import type { Controller } from "../index"

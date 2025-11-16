@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"github.com/clino/cli/pkg/cli/auth"
+	"github.com/clica/cli/pkg/cli/auth"
 	"github.com/spf13/cobra"
 )
 
@@ -13,7 +13,7 @@ func NewAuthCommand() *cobra.Command {
 
 Interactive Mode:
   Run without flags to open an interactive menu where you can:
-  - Sign in to your Clino account
+  - Sign in to your Clica account
   - Configure other LLM providers (Anthropic, OpenAI, etc.)
   - Select and switch between AI models
   - Manage provider settings
@@ -22,9 +22,9 @@ Quick Setup Mode:
   Use flags to quickly configure a BYO provider non-interactively:
   
   Examples:
-    clino auth --provider openai-native --apikey sk-xxx --modelid gpt-5
-    clino auth -p anthropic -k sk-ant-xxx -m claude-sonnet-4-5-20250929
-    clino auth -p openai-compatible -k xxx -m gpt-4 -b https://api.example.com/v1
+    clica auth --provider openai-native --apikey sk-xxx --modelid gpt-5
+    clica auth -p anthropic -k sk-ant-xxx -m claude-sonnet-4-5-20250929
+    clica auth -p openai-compatible -k xxx -m gpt-4 -b https://api.example.com/v1
     
   Supported providers: openai-native, openai, anthropic, gemini, openrouter, xai, cerebras, ollama
   Note: Bedrock provider requires interactive setup due to complex auth fields`,

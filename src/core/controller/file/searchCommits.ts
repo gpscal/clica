@@ -1,5 +1,5 @@
-import { StringRequest } from "@shared/proto/clino/common"
-import { GitCommits } from "@shared/proto/clino/file"
+import { StringRequest } from "@shared/proto/clica/common"
+import { GitCommits } from "@shared/proto/clica/file"
 import { searchCommits as searchCommitsUtil } from "@utils/git"
 import { getWorkspacePath } from "@utils/path"
 import { Controller } from ".."

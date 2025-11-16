@@ -5,7 +5,7 @@ import { DifyHandler } from "../../core/api/providers/dify"
  * Dify Integration Utilities
  *
  * This module provides helper functions to integrate Dify's additional APIs
- * with Clino's existing systems like file handling, conversation management,
+ * with Clica's existing systems like file handling, conversation management,
  * and feedback collection.
  */
 
@@ -32,7 +32,7 @@ export class DifyIntegration {
 	/**
 	 * Upload multiple files and return their IDs for use in conversations
 	 * @param files Array of file data with name and content
-	 * @param user User identifier (defaults to "clino-user")
+	 * @param user User identifier (defaults to "clica-user")
 	 * @returns Array of uploaded file IDs
 	 */
 	async uploadFiles(files: Array<{ name: string; content: Buffer }>, user?: string): Promise<string[]> {
@@ -247,8 +247,8 @@ export function createDifyIntegration(
 }
 
 /**
- * Utility function to convert Clino file objects to Dify upload format
- * @param files Array of file paths or file objects from Clino
+ * Utility function to convert Clica file objects to Dify upload format
+ * @param files Array of file paths or file objects from Clica
  * @returns Promise with array of file data ready for upload
  */
 export async function prepareClineFilesForDify(files: string[]): Promise<Array<{ name: string; content: Buffer }>> {

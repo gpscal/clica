@@ -1,5 +1,5 @@
 import { ModelFamily } from "@/shared/prompts"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaDefaultTool } from "@/shared/tools"
 import type { ClineToolSpec } from "../spec"
 import { TASK_PROGRESS_PARAMETER } from "../types"
 
@@ -22,7 +22,7 @@ Checklist here (optional)
 </write_to_file>
  */
 
-const id = ClinoDefaultTool.FILE_NEW
+const id = ClicaDefaultTool.FILE_NEW
 
 const generic: ClineToolSpec = {
 	variant: ModelFamily.GENERIC,

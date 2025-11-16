@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/clino/cli/pkg/cli/clerror"
-	"github.com/clino/cli/pkg/cli/output"
-	"github.com/clino/cli/pkg/cli/types"
+	"github.com/clica/cli/pkg/cli/clerror"
+	"github.com/clica/cli/pkg/cli/output"
+	"github.com/clica/cli/pkg/cli/types"
 )
 
 // AskHandler handles ASK type messages
@@ -23,11 +23,11 @@ func NewAskHandler() *AskHandler {
 }
 
 // CanHandle returns true if this is an ASK message
-func (h *AskHandler) CanHandle(msg *types.ClinoMessage) bool {
+func (h *AskHandler) CanHandle(msg *types.ClicaMessage) bool {
 	return msg.IsAsk()
 }
 
-func (h *AskHandler) Handle(msg *types.ClinoMessage, dc *DisplayContext) error {
+func (h *AskHandler) Handle(msg *types.ClicaMessage, dc *DisplayContext) error {
 	// Always display approval messages so user can see what they're approving
 	// The input handler will show the approval prompt form after the content is displayed
 
@@ -70,7 +70,7 @@ func (h *AskHandler) Handle(msg *types.ClinoMessage, dc *DisplayContext) error {
 }
 
 // handleFollowup handles followup questions
-func (h *AskHandler) handleFollowup(msg *types.ClinoMessage, dc *DisplayContext) error {
+func (h *AskHandler) handleFollowup(msg *types.ClicaMessage, dc *DisplayContext) error {
 	body := dc.ToolRenderer.GenerateAskFollowupBody(msg.Text)
 
 	if body == "" {
@@ -78,9 +78,9 @@ func (h *AskHandler) handleFollowup(msg *types.ClinoMessage, dc *DisplayContext)
 	}
 
 	if dc.IsStreamingMode {
-		// In streaming mode, header was already shown by partial stream
-		// Just render the body content
-		output.Print(body)
+		// In streaming mode, both header and body were already rendered by StreamingSegment
+		// Skip rendering to avoid duplication
+		return nil
 	} else {
 		// Non-streaming mode: render header + body together
 		header := dc.ToolRenderer.GenerateAskFollowupHeader()
@@ -95,14 +95,11 @@ func (h *AskHandler) handleFollowup(msg *types.ClinoMessage, dc *DisplayContext)
 }
 
 // handlePlanModeRespond handles plan mode responses
-func (h *AskHandler) handlePlanModeRespond(msg *types.ClinoMessage, dc *DisplayContext) error {
+func (h *AskHandler) handlePlanModeRespond(msg *types.ClicaMessage, dc *DisplayContext) error {
 	if dc.IsStreamingMode {
-		// In streaming mode, header was already shown by partial stream
-		// Just render the body content
-		body := dc.ToolRenderer.GeneratePlanModeRespondBody(msg.Text)
-		if body != "" {
-			output.Print(body)
-		}
+		// In streaming mode, both header and body were already rendered by StreamingSegment
+		// Skip rendering to avoid duplication
+		return nil
 	} else {
 		// In non-streaming mode, render header + body together
 		header := dc.ToolRenderer.GeneratePlanModeRespondHeader()
@@ -128,13 +125,13 @@ func (h *AskHandler) handlePlanModeRespond(msg *types.ClinoMessage, dc *DisplayC
 // showApprovalHint displays a hint in non-interactive mode about how to approve/deny
 func (h *AskHandler) showApprovalHint(dc *DisplayContext) {
 	if !dc.IsInteractive {
-		output.Printf("\n%s\n", dc.Renderer.Dim("Clino is requesting approval to use this tool"))
-		output.Printf("%s\n", dc.Renderer.Dim("Use clino task send --approve or --deny to respond"))
+		output.Printf("\n%s\n", dc.Renderer.Dim("Clica is requesting approval to use this tool"))
+		output.Printf("%s\n", dc.Renderer.Dim("Use clica task send --approve or --deny to respond"))
 	}
 }
 
 // handleCommand handles command execution requests
-func (h *AskHandler) handleCommand(msg *types.ClinoMessage, dc *DisplayContext) error {
+func (h *AskHandler) handleCommand(msg *types.ClicaMessage, dc *DisplayContext) error {
 	if msg.Text == "" {
 		return nil
 	}
@@ -151,7 +148,7 @@ func (h *AskHandler) handleCommand(msg *types.ClinoMessage, dc *DisplayContext) 
 }
 
 // handleCommandOutput handles command output requests
-func (h *AskHandler) handleCommandOutput(msg *types.ClinoMessage, dc *DisplayContext) error {
+func (h *AskHandler) handleCommandOutput(msg *types.ClicaMessage, dc *DisplayContext) error {
 	if msg.Text == "" {
 		return nil
 	}
@@ -167,12 +164,12 @@ func (h *AskHandler) handleCommandOutput(msg *types.ClinoMessage, dc *DisplayCon
 }
 
 // handleCompletionResult handles completion result requests
-func (h *AskHandler) handleCompletionResult(msg *types.ClinoMessage, dc *DisplayContext) error {
+func (h *AskHandler) handleCompletionResult(msg *types.ClicaMessage, dc *DisplayContext) error {
 	return nil
 }
 
 // handleTool handles tool execution requests
-func (h *AskHandler) handleTool(msg *types.ClinoMessage, dc *DisplayContext) error {
+func (h *AskHandler) handleTool(msg *types.ClicaMessage, dc *DisplayContext) error {
 	// Parse tool message
 	var tool types.ToolMessage
 	if err := json.Unmarshal([]byte(msg.Text), &tool); err != nil {
@@ -181,13 +178,8 @@ func (h *AskHandler) handleTool(msg *types.ClinoMessage, dc *DisplayContext) err
 	}
 
 	if dc.IsStreamingMode {
-		// In streaming mode, header was already shown by partial stream
-		// Just render the content preview
-		contentPreview := dc.ToolRenderer.GenerateToolContentPreview(&tool)
-		if contentPreview != "" {
-			output.Print("\n")
-			output.Print(contentPreview)
-		}
+		// In streaming mode, both header and preview were already rendered by StreamingSegment
+		// Skip rendering to avoid duplication
 	} else {
 		// Non-streaming mode: render full approval (header + preview)
 		rendered := dc.ToolRenderer.RenderToolApprovalRequest(&tool)
@@ -199,9 +191,9 @@ func (h *AskHandler) handleTool(msg *types.ClinoMessage, dc *DisplayContext) err
 }
 
 // handleAPIReqFailed handles API request failures
-func (h *AskHandler) handleAPIReqFailed(msg *types.ClinoMessage, dc *DisplayContext) error {
-	// Try to parse as ClinoError for better error display
-	clineErr, _ := clerror.ParseClinoError(msg.Text)
+func (h *AskHandler) handleAPIReqFailed(msg *types.ClicaMessage, dc *DisplayContext) error {
+	// Try to parse as ClicaError for better error display
+	clineErr, _ := clerror.ParseClicaError(msg.Text)
 	if clineErr != nil {
 		if dc.SystemRenderer != nil {
 			// Render the error with system renderer
@@ -225,19 +217,19 @@ func (h *AskHandler) handleAPIReqFailed(msg *types.ClinoMessage, dc *DisplayCont
 }
 
 // handleResumeTask handles resume task requests
-func (h *AskHandler) handleResumeTask(msg *types.ClinoMessage, dc *DisplayContext) error {
+func (h *AskHandler) handleResumeTask(msg *types.ClicaMessage, dc *DisplayContext) error {
 	// Don't render - this is metadata only, user already knows they're resuming
 	return nil
 }
 
 // handleResumeCompletedTask handles resume completed task requests
-func (h *AskHandler) handleResumeCompletedTask(msg *types.ClinoMessage, dc *DisplayContext) error {
+func (h *AskHandler) handleResumeCompletedTask(msg *types.ClicaMessage, dc *DisplayContext) error {
 	// Don't render - this is metadata only, user already knows they're resuming
 	return nil
 }
 
 // handleMistakeLimitReached handles mistake limit reached
-func (h *AskHandler) handleMistakeLimitReached(msg *types.ClinoMessage, dc *DisplayContext) error {
+func (h *AskHandler) handleMistakeLimitReached(msg *types.ClicaMessage, dc *DisplayContext) error {
 	if dc.SystemRenderer != nil {
 		details := make(map[string]string)
 		if msg.Text != "" {
@@ -246,7 +238,7 @@ func (h *AskHandler) handleMistakeLimitReached(msg *types.ClinoMessage, dc *Disp
 		dc.SystemRenderer.RenderError(
 			"critical",
 			"Mistake Limit Reached",
-			"Clino has made too many consecutive mistakes and needs your guidance to proceed.",
+			"Clica has made too many consecutive mistakes and needs your guidance to proceed.",
 			details,
 		)
 		fmt.Printf("\n**Approval required to continue.**\n")
@@ -256,7 +248,7 @@ func (h *AskHandler) handleMistakeLimitReached(msg *types.ClinoMessage, dc *Disp
 }
 
 // handleAutoApprovalMaxReached handles auto-approval max reached
-func (h *AskHandler) handleAutoApprovalMaxReached(msg *types.ClinoMessage, dc *DisplayContext) error {
+func (h *AskHandler) handleAutoApprovalMaxReached(msg *types.ClicaMessage, dc *DisplayContext) error {
 	if dc.SystemRenderer != nil {
 		details := make(map[string]string)
 		if msg.Text != "" {
@@ -275,15 +267,15 @@ func (h *AskHandler) handleAutoApprovalMaxReached(msg *types.ClinoMessage, dc *D
 }
 
 // handleBrowserActionLaunch handles browser action launch requests
-func (h *AskHandler) handleBrowserActionLaunch(msg *types.ClinoMessage, dc *DisplayContext) error {
+func (h *AskHandler) handleBrowserActionLaunch(msg *types.ClicaMessage, dc *DisplayContext) error {
 	url := strings.TrimSpace(msg.Text)
-	err := dc.Renderer.RenderMessage("BROWSER", fmt.Sprintf("Clino wants to launch browser and navigate to: %s. Approval required.", url), true)
+	err := dc.Renderer.RenderMessage("BROWSER", fmt.Sprintf("Clica wants to launch browser and navigate to: %s. Approval required.", url), true)
 	h.showApprovalHint(dc)
 	return err
 }
 
 // handleUseMcpServer handles MCP server usage requests
-func (h *AskHandler) handleUseMcpServer(msg *types.ClinoMessage, dc *DisplayContext) error {
+func (h *AskHandler) handleUseMcpServer(msg *types.ClicaMessage, dc *DisplayContext) error {
 	// Parse MCP server usage request
 	type McpServerRequest struct {
 		ServerName string `json:"serverName"`
@@ -309,24 +301,24 @@ func (h *AskHandler) handleUseMcpServer(msg *types.ClinoMessage, dc *DisplayCont
 	}
 
 	err := dc.Renderer.RenderMessage("MCP",
-		fmt.Sprintf("Clino wants to %s on the %s MCP server", operation, mcpReq.ServerName), true)
+		fmt.Sprintf("Clica wants to %s on the %s MCP server", operation, mcpReq.ServerName), true)
 
 	h.showApprovalHint(dc)
 	return err
 }
 
 // handleNewTask handles new task creation requests
-func (h *AskHandler) handleNewTask(msg *types.ClinoMessage, dc *DisplayContext) error {
-	return dc.Renderer.RenderMessage("NEW TASK", fmt.Sprintf("Clino wants to start a new task: %s. Approval required.", msg.Text), true)
+func (h *AskHandler) handleNewTask(msg *types.ClicaMessage, dc *DisplayContext) error {
+	return dc.Renderer.RenderMessage("NEW TASK", fmt.Sprintf("Clica wants to start a new task: %s. Approval required.", msg.Text), true)
 }
 
 // handleCondense handles conversation condensing requests
-func (h *AskHandler) handleCondense(msg *types.ClinoMessage, dc *DisplayContext) error {
-	return dc.Renderer.RenderMessage("CONDENSE", fmt.Sprintf("Clino wants to condense the conversation: %s. Approval required.", msg.Text), true)
+func (h *AskHandler) handleCondense(msg *types.ClicaMessage, dc *DisplayContext) error {
+	return dc.Renderer.RenderMessage("CONDENSE", fmt.Sprintf("Clica wants to condense the conversation: %s. Approval required.", msg.Text), true)
 }
 
 // handleReportBug handles bug report requests
-func (h *AskHandler) handleReportBug(msg *types.ClinoMessage, dc *DisplayContext) error {
+func (h *AskHandler) handleReportBug(msg *types.ClicaMessage, dc *DisplayContext) error {
 	var bugData struct {
 		Title             string `json:"title"`
 		WhatHappened      string `json:"what_happened"`
@@ -336,10 +328,10 @@ func (h *AskHandler) handleReportBug(msg *types.ClinoMessage, dc *DisplayContext
 	}
 
 	if err := json.Unmarshal([]byte(msg.Text), &bugData); err != nil {
-		return dc.Renderer.RenderMessage("BUG REPORT", fmt.Sprintf("Clino wants to create a GitHub issue: %s. Approval required.", msg.Text), true)
+		return dc.Renderer.RenderMessage("BUG REPORT", fmt.Sprintf("Clica wants to create a GitHub issue: %s. Approval required.", msg.Text), true)
 	}
 
-	err := dc.Renderer.RenderMessage("BUG REPORT", "Clino wants to create a GitHub issue:", true)
+	err := dc.Renderer.RenderMessage("BUG REPORT", "Clica wants to create a GitHub issue:", true)
 	if err != nil {
 		return fmt.Errorf("failed to render handleReportBug: %w", err)
 	}
@@ -355,6 +347,6 @@ func (h *AskHandler) handleReportBug(msg *types.ClinoMessage, dc *DisplayContext
 }
 
 // handleDefault handles unknown ASK message types
-func (h *AskHandler) handleDefault(msg *types.ClinoMessage, dc *DisplayContext) error {
+func (h *AskHandler) handleDefault(msg *types.ClicaMessage, dc *DisplayContext) error {
 	return dc.Renderer.RenderMessage("ASK", msg.Text, true)
 }

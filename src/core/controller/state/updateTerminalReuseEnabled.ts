@@ -3,8 +3,8 @@ import { Controller } from "../index"
 
 export async function updateTerminalReuseEnabled(
 	controller: Controller,
-	request: proto.clino.BooleanRequest,
-): Promise<proto.clino.Empty> {
+	request: proto.clica.BooleanRequest,
+): Promise<proto.clica.Empty> {
 	const enabled = request.value
 
 	// Update the terminal reuse setting in the state
@@ -13,5 +13,5 @@ export async function updateTerminalReuseEnabled(
 	// Broadcast state update to all webviews
 	await controller.postStateToWebview()
 
-	return proto.clino.Empty.create({})
+	return proto.clica.Empty.create({})
 }

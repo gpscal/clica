@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/charmbracelet/huh"
-	"github.com/clino/cli/pkg/cli/global"
-	"github.com/clino/cli/pkg/cli/task"
-	"github.com/clino/grpc-go/clino"
+	"github.com/clica/cli/pkg/cli/global"
+	"github.com/clica/cli/pkg/cli/task"
+	"github.com/clica/grpc-go/clica"
 )
 
 // ProviderWizard handles the interactive provider configuration process
@@ -104,12 +104,12 @@ func (pw *ProviderWizard) handleAddProvider() error {
 	}
 
 	// Step 2: Special handling for Bedrock provider
-	if provider == clino.ApiProvider_BEDROCK {
+	if provider == clica.ApiProvider_BEDROCK {
 		return pw.handleAddBedrockProvider()
 	}
 
 	// Step 2b: Special handling for OCA provider
-	if provider == clino.ApiProvider_OCA {
+	if provider == clica.ApiProvider_OCA {
 		return pw.handleAddOcaProvider()
 	}
 
@@ -150,7 +150,7 @@ func (pw *ProviderWizard) handleAddBedrockProvider() error {
 	}
 
 	// Step 2: Select model
-	modelID, modelInfo, err := pw.selectModel(clino.ApiProvider_BEDROCK, "")
+	modelID, modelInfo, err := pw.selectModel(clica.ApiProvider_BEDROCK, "")
 	if err != nil {
 		return fmt.Errorf("model selection failed: %w", err)
 	}
@@ -190,7 +190,7 @@ func (pw *ProviderWizard) handleAddOcaProvider() error {
 	}
 
 	// Step 3: Select model
-	modelID, _, err := pw.selectModel(clino.ApiProvider_OCA, "")
+	modelID, _, err := pw.selectModel(clica.ApiProvider_OCA, "")
 	if err != nil {
 		return fmt.Errorf("model selection failed: %w", err)
 	}
@@ -201,7 +201,7 @@ func (pw *ProviderWizard) handleAddOcaProvider() error {
 		ModelInfo: nil,
 	}
 
-	if err := UpdateProviderPartial(pw.ctx, pw.manager, clino.ApiProvider_OCA, updates, true); err != nil {
+	if err := UpdateProviderPartial(pw.ctx, pw.manager, clica.ApiProvider_OCA, updates, true); err != nil {
 		return fmt.Errorf("failed to save OCA configuration: %w", err)
 	}
 
@@ -227,7 +227,7 @@ func (pw *ProviderWizard) handleListProviders() error {
 }
 
 // selectModel attempts to fetch available models and let user select, or falls back to manual entry
-func (pw *ProviderWizard) selectModel(provider clino.ApiProvider, apiKey string) (string, interface{}, error) {
+func (pw *ProviderWizard) selectModel(provider clica.ApiProvider, apiKey string) (string, interface{}, error) {
 	// For providers that support model fetching, try to fetch and display models
 	canFetchModels := pw.supportsModelFetching(provider)
 
@@ -274,16 +274,16 @@ func (pw *ProviderWizard) selectModel(provider clino.ApiProvider, apiKey string)
 }
 
 // supportsModelFetching returns true if the provider supports fetching models
-func (pw *ProviderWizard) supportsModelFetching(provider clino.ApiProvider) bool {
+func (pw *ProviderWizard) supportsModelFetching(provider clica.ApiProvider) bool {
 	return SupportsBYOModelFetching(provider)
 }
 
 // fetchModelsForProvider fetches models for a given provider
 // Supports both dynamic API fetching (OpenRouter, OpenAI, Ollama) and static model lists (Anthropic, Bedrock, Gemini, X AI)
-func (pw *ProviderWizard) fetchModelsForProvider(provider clino.ApiProvider, apiKey string) ([]string, map[string]interface{}, error) {
+func (pw *ProviderWizard) fetchModelsForProvider(provider clica.ApiProvider, apiKey string) ([]string, map[string]interface{}, error) {
 	// Try dynamic/remote model fetching first
 	switch provider {
-	case clino.ApiProvider_OPENROUTER:
+	case clica.ApiProvider_OPENROUTER:
 		models, err := FetchOpenRouterModels(pw.ctx, pw.manager)
 		if err != nil {
 			return nil, nil, err
@@ -291,7 +291,7 @@ func (pw *ProviderWizard) fetchModelsForProvider(provider clino.ApiProvider, api
 		interfaceMap := ConvertOpenRouterModelsToInterface(models)
 		return ConvertModelsMapToSlice(interfaceMap), interfaceMap, nil
 
-	case clino.ApiProvider_OPENAI:
+	case clica.ApiProvider_OPENAI:
 		// For OpenAI, we need to pass the base URL and API key
 		baseURL := "https://api.openai.com/v1" // Default OpenAI API base URL
 		modelIDs, err := FetchOpenAiModels(pw.ctx, pw.manager, baseURL, apiKey)
@@ -301,7 +301,7 @@ func (pw *ProviderWizard) fetchModelsForProvider(provider clino.ApiProvider, api
 		// OpenAI returns just model IDs without additional info, so modelInfo map is nil
 		return modelIDs, nil, nil
 
-	case clino.ApiProvider_OLLAMA:
+	case clica.ApiProvider_OLLAMA:
 		// For Ollama, apiKey actually contains the base URL (or empty for default)
 		baseURL := apiKey // The "API key" field for Ollama is actually the base URL
 		modelIDs, err := FetchOllamaModels(pw.ctx, pw.manager, baseURL)
@@ -311,7 +311,7 @@ func (pw *ProviderWizard) fetchModelsForProvider(provider clino.ApiProvider, api
 		// Ollama returns just model IDs without additional info, so modelInfo map is nil
 		return modelIDs, nil, nil
 
-	case clino.ApiProvider_OCA:
+	case clica.ApiProvider_OCA:
 		// OCA supports dynamic model fetching
 		models, err := FetchOcaModels(pw.ctx, pw.manager)
 		if err != nil {
@@ -378,7 +378,7 @@ func (pw *ProviderWizard) selectFromAvailableModels(models []string) (string, er
 
 // manualModelEntry prompts user to manually enter a model ID.
 // Returns the model ID and an error. The modelInfo is always nil for manual entry.
-func (pw *ProviderWizard) manualModelEntry(provider clino.ApiProvider) (string, interface{}, error) {
+func (pw *ProviderWizard) manualModelEntry(provider clica.ApiProvider) (string, interface{}, error) {
 	var modelID string
 	modelPlaceholder := GetBYOProviderPlaceholder(provider)
 
@@ -421,10 +421,10 @@ func (pw *ProviderWizard) handleChangeModel() error {
 	// Step 2: Get all configured providers with models
 	readyProviders := result.GetAllReadyProviders()
 
-	// Filter out Clino provider (it has its own model changer in the main menu)
+	// Filter out Clica provider (it has its own model changer in the main menu)
 	var configurableProviders []*ProviderDisplay
 	for _, provider := range readyProviders {
-		if provider.Provider != clino.ApiProvider_CLINO {
+		if provider.Provider != clica.ApiProvider_CLICA {
 			configurableProviders = append(configurableProviders, provider)
 		}
 	}
@@ -432,7 +432,7 @@ func (pw *ProviderWizard) handleChangeModel() error {
 	// Step 3: Check if there are any configurable providers
 	if len(configurableProviders) == 0 {
 		fmt.Println("\nNo configurable providers found.")
-		fmt.Println("Note: Clino provider has its own model selection in the main menu.")
+		fmt.Println("Note: Clica provider has its own model selection in the main menu.")
 		return nil
 	}
 
@@ -474,7 +474,7 @@ func (pw *ProviderWizard) handleChangeModel() error {
 	var apiKey string
 	if pw.supportsModelFetching(provider) {
 		// For providers that support fetching, we need to retrieve the API key from state
-		state, err := pw.manager.GetClient().State.GetLatestState(pw.ctx, &clino.EmptyRequest{})
+		state, err := pw.manager.GetClient().State.GetLatestState(pw.ctx, &clica.EmptyRequest{})
 		if err != nil {
 			return fmt.Errorf("failed to get state: %w", err)
 		}
@@ -511,7 +511,7 @@ func (pw *ProviderWizard) handleChangeModel() error {
 }
 
 // applyModelChange applies a model change for both Plan and Act modes using UpdateProviderPartial
-func (pw *ProviderWizard) applyModelChange(provider clino.ApiProvider, modelID string, modelInfo interface{}) error {
+func (pw *ProviderWizard) applyModelChange(provider clica.ApiProvider, modelID string, modelInfo interface{}) error {
 	updates := ProviderUpdatesPartial{
 		ModelID:   &modelID,
 		ModelInfo: modelInfo,
@@ -522,9 +522,9 @@ func (pw *ProviderWizard) applyModelChange(provider clino.ApiProvider, modelID s
 
 // SwitchToBYOProvider switches to a BYO provider that's already configured.
 // It retrieves the existing model configuration and sets it as the active provider for both Plan and Act modes.
-func SwitchToBYOProvider(ctx context.Context, manager *task.Manager, provider clino.ApiProvider) error {
+func SwitchToBYOProvider(ctx context.Context, manager *task.Manager, provider clica.ApiProvider) error {
 	// Get the current state to retrieve the model ID and model info for this provider
-	state, err := manager.GetClient().State.GetLatestState(ctx, &clino.EmptyRequest{})
+	state, err := manager.GetClient().State.GetLatestState(ctx, &clica.EmptyRequest{})
 	if err != nil {
 		return fmt.Errorf("failed to get state: %w", err)
 	}
@@ -547,9 +547,9 @@ func SwitchToBYOProvider(ctx context.Context, manager *task.Manager, provider cl
 		return fmt.Errorf("no model configured for provider %s", GetProviderDisplayName(provider))
 	}
 
-	// Get model info if available (for OpenRouter/Clino)
+	// Get model info if available (for OpenRouter/Clica)
 	var modelInfo interface{}
-	if provider == clino.ApiProvider_OPENROUTER || provider == clino.ApiProvider_CLINO {
+	if provider == clica.ApiProvider_OPENROUTER || provider == clica.ApiProvider_CLICA {
 		if modelInfoData, ok := apiConfig["planModeOpenRouterModelInfo"].(map[string]interface{}); ok {
 			modelInfo = convertMapToOpenRouterModelInfo(modelInfoData)
 		}
@@ -572,7 +572,7 @@ func SwitchToBYOProvider(ctx context.Context, manager *task.Manager, provider cl
 }
 
 // getProviderModelIDFromState retrieves the model ID for a specific provider from state
-func getProviderModelIDFromState(stateData map[string]interface{}, provider clino.ApiProvider) string {
+func getProviderModelIDFromState(stateData map[string]interface{}, provider clica.ApiProvider) string {
 	modelKey, err := GetModelIDFieldName(provider, "plan")
 	if err != nil {
 		return ""
@@ -586,9 +586,9 @@ func getProviderModelIDFromState(stateData map[string]interface{}, provider clin
 }
 
  // getProviderAPIKeyFromState retrieves the API key for a specific provider from state
-func getProviderAPIKeyFromState(stateData map[string]interface{}, provider clino.ApiProvider) string {
+func getProviderAPIKeyFromState(stateData map[string]interface{}, provider clica.ApiProvider) string {
 	// OCA uses account authentication, not API keys. Consider it "present" if authenticated.
-	if provider == clino.ApiProvider_OCA {
+	if provider == clica.ApiProvider_OCA {
 		if state, _ := GetLatestOCAState(context.TODO(), 2 * time.Second); state != nil && state.User != nil {
 			// Return a sentinel non-empty string so upstream checks pass.
 			return "OCA_AUTH_VERIFIED"
@@ -609,8 +609,8 @@ func getProviderAPIKeyFromState(stateData map[string]interface{}, provider clino
 }
 
 // convertMapToOpenRouterModelInfo converts a map to OpenRouterModelInfo
-func convertMapToOpenRouterModelInfo(data map[string]interface{}) *clino.OpenRouterModelInfo {
-	info := &clino.OpenRouterModelInfo{}
+func convertMapToOpenRouterModelInfo(data map[string]interface{}) *clica.OpenRouterModelInfo {
+	info := &clica.OpenRouterModelInfo{}
 
 	if val, ok := data["description"].(string); ok {
 		info.Description = &val
@@ -656,10 +656,10 @@ func (pw *ProviderWizard) handleRemoveProvider() error {
 	// Step 2: Get all ready providers
 	readyProviders := result.GetAllReadyProviders()
 
-	// Filter out Clino provider (uses account auth, not API keys)
+	// Filter out Clica provider (uses account auth, not API keys)
 	var removableProviders []*ProviderDisplay
 	for _, provider := range readyProviders {
-		if provider.Provider != clino.ApiProvider_CLINO {
+		if provider.Provider != clica.ApiProvider_CLICA {
 			removableProviders = append(removableProviders, provider)
 		}
 	}
@@ -667,7 +667,7 @@ func (pw *ProviderWizard) handleRemoveProvider() error {
 	// Step 3: Check if there are providers to remove
 	if len(removableProviders) == 0 {
 		fmt.Println("\nNo providers available to remove.")
-		fmt.Println("Note: Clino provider cannot be removed via this menu.")
+		fmt.Println("Note: Clica provider cannot be removed via this menu.")
 		return nil
 	}
 
@@ -726,7 +726,7 @@ func (pw *ProviderWizard) handleRemoveProvider() error {
 	}
 
 	// Step 7: If removing OCA, sign out first
-	if selectedProvider.Provider == clino.ApiProvider_OCA {
+	if selectedProvider.Provider == clica.ApiProvider_OCA {
 		if err := signOutOca(pw.ctx); err != nil {
 			fmt.Printf("Warning: Failed to sign out of OCA: %v\n", err)
 		} else {
@@ -744,7 +744,7 @@ func (pw *ProviderWizard) handleRemoveProvider() error {
 }
 
 // clearProviderAPIKey clears the API key field for a specific provider using RemoveProviderPartial
-func (pw *ProviderWizard) clearProviderAPIKey(provider clino.ApiProvider) error {
+func (pw *ProviderWizard) clearProviderAPIKey(provider clica.ApiProvider) error {
 	return RemoveProviderPartial(pw.ctx, pw.manager, provider)
 }
 
@@ -754,11 +754,11 @@ func signOutOca(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	_, err = client.Ocaaccount.OcaAccountLogoutClicked(ctx, &clino.EmptyRequest{})
+	_, err = client.Ocaaccount.OcaAccountLogoutClicked(ctx, &clica.EmptyRequest{})
 	return err
 }
 
 func setWelcomeViewCompleted(ctx context.Context, manager *task.Manager) error {
-	_, err := manager.GetClient().State.SetWelcomeViewCompleted(ctx, &clino.BooleanRequest{Value: true})
+	_, err := manager.GetClient().State.SetWelcomeViewCompleted(ctx, &clica.BooleanRequest{Value: true})
 	return err
 }

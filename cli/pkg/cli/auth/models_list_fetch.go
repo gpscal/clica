@@ -7,23 +7,23 @@ import (
 	"sort"
 
 	"github.com/charmbracelet/huh"
-	"github.com/clino/cli/pkg/cli/task"
-	"github.com/clino/grpc-go/clino"
+	"github.com/clica/cli/pkg/cli/task"
+	"github.com/clica/grpc-go/clica"
 	"golang.org/x/term"
 )
 
-// FetchOpenRouterModels fetches available OpenRouter models from Clino Core
-func FetchOpenRouterModels(ctx context.Context, manager *task.Manager) (map[string]*clino.OpenRouterModelInfo, error) {
-	resp, err := manager.GetClient().Models.RefreshOpenRouterModelsRpc(ctx, &clino.EmptyRequest{})
+// FetchOpenRouterModels fetches available OpenRouter models from Clica Core
+func FetchOpenRouterModels(ctx context.Context, manager *task.Manager) (map[string]*clica.OpenRouterModelInfo, error) {
+	resp, err := manager.GetClient().Models.RefreshOpenRouterModelsRpc(ctx, &clica.EmptyRequest{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch OpenRouter models: %w", err)
 	}
 	return resp.Models, nil
 }
 
-// FetchOcaModels fetches available Oca models from Clino Core
-func FetchOcaModels(ctx context.Context, manager *task.Manager) (map[string]*clino.OcaModelInfo, error) {
-	resp, err := manager.GetClient().Models.RefreshOcaModels(ctx, &clino.StringRequest{})
+// FetchOcaModels fetches available Oca models from Clica Core
+func FetchOcaModels(ctx context.Context, manager *task.Manager) (map[string]*clica.OcaModelInfo, error) {
+	resp, err := manager.GetClient().Models.RefreshOcaModels(ctx, &clica.StringRequest{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch Oca models: %w", err)
 	}
@@ -31,8 +31,8 @@ func FetchOcaModels(ctx context.Context, manager *task.Manager) (map[string]*cli
 }
 
 // ConvertOpenRouterModelsToInterface converts OpenRouter model map to generic interface map.
-// This allows OpenRouter and Clino models to be used with the generic fetching utilities.
-func ConvertOpenRouterModelsToInterface(models map[string]*clino.OpenRouterModelInfo) map[string]interface{} {
+// This allows OpenRouter and Clica models to be used with the generic fetching utilities.
+func ConvertOpenRouterModelsToInterface(models map[string]*clica.OpenRouterModelInfo) map[string]interface{} {
 	result := make(map[string]interface{}, len(models))
 	for k, v := range models {
 		result[k] = v
@@ -41,10 +41,10 @@ func ConvertOpenRouterModelsToInterface(models map[string]*clino.OpenRouterModel
 }
 
 
-// FetchOpenAiModels fetches available OpenAI models from Clino Core
+// FetchOpenAiModels fetches available OpenAI models from Clica Core
 // Takes the API key and returns a list of model IDs
 func FetchOpenAiModels(ctx context.Context, manager *task.Manager, baseURL, apiKey string) ([]string, error) {
-	req := &clino.OpenAiModelsRequest{
+	req := &clica.OpenAiModelsRequest{
 		BaseUrl: baseURL,
 		ApiKey:  apiKey,
 	}
@@ -56,10 +56,10 @@ func FetchOpenAiModels(ctx context.Context, manager *task.Manager, baseURL, apiK
 	return resp.Values, nil
 }
 
-// FetchOllamaModels fetches available Ollama models from Clino Core
+// FetchOllamaModels fetches available Ollama models from Clica Core
 // Takes the base URL (empty string for default) and returns a list of model IDs
 func FetchOllamaModels(ctx context.Context, manager *task.Manager, baseURL string) ([]string, error) {
-	req := &clino.StringRequest{
+	req := &clica.StringRequest{
 		Value: baseURL,
 	}
 
@@ -121,8 +121,8 @@ func ConvertModelsMapToSlice(models map[string]interface{}) []string {
 }
 
 // ConvertOcaModelsToInterface converts Oca model map to generic interface map.
-// This allows Oca and Clino models to be used with the generic fetching utilities.
-func ConvertOcaModelsToInterface(models map[string]*clino.OcaModelInfo) map[string]interface{} {
+// This allows Oca and Clica models to be used with the generic fetching utilities.
+func ConvertOcaModelsToInterface(models map[string]*clica.OcaModelInfo) map[string]interface{} {
 	result := make(map[string]interface{}, len(models))
 	for k, v := range models {
 		result[k] = v

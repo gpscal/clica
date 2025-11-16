@@ -1,4 +1,4 @@
-# Clino CLI
+# Clica CLI
 
 ```
 /_____/\ /_/\      /_______/\/__/\ /__/\ /_____/\
@@ -13,19 +13,19 @@ Autonomous coding agent CLI - capable of creating/editing files, running command
 
 ## Installation
 
-Install Clino globally using npm:
+Install Clica globally using npm:
 
 ```bash
-npm install -g clino
+npm install -g clica
 ```
 
 ## Usage
 
 ```bash
-clino
+clica
 ```
 
-This will start the Clino CLI interface where you can interact with the autonomous coding agent.
+This will start the Clica CLI interface where you can interact with the autonomous coding agent.
 
 ## Features
 
@@ -45,7 +45,7 @@ This will start the Clino CLI interface where you can interact with the autonomo
 
 ## Configuration
 
-Clino can be configured through:
+Clica can be configured through:
 
 -   Environment variables
 -   Configuration files

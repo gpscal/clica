@@ -6,9 +6,9 @@ import (
 	"os"
 
 	"github.com/atotto/clipboard"
-	"github.com/clino/cli/pkg/cli/global"
-	"github.com/clino/grpc-go/clino"
-	"github.com/clino/grpc-go/host"
+	"github.com/clica/cli/pkg/cli/global"
+	"github.com/clica/grpc-go/clica"
+	"github.com/clica/grpc-go/host"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -33,7 +33,7 @@ func NewEnvService(verbose bool) *EnvService {
 }
 
 // ClipboardWriteText writes text to the system clipboard
-func (s *EnvService) ClipboardWriteText(ctx context.Context, req *clino.StringRequest) (*clino.Empty, error) {
+func (s *EnvService) ClipboardWriteText(ctx context.Context, req *clica.StringRequest) (*clica.Empty, error) {
 	if s.verbose {
 		log.Printf("ClipboardWriteText called with text length: %d", len(req.GetValue()))
 	}
@@ -46,11 +46,11 @@ func (s *EnvService) ClipboardWriteText(ctx context.Context, req *clino.StringRe
 		// Don't fail if clipboard is not available (e.g., headless environment)
 	}
 
-	return &clino.Empty{}, nil
+	return &clica.Empty{}, nil
 }
 
 // ClipboardReadText reads text from the system clipboard
-func (s *EnvService) ClipboardReadText(ctx context.Context, req *clino.EmptyRequest) (*clino.String, error) {
+func (s *EnvService) ClipboardReadText(ctx context.Context, req *clica.EmptyRequest) (*clica.String, error) {
 	if s.verbose {
 		log.Printf("ClipboardReadText called")
 	}
@@ -64,19 +64,19 @@ func (s *EnvService) ClipboardReadText(ctx context.Context, req *clino.EmptyRequ
 		text = ""
 	}
 
-	return &clino.String{
+	return &clica.String{
 		Value: text,
 	}, nil
 }
 
 // GetHostVersion returns the host platform name and version
-func (s *EnvService) GetHostVersion(ctx context.Context, req *clino.EmptyRequest) (*host.GetHostVersionResponse, error) {
+func (s *EnvService) GetHostVersion(ctx context.Context, req *clica.EmptyRequest) (*host.GetHostVersionResponse, error) {
 	if s.verbose {
 		log.Printf("GetHostVersion called")
 	}
 
 	return &host.GetHostVersionResponse{
-		Platform:     proto.String("Clino CLI"),
+		Platform:     proto.String("Clica CLI"),
 		Version:      proto.String(""),
 		ClineType:    proto.String("CLI"),
 		ClineVersion: proto.String(global.CliVersion),
@@ -84,7 +84,7 @@ func (s *EnvService) GetHostVersion(ctx context.Context, req *clino.EmptyRequest
 }
 
 // Shutdown initiates a graceful shutdown of the host bridge service
-func (s *EnvService) Shutdown(ctx context.Context, req *clino.EmptyRequest) (*clino.Empty, error) {
+func (s *EnvService) Shutdown(ctx context.Context, req *clica.EmptyRequest) (*clica.Empty, error) {
 	if s.verbose {
 		log.Printf("Shutdown requested via RPC")
 	}
@@ -101,11 +101,11 @@ func (s *EnvService) Shutdown(ctx context.Context, req *clino.EmptyRequest) (*cl
 		}
 	}
 
-	return &clino.Empty{}, nil
+	return &clica.Empty{}, nil
 }
 
 // GetTelemetrySettings returns the telemetry settings for CLI mode
-func (s *EnvService) GetTelemetrySettings(ctx context.Context, req *clino.EmptyRequest) (*host.GetTelemetrySettingsResponse, error) {
+func (s *EnvService) GetTelemetrySettings(ctx context.Context, req *clica.EmptyRequest) (*host.GetTelemetrySettingsResponse, error) {
 	if s.verbose {
 		log.Printf("GetTelemetrySettings called")
 	}
@@ -128,7 +128,7 @@ func (s *EnvService) GetTelemetrySettings(ctx context.Context, req *clino.EmptyR
 // SubscribeToTelemetrySettings returns a stream of telemetry setting changes
 // In CLI mode, telemetry settings don't change at runtime, so we just send
 // the current state and keep the stream open
-func (s *EnvService) SubscribeToTelemetrySettings(req *clino.EmptyRequest, stream host.EnvService_SubscribeToTelemetrySettingsServer) error {
+func (s *EnvService) SubscribeToTelemetrySettings(req *clica.EmptyRequest, stream host.EnvService_SubscribeToTelemetrySettingsServer) error {
 	if s.verbose {
 		log.Printf("SubscribeToTelemetrySettings called")
 	}

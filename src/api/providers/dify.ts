@@ -43,7 +43,7 @@ export class DifyHandler implements ApiHandler {
 			query: query,
 			response_mode: "streaming",
 			conversation_id: this.conversationId || "",
-			user: "clino-user", // A unique user identifier
+			user: "clica-user", // A unique user identifier
 			files: [],
 		}
 

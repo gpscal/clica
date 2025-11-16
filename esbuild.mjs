@@ -192,8 +192,8 @@ const baseConfig = {
 // Standalone CLI-specific configuration (only build target now)
 const standaloneConfig = {
 	...baseConfig,
-	entryPoints: ["src/standalone/clino-core.ts"],
-	outfile: `${destDir}/clino-core.js`,
+	entryPoints: ["src/standalone/clica-core.ts"],
+	outfile: `${destDir}/clica-core.js`,
 	// These modules need to load files from the module directory at runtime,
 	// so they cannot be bundled.
 	external: ["vscode", "@grpc/reflection", "grpc-health-check", "better-sqlite3"],

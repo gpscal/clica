@@ -1,6 +1,6 @@
-import type { ClinoDefaultTool } from "@/shared/tools"
+import type { ClicaDefaultTool } from "@/shared/tools"
 import { getModelFamily } from "../"
-import { ClinoToolSet } from "../registry/ClinoToolSet"
+import { ClicaToolSet } from "../registry/ClicaToolSet"
 import type { ClineToolSpec } from "../spec"
 import { STANDARD_PLACEHOLDERS } from "../templates/placeholders"
 import { TemplateEngine } from "../templates/TemplateEngine"
@@ -133,12 +133,12 @@ export class PromptBuilder {
 	}
 
 	public static async getToolsPrompts(variant: PromptVariant, context: SystemPromptContext) {
-		let resolvedTools: ReturnType<typeof ClinoToolSet.getTools> = []
+		let resolvedTools: ReturnType<typeof ClicaToolSet.getTools> = []
 
 		// If the variant explicitly lists tools, resolve each by id with fallback to GENERIC
 		if (variant?.tools?.length) {
 			const requestedIds = [...variant.tools]
-			resolvedTools = ClinoToolSet.getToolsForVariantWithFallback(variant.family, requestedIds)
+			resolvedTools = ClicaToolSet.getToolsForVariantWithFallback(variant.family, requestedIds)
 
 			// Preserve requested order
 			resolvedTools = requestedIds
@@ -146,7 +146,7 @@ export class PromptBuilder {
 				.filter((t): t is NonNullable<typeof t> => Boolean(t))
 		} else {
 			// Otherwise, use all tools registered for the variant, or generic if none
-			resolvedTools = ClinoToolSet.getTools(variant.family)
+			resolvedTools = ClicaToolSet.getTools(variant.family)
 			// Sort by id for stable ordering
 			resolvedTools = resolvedTools.sort((a, b) => a.config.id.localeCompare(b.config.id))
 		}
@@ -160,7 +160,7 @@ export class PromptBuilder {
 		return Promise.all(enabledTools.map((tool) => PromptBuilder.tool(tool.config, ids, context)))
 	}
 
-	public static tool(config: ClineToolSpec, registry: ClinoDefaultTool[], context: SystemPromptContext): string {
+	public static tool(config: ClineToolSpec, registry: ClicaDefaultTool[], context: SystemPromptContext): string {
 		// Skip tools without parameters or description - those are placeholder tools
 		if (!config.parameters?.length && !config.description?.length) {
 			return ""

@@ -1,5 +1,5 @@
-import { EmptyRequest } from "@shared/proto/clino/common"
-import { OpenRouterCompatibleModelInfo } from "@shared/proto/clino/models"
+import { EmptyRequest } from "@shared/proto/clica/common"
+import { OpenRouterCompatibleModelInfo } from "@shared/proto/clica/models"
 import { toProtobufModels } from "../../../shared/proto-conversions/models/typeConversion"
 import type { Controller } from "../index"
 import { refreshOpenRouterModels } from "./refreshOpenRouterModels"

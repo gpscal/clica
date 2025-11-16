@@ -1,7 +1,7 @@
 /**
  * Minimal no-op WebviewProvider for CLI-only mode.
  * This class exists to maintain compatibility with existing code that references WebviewProvider,
- * but all webview functionality has been removed since Clino is now CLI-only.
+ * but all webview functionality has been removed since Clica is now CLI-only.
  */
 export abstract class WebviewProvider {
 	private static instance: WebviewProvider | null = null

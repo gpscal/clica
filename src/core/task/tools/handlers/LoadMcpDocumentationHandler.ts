@@ -1,13 +1,13 @@
 import type { ToolUse } from "@core/assistant-message"
 import { loadMcpDocumentation } from "@core/prompts/loadMcpDocumentation"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaDefaultTool } from "@/shared/tools"
 import type { ToolResponse } from "../../index"
 import type { IPartialBlockHandler, IToolHandler } from "../ToolExecutorCoordinator"
 import type { TaskConfig } from "../types/TaskConfig"
 import type { StronglyTypedUIHelpers } from "../types/UIHelpers"
 
 export class LoadMcpDocumentationHandler implements IToolHandler, IPartialBlockHandler {
-	readonly name = ClinoDefaultTool.MCP_DOCS
+	readonly name = ClicaDefaultTool.MCP_DOCS
 
 	constructor() {}
 

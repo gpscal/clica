@@ -9,17 +9,17 @@ import { getContextWindowInfo } from "@core/context/context-management/context-w
 import { FileContextTracker } from "@core/context/context-tracking/FileContextTracker"
 import { ModelContextTracker } from "@core/context/context-tracking/ModelContextTracker"
 import {
-	getGlobalClinoRules,
-	getLocalClinoRules,
-	refreshClinoRulesToggles,
-} from "@core/context/instructions/user-instructions/clino-rules"
+	getGlobalClicaRules,
+	getLocalClicaRules,
+	refreshClicaRulesToggles,
+} from "@core/context/instructions/user-instructions/clica-rules"
 import {
 	getLocalCursorRules,
 	getLocalWindsurfRules,
 	refreshExternalRulesToggles,
 } from "@core/context/instructions/user-instructions/external-rules"
 import { sendPartialMessageEvent } from "@core/controller/ui/subscribeToPartialMessage"
-import { ClinoIgnoreController } from "@core/ignore/ClinoIgnoreController"
+import { ClicaIgnoreController } from "@core/ignore/ClicaIgnoreController"
 import { parseMentions } from "@core/mentions"
 import { summarizeTask } from "@core/prompts/contextManagement"
 import { formatResponse } from "@core/prompts/responses"
@@ -29,7 +29,7 @@ import {
 	ensureTaskDirectoryExists,
 	GlobalFileNames,
 	getSavedApiConversationHistory,
-	getSavedClinoMessages,
+	getSavedClicaMessages,
 } from "@core/storage/disk"
 import { releaseTaskLock } from "@core/task/TaskLockUtils"
 import { isMultiRootEnabled } from "@core/workspace/multi-root-utils"
@@ -54,18 +54,18 @@ import { findLast, findLastIndex } from "@shared/array"
 import { combineApiRequests } from "@shared/combineApiRequests"
 import { combineCommandSequences } from "@shared/combineCommandSequences"
 import {
-	ClinoApiReqCancelReason,
-	ClinoApiReqInfo,
-	ClinoAsk,
-	ClinoMessage,
-	ClinoSay,
+	ClicaApiReqCancelReason,
+	ClicaApiReqInfo,
+	ClicaAsk,
+	ClicaMessage,
+	ClicaSay,
 	COMMAND_CANCEL_TOKEN,
 } from "@shared/ExtensionMessage"
 import { HistoryItem } from "@shared/HistoryItem"
 import { DEFAULT_LANGUAGE_SETTINGS, getLanguageKey, LanguageDisplay } from "@shared/Languages"
-import { convertClinoMessageToProto } from "@shared/proto-conversions/clino-message"
-import { ClinoDefaultTool } from "@shared/tools"
-import { ClinoAskResponse } from "@shared/WebviewMessage"
+import { convertClicaMessageToProto } from "@shared/proto-conversions/clica-message"
+import { ClicaDefaultTool } from "@shared/tools"
+import { ClicaAskResponse } from "@shared/WebviewMessage"
 import { isLocalModel, isNextGenModelFamily } from "@utils/model-utils"
 import { arePathsEqual, getDesktopDir } from "@utils/path"
 import { filterExistingFiles } from "@utils/tabFiltering"
@@ -149,7 +149,7 @@ export class Task {
 	contextManager: ContextManager
 	private diffViewProvider: DiffViewProvider
 	public checkpointManager?: ICheckpointManager
-	private clineIgnoreController: ClinoIgnoreController
+	private clineIgnoreController: ClicaIgnoreController
 	private toolExecutor: ToolExecutor
 
 	private terminalExecutionMode: "vscodeTerminal" | "backgroundExec"
@@ -218,7 +218,7 @@ export class Task {
 		this.postStateToWebview = postStateToWebview
 		this.reinitExistingTaskFromId = reinitExistingTaskFromId
 		this.cancelTask = cancelTask
-		this.clineIgnoreController = new ClinoIgnoreController(cwd)
+		this.clineIgnoreController = new ClicaIgnoreController(cwd)
 		this.taskLockAcquired = taskLockAcquired
 
 		// TODO(ae) this is a hack to replace the terminal manager for standalone,
@@ -376,11 +376,11 @@ export class Task {
 			...apiConfiguration,
 			ulid: this.ulid,
 			onRetryAttempt: async (attempt: number, maxRetries: number, delay: number, error: any) => {
-				const clinoMessages = this.messageStateHandler.getClinoMessages()
-				const lastApiReqStartedIndex = findLastIndex(clinoMessages, (m) => m.say === "api_req_started")
+				const clicaMessages = this.messageStateHandler.getClicaMessages()
+				const lastApiReqStartedIndex = findLastIndex(clicaMessages, (m) => m.say === "api_req_started")
 				if (lastApiReqStartedIndex !== -1) {
 					try {
-						const currentApiReqInfo: ClinoApiReqInfo = JSON.parse(clinoMessages[lastApiReqStartedIndex].text || "{}")
+						const currentApiReqInfo: ClicaApiReqInfo = JSON.parse(clicaMessages[lastApiReqStartedIndex].text || "{}")
 						currentApiReqInfo.retryStatus = {
 							attempt: attempt, // attempt is already 1-indexed from retry.ts
 							maxAttempts: maxRetries, // total attempts
@@ -390,7 +390,7 @@ export class Task {
 						// Clear previous cancelReason and streamingFailedMessage if we are retrying
 						delete currentApiReqInfo.cancelReason
 						delete currentApiReqInfo.streamingFailedMessage
-						await this.messageStateHandler.updateClinoMessage(lastApiReqStartedIndex, {
+						await this.messageStateHandler.updateClicaMessage(lastApiReqStartedIndex, {
 							text: JSON.stringify(currentApiReqInfo),
 						})
 
@@ -487,39 +487,39 @@ export class Task {
 
 	// partial has three valid states true (partial message), false (completion of partial message), undefined (individual complete message)
 	async ask(
-		type: ClinoAsk,
+		type: ClicaAsk,
 		text?: string,
 		partial?: boolean,
 	): Promise<{
-		response: ClinoAskResponse
+		response: ClicaAskResponse
 		text?: string
 		images?: string[]
 		files?: string[]
 		askTs?: number
 	}> {
-		// If this Clino instance was aborted by the provider, then the only thing keeping us alive is a promise still running in the background, in which case we don't want to send its result to the webview as it is attached to a new instance of Clino now. So we can safely ignore the result of any active promises, and this class will be deallocated. (Although we set Clino = undefined in provider, that simply removes the reference to this instance, but the instance is still alive until this promise resolves or rejects.)
+		// If this Clica instance was aborted by the provider, then the only thing keeping us alive is a promise still running in the background, in which case we don't want to send its result to the webview as it is attached to a new instance of Clica now. So we can safely ignore the result of any active promises, and this class will be deallocated. (Although we set Clica = undefined in provider, that simply removes the reference to this instance, but the instance is still alive until this promise resolves or rejects.)
 		if (this.taskState.abort) {
-			throw new Error("Clino instance aborted")
+			throw new Error("Clica instance aborted")
 		}
 		let askTs: number
 		if (partial !== undefined) {
-			const clinoMessages = this.messageStateHandler.getClinoMessages()
-			const lastMessage = clinoMessages.at(-1)
-			const lastMessageIndex = clinoMessages.length - 1
+			const clicaMessages = this.messageStateHandler.getClicaMessages()
+			const lastMessage = clicaMessages.at(-1)
+			const lastMessageIndex = clicaMessages.length - 1
 
 			const isUpdatingPreviousPartial =
 				lastMessage && lastMessage.partial && lastMessage.type === "ask" && lastMessage.ask === type
 			if (partial) {
 				if (isUpdatingPreviousPartial) {
 					// existing partial message, so update it
-					await this.messageStateHandler.updateClinoMessage(lastMessageIndex, {
+					await this.messageStateHandler.updateClicaMessage(lastMessageIndex, {
 						text,
 						partial,
 					})
 					// todo be more efficient about saving and posting only new data or one whole message at a time so ignore partial for saves, and only post parts of partial message instead of whole array in new listener
-					// await this.saveClinoMessagesAndUpdateHistory()
+					// await this.saveClicaMessagesAndUpdateHistory()
 					// await this.postStateToWebview()
-					const protoMessage = convertClinoMessageToProto(lastMessage)
+					const protoMessage = convertClicaMessageToProto(lastMessage)
 					await sendPartialMessageEvent(protoMessage)
 					throw new Error("Current ask promise was ignored 1")
 				} else {
@@ -529,7 +529,7 @@ export class Task {
 					// this.askResponseImages = undefined
 					askTs = Date.now()
 					this.taskState.lastMessageTs = askTs
-					await this.messageStateHandler.addToClinoMessages({
+					await this.messageStateHandler.addToClicaMessages({
 						ts: askTs,
 						type: "ask",
 						ask: type,
@@ -557,12 +557,12 @@ export class Task {
 					askTs = lastMessage.ts
 					this.taskState.lastMessageTs = askTs
 					// lastMessage.ts = askTs
-					await this.messageStateHandler.updateClinoMessage(lastMessageIndex, {
+					await this.messageStateHandler.updateClicaMessage(lastMessageIndex, {
 						text,
 						partial: false,
 					})
 					// await this.postStateToWebview()
-					const protoMessage = convertClinoMessageToProto(lastMessage)
+					const protoMessage = convertClicaMessageToProto(lastMessage)
 					await sendPartialMessageEvent(protoMessage)
 				} else {
 					// this is a new partial=false message, so add it like normal
@@ -572,7 +572,7 @@ export class Task {
 					this.taskState.askResponseFiles = undefined
 					askTs = Date.now()
 					this.taskState.lastMessageTs = askTs
-					await this.messageStateHandler.addToClinoMessages({
+					await this.messageStateHandler.addToClicaMessages({
 						ts: askTs,
 						type: "ask",
 						ask: type,
@@ -583,14 +583,14 @@ export class Task {
 			}
 		} else {
 			// this is a new non-partial message, so add it like normal
-			// const lastMessage = this.clinoMessages.at(-1)
+			// const lastMessage = this.clicaMessages.at(-1)
 			this.taskState.askResponse = undefined
 			this.taskState.askResponseText = undefined
 			this.taskState.askResponseImages = undefined
 			this.taskState.askResponseFiles = undefined
 			askTs = Date.now()
 			this.taskState.lastMessageTs = askTs
-			await this.messageStateHandler.addToClinoMessages({
+			await this.messageStateHandler.addToClicaMessages({
 				ts: askTs,
 				type: "ask",
 				ask: type,
@@ -618,7 +618,7 @@ export class Task {
 		return result
 	}
 
-	async handleWebviewAskResponse(askResponse: ClinoAskResponse, text?: string, images?: string[], files?: string[]) {
+	async handleWebviewAskResponse(askResponse: ClicaAskResponse, text?: string, images?: string[], files?: string[]) {
 		this.taskState.askResponse = askResponse
 		this.taskState.askResponseText = text
 		this.taskState.askResponseImages = images
@@ -626,18 +626,18 @@ export class Task {
 	}
 
 	async say(
-		type: ClinoSay,
+		type: ClicaSay,
 		text?: string,
 		images?: string[],
 		files?: string[],
 		partial?: boolean,
 	): Promise<number | undefined> {
 		if (this.taskState.abort) {
-			throw new Error("Clino instance aborted")
+			throw new Error("Clica instance aborted")
 		}
 
 		if (partial !== undefined) {
-			const lastMessage = this.messageStateHandler.getClinoMessages().at(-1)
+			const lastMessage = this.messageStateHandler.getClicaMessages().at(-1)
 			const isUpdatingPreviousPartial =
 				lastMessage && lastMessage.partial && lastMessage.type === "say" && lastMessage.say === type
 			if (partial) {
@@ -647,14 +647,14 @@ export class Task {
 					lastMessage.images = images
 					lastMessage.files = files
 					lastMessage.partial = partial
-					const protoMessage = convertClinoMessageToProto(lastMessage)
+					const protoMessage = convertClicaMessageToProto(lastMessage)
 					await sendPartialMessageEvent(protoMessage)
 					return undefined
 				} else {
 					// this is a new partial message, so add it with partial state
 					const sayTs = Date.now()
 					this.taskState.lastMessageTs = sayTs
-					await this.messageStateHandler.addToClinoMessages({
+					await this.messageStateHandler.addToClicaMessages({
 						ts: sayTs,
 						type: "say",
 						say: type,
@@ -678,16 +678,16 @@ export class Task {
 					lastMessage.partial = false
 
 					// instead of streaming partialMessage events, we do a save and post like normal to persist to disk
-					await this.messageStateHandler.saveClinoMessagesAndUpdateHistory()
+					await this.messageStateHandler.saveClicaMessagesAndUpdateHistory()
 					// await this.postStateToWebview()
-					const protoMessage = convertClinoMessageToProto(lastMessage)
+					const protoMessage = convertClicaMessageToProto(lastMessage)
 					await sendPartialMessageEvent(protoMessage) // more performant than an entire postStateToWebview
 					return undefined
 				} else {
 					// this is a new partial=false message, so add it like normal
 					const sayTs = Date.now()
 					this.taskState.lastMessageTs = sayTs
-					await this.messageStateHandler.addToClinoMessages({
+					await this.messageStateHandler.addToClicaMessages({
 						ts: sayTs,
 						type: "say",
 						say: type,
@@ -703,7 +703,7 @@ export class Task {
 			// this is a new non-partial message, so add it like normal
 			const sayTs = Date.now()
 			this.taskState.lastMessageTs = sayTs
-			await this.messageStateHandler.addToClinoMessages({
+			await this.messageStateHandler.addToClicaMessages({
 				ts: sayTs,
 				type: "say",
 				say: type,
@@ -716,22 +716,22 @@ export class Task {
 		}
 	}
 
-	async sayAndCreateMissingParamError(toolName: ClinoDefaultTool, paramName: string, relPath?: string) {
+	async sayAndCreateMissingParamError(toolName: ClicaDefaultTool, paramName: string, relPath?: string) {
 		await this.say(
 			"error",
-			`Clino tried to use ${toolName}${
+			`Clica tried to use ${toolName}${
 				relPath ? ` for '${relPath.toPosix()}'` : ""
 			} without value for required parameter '${paramName}'. Retrying...`,
 		)
 		return formatResponse.toolError(formatResponse.missingToolParameterError(paramName))
 	}
 
-	async removeLastPartialMessageIfExistsWithType(type: "ask" | "say", askOrSay: ClinoAsk | ClinoSay) {
-		const clinoMessages = this.messageStateHandler.getClinoMessages()
-		const lastMessage = clinoMessages.at(-1)
+	async removeLastPartialMessageIfExistsWithType(type: "ask" | "say", askOrSay: ClicaAsk | ClicaSay) {
+		const clicaMessages = this.messageStateHandler.getClicaMessages()
+		const lastMessage = clicaMessages.at(-1)
 		if (lastMessage?.partial && lastMessage.type === type && (lastMessage.ask === askOrSay || lastMessage.say === askOrSay)) {
-			this.messageStateHandler.setClinoMessages(clinoMessages.slice(0, -1))
-			await this.messageStateHandler.saveClinoMessagesAndUpdateHistory()
+			this.messageStateHandler.setClicaMessages(clicaMessages.slice(0, -1))
+			await this.messageStateHandler.saveClicaMessagesAndUpdateHistory()
 		}
 	}
 
@@ -796,12 +796,12 @@ export class Task {
 		try {
 			await this.clineIgnoreController.initialize()
 		} catch (error) {
-			console.error("Failed to initialize ClinoIgnoreController:", error)
+			console.error("Failed to initialize ClicaIgnoreController:", error)
 			// Optionally, inform the user or handle the error appropriately
 		}
-		// conversationHistory (for API) and clinoMessages (for webview) need to be in sync
-		// if the extension process were killed, then on restart the clinoMessages might not be empty, so we need to set it to [] when we create a new Clino client (otherwise webview would show stale messages from previous session)
-		this.messageStateHandler.setClinoMessages([])
+		// conversationHistory (for API) and clicaMessages (for webview) need to be in sync
+		// if the extension process were killed, then on restart the clicaMessages might not be empty, so we need to set it to [] when we create a new Clica client (otherwise webview would show stale messages from previous session)
+		this.messageStateHandler.setClicaMessages([])
 		this.messageStateHandler.setApiConversationHistory([])
 
 		await this.postStateToWebview()
@@ -854,7 +854,7 @@ export class Task {
 					const errorMessage = taskStartResult.errorMessage || "TaskStart hook prevented task from starting"
 					await this.say("error", errorMessage)
 					// Ensure the error message is saved and posted before aborting
-					await this.messageStateHandler.saveClinoMessagesAndUpdateHistory()
+					await this.messageStateHandler.saveClicaMessagesAndUpdateHistory()
 					await this.postStateToWebview()
 					this.abortTask()
 					return
@@ -885,36 +885,36 @@ export class Task {
 		try {
 			await this.clineIgnoreController.initialize()
 		} catch (error) {
-			console.error("Failed to initialize ClinoIgnoreController:", error)
+			console.error("Failed to initialize ClicaIgnoreController:", error)
 			// Optionally, inform the user or handle the error appropriately
 		}
 
-		const savedClinoMessages = await getSavedClinoMessages(this.taskId)
+		const savedClicaMessages = await getSavedClicaMessages(this.taskId)
 
 		// Remove any resume messages that may have been added before
 
 		const lastRelevantMessageIndex = findLastIndex(
-			savedClinoMessages,
+			savedClicaMessages,
 			(m) => !(m.ask === "resume_task" || m.ask === "resume_completed_task"),
 		)
 		if (lastRelevantMessageIndex !== -1) {
-			savedClinoMessages.splice(lastRelevantMessageIndex + 1)
+			savedClicaMessages.splice(lastRelevantMessageIndex + 1)
 		}
 
 		// since we don't use api_req_finished anymore, we need to check if the last api_req_started has a cost value, if it doesn't and no cancellation reason to present, then we remove it since it indicates an api request without any partial content streamed
-		const lastApiReqStartedIndex = findLastIndex(savedClinoMessages, (m) => m.type === "say" && m.say === "api_req_started")
+		const lastApiReqStartedIndex = findLastIndex(savedClicaMessages, (m) => m.type === "say" && m.say === "api_req_started")
 		if (lastApiReqStartedIndex !== -1) {
-			const lastApiReqStarted = savedClinoMessages[lastApiReqStartedIndex]
-			const { cost, cancelReason }: ClinoApiReqInfo = JSON.parse(lastApiReqStarted.text || "{}")
+			const lastApiReqStarted = savedClicaMessages[lastApiReqStartedIndex]
+			const { cost, cancelReason }: ClicaApiReqInfo = JSON.parse(lastApiReqStarted.text || "{}")
 			if (cost === undefined && cancelReason === undefined) {
-				savedClinoMessages.splice(lastApiReqStartedIndex, 1)
+				savedClicaMessages.splice(lastApiReqStartedIndex, 1)
 			}
 		}
 
-		await this.messageStateHandler.overwriteClinoMessages(savedClinoMessages)
-		this.messageStateHandler.setClinoMessages(await getSavedClinoMessages(this.taskId))
+		await this.messageStateHandler.overwriteClicaMessages(savedClicaMessages)
+		this.messageStateHandler.setClicaMessages(await getSavedClicaMessages(this.taskId))
 
-		// Now present the clino messages to the user and ask if they want to resume (NOTE: we ran into a bug before where the apiconversationhistory wouldn't be initialized when opening a old task, and it was because we were waiting for resume)
+		// Now present the clica messages to the user and ask if they want to resume (NOTE: we ran into a bug before where the apiconversationhistory wouldn't be initialized when opening a old task, and it was because we were waiting for resume)
 		// This is important in case the user deletes messages without resuming the task first
 		const savedApiConversationHistory = await getSavedApiConversationHistory(this.taskId)
 		this.messageStateHandler.setApiConversationHistory(savedApiConversationHistory)
@@ -923,14 +923,14 @@ export class Task {
 		await ensureTaskDirectoryExists(this.taskId)
 		await this.contextManager.initializeContextHistory(await ensureTaskDirectoryExists(this.taskId))
 
-		const lastClinoMessage = this.messageStateHandler
-			.getClinoMessages()
+		const lastClicaMessage = this.messageStateHandler
+			.getClicaMessages()
 			.slice()
 			.reverse()
 			.find((m) => !(m.ask === "resume_task" || m.ask === "resume_completed_task")) // could be multiple resume tasks
 
-		let askType: ClinoAsk
-		if (lastClinoMessage?.ask === "completion_result") {
+		let askType: ClicaAsk
+		if (lastClicaMessage?.ask === "completion_result") {
 			askType = "resume_completed_task"
 		} else {
 			askType = "resume_task"
@@ -949,7 +949,7 @@ export class Task {
 				const hookFactory = new HookFactory()
 				const taskResumeHook = await hookFactory.create("TaskResume")
 
-				const clinoMessages = this.messageStateHandler.getClinoMessages()
+				const clicaMessages = this.messageStateHandler.getClicaMessages()
 				const taskResumeResult = await taskResumeHook.run({
 					taskId: this.taskId,
 					taskResume: {
@@ -958,8 +958,8 @@ export class Task {
 							ulid: this.ulid,
 						},
 						previousState: {
-							lastMessageTs: lastClinoMessage?.ts?.toString() || "",
-							messageCount: clinoMessages.length.toString(),
+							lastMessageTs: lastClicaMessage?.ts?.toString() || "",
+							messageCount: clicaMessages.length.toString(),
 							conversationHistoryDeleted: (this.taskState.conversationHistoryDeletedRange !== undefined).toString(),
 						},
 					},
@@ -996,7 +996,7 @@ export class Task {
 			responseFiles = files
 		}
 
-		// need to make sure that the api conversation history can be resumed by the api, even if it goes out of sync with clino messages
+		// need to make sure that the api conversation history can be resumed by the api, even if it goes out of sync with clica messages
 
 		const existingApiConversationHistory: Anthropic.Messages.MessageParam[] = await getSavedApiConversationHistory(
 			this.taskId,
@@ -1027,7 +1027,7 @@ export class Task {
 		newUserContent.push(...modifiedOldUserContent)
 
 		const agoText = (() => {
-			const timestamp = lastClinoMessage?.ts ?? Date.now()
+			const timestamp = lastClicaMessage?.ts ?? Date.now()
 			const now = Date.now()
 			const diff = now - timestamp
 			const minutes = Math.floor(diff / 60000)
@@ -1046,7 +1046,7 @@ export class Task {
 			return "just now"
 		})()
 
-		const wasRecent = lastClinoMessage?.ts && Date.now() - lastClinoMessage.ts < 30_000
+		const wasRecent = lastClicaMessage?.ts && Date.now() - lastClicaMessage.ts < 30_000
 
 		// Check if there are pending file context warnings before calling taskResumption
 		const pendingContextWarning = await this.fileContextTracker.retrieveAndClearPendingFileContextWarning()
@@ -1110,8 +1110,8 @@ export class Task {
 			const didEndLoop = await this.recursivelyMakeClineRequests(nextUserContent, includeFileDetails)
 			includeFileDetails = false // we only need file details the first time
 
-			//  The way this agentic loop works is that clino will be given a task that he then calls tools to complete. unless there's an attempt_completion call, we keep responding back to him with his tool's responses until he either attempt_completion or does not use anymore tools. If he does not use anymore tools, we ask him to consider if he's completed the task and then call attempt_completion, otherwise proceed with completing the task.
-			// There is a MAX_REQUESTS_PER_TASK limit to prevent infinite requests, but Clino is prompted to finish the task as efficiently as he can.
+			//  The way this agentic loop works is that clica will be given a task that he then calls tools to complete. unless there's an attempt_completion call, we keep responding back to him with his tool's responses until he either attempt_completion or does not use anymore tools. If he does not use anymore tools, we ask him to consider if he's completed the task and then call attempt_completion, otherwise proceed with completing the task.
+			// There is a MAX_REQUESTS_PER_TASK limit to prevent infinite requests, but Clica is prompted to finish the task as efficiently as he can.
 
 			//const totalCost = this.calculateApiCost(totalInputTokens, totalOutputTokens)
 			if (didEndLoop) {
@@ -1121,7 +1121,7 @@ export class Task {
 			} else {
 				// this.say(
 				// 	"tool",
-				// 	"Clino responded with only text blocks but has not called attempt_completion yet. Forcing him to continue with task..."
+				// 	"Clica responded with only text blocks but has not called attempt_completion yet. Forcing him to continue with task..."
 				// )
 				nextUserContent = [
 					{
@@ -1306,7 +1306,7 @@ export class Task {
 	}
 
 	async executeCommandTool(command: string, timeoutSeconds: number | undefined): Promise<[boolean, ToolResponse]> {
-		// For Clino CLI subagents, we want to parse and process the command to ensure flags are correct
+		// For Clica CLI subagents, we want to parse and process the command to ensure flags are correct
 		const isSubagent = isSubagentCommand(command)
 
 		if (transformClineCommand(command) !== command && isSubagent) {
@@ -1374,10 +1374,10 @@ export class Task {
 			this.controller.updateBackgroundCommandState(false, this.taskId)
 
 			// Mark the command message as completed
-			const clinoMessages = this.messageStateHandler.getClinoMessages()
-			const lastCommandIndex = findLastIndex(clinoMessages, (m) => m.ask === "command" || m.say === "command")
+			const clicaMessages = this.messageStateHandler.getClicaMessages()
+			const lastCommandIndex = findLastIndex(clicaMessages, (m) => m.ask === "command" || m.say === "command")
 			if (lastCommandIndex !== -1) {
-				await this.messageStateHandler.updateClinoMessage(lastCommandIndex, {
+				await this.messageStateHandler.updateClicaMessage(lastCommandIndex, {
 					commandCompleted: true,
 				})
 			}
@@ -1687,7 +1687,7 @@ export class Task {
 	 * Migrates the disableBrowserTool setting from VSCode configuration to browserSettings
 	 */
 	private async migrateDisableBrowserToolSetting(): Promise<void> {
-		const config = vscode.workspace.getConfiguration("clino")
+		const config = vscode.workspace.getConfiguration("clica")
 		const disableBrowserTool = config.get<boolean>("disableBrowserTool")
 
 		if (disableBrowserTool !== undefined) {
@@ -1723,7 +1723,7 @@ export class Task {
 			this.taskState.conversationHistoryDeletedRange,
 			"quarter", // Force aggressive truncation
 		)
-		await this.messageStateHandler.saveClinoMessagesAndUpdateHistory()
+		await this.messageStateHandler.saveClicaMessagesAndUpdateHistory()
 		await this.contextManager.triggerApplyStandardContextTruncationNoticeChange(
 			Date.now(),
 			await ensureTaskDirectoryExists(this.taskId),
@@ -1746,7 +1746,7 @@ export class Task {
 		await this.migrateDisableBrowserToolSetting()
 		const browserSettings = this.stateManager.getGlobalSettingsKey("browserSettings")
 		const disableBrowserTool = browserSettings.disableToolUse ?? false
-		// clino browser tool uses image recognition for navigation (requires model image support).
+		// clica browser tool uses image recognition for navigation (requires model image support).
 		const modelSupportsBrowserUse = providerInfo.model.info.supportsImages ?? false
 
 		const supportsBrowserUse = modelSupportsBrowserUse && !disableBrowserTool // only enable browser use if the model supports it and the user hasn't disabled it
@@ -1765,13 +1765,13 @@ export class Task {
 			isSubagentsEnabledAndCliInstalled = subagentsEnabled && clineCliInstalled
 		}
 
-		const { globalToggles, localToggles } = await refreshClinoRulesToggles(this.controller, this.cwd)
+		const { globalToggles, localToggles } = await refreshClicaRulesToggles(this.controller, this.cwd)
 		const { windsurfLocalToggles, cursorLocalToggles } = await refreshExternalRulesToggles(this.controller, this.cwd)
 
-		const globalClinoRulesFilePath = await ensureRulesDirectoryExists()
-		const globalClinoRulesFileInstructions = await getGlobalClinoRules(globalClinoRulesFilePath, globalToggles)
+		const globalClicaRulesFilePath = await ensureRulesDirectoryExists()
+		const globalClicaRulesFileInstructions = await getGlobalClicaRules(globalClicaRulesFilePath, globalToggles)
 
-		const localClinoRulesFileInstructions = await getLocalClinoRules(this.cwd, localToggles)
+		const localClicaRulesFileInstructions = await getLocalClicaRules(this.cwd, localToggles)
 		const [localCursorRulesFileInstructions, localCursorRulesDirInstructions] = await getLocalCursorRules(
 			this.cwd,
 			cursorLocalToggles,
@@ -1808,8 +1808,8 @@ export class Task {
 			supportsBrowserUse,
 			mcpHub: this.mcpHub,
 			focusChainSettings: this.stateManager.getGlobalSettingsKey("focusChainSettings"),
-			globalClinoRulesFileInstructions,
-			localClinoRulesFileInstructions,
+			globalClicaRulesFileInstructions,
+			localClicaRulesFileInstructions,
 			localCursorRulesFileInstructions,
 			localCursorRulesDirInstructions,
 			localWindsurfRulesFileInstructions,
@@ -1827,7 +1827,7 @@ export class Task {
 
 		const contextManagementMetadata = await this.contextManager.getNewContextMessagesAndMetadata(
 			this.messageStateHandler.getApiConversationHistory(),
-			this.messageStateHandler.getClinoMessages(),
+			this.messageStateHandler.getClicaMessages(),
 			this.api,
 			this.taskState.conversationHistoryDeletedRange,
 			previousApiReqIndex,
@@ -1837,7 +1837,7 @@ export class Task {
 
 		if (contextManagementMetadata.updatedConversationHistoryDeletedRange) {
 			this.taskState.conversationHistoryDeletedRange = contextManagementMetadata.conversationHistoryDeletedRange
-			await this.messageStateHandler.saveClinoMessagesAndUpdateHistory()
+			await this.messageStateHandler.saveClicaMessagesAndUpdateHistory()
 			// saves task history item which we use to keep track of conversation history deleted range
 		}
 
@@ -1854,7 +1854,7 @@ export class Task {
 		} catch (error) {
 			const isContextWindowExceededError = checkContextWindowExceededError(error)
 			const { model, providerId } = this.getCurrentProviderInfo()
-			const clineError = ErrorService.get().toClinoError(error, model.id, providerId)
+			const clineError = ErrorService.get().toClicaError(error, model.id, providerId)
 
 			// Capture provider failure telemetry using clineError
 			// TODO: Move into errorService
@@ -1885,25 +1885,25 @@ export class Task {
 
 				// Update the 'api_req_started' message to reflect final failure before asking user to manually retry
 				const lastApiReqStartedIndex = findLastIndex(
-					this.messageStateHandler.getClinoMessages(),
+					this.messageStateHandler.getClicaMessages(),
 					(m) => m.say === "api_req_started",
 				)
 				if (lastApiReqStartedIndex !== -1) {
-					const clinoMessages = this.messageStateHandler.getClinoMessages()
-					const currentApiReqInfo: ClinoApiReqInfo = JSON.parse(clinoMessages[lastApiReqStartedIndex].text || "{}")
+					const clicaMessages = this.messageStateHandler.getClicaMessages()
+					const currentApiReqInfo: ClicaApiReqInfo = JSON.parse(clicaMessages[lastApiReqStartedIndex].text || "{}")
 					delete currentApiReqInfo.retryStatus
 
-					await this.messageStateHandler.updateClinoMessage(lastApiReqStartedIndex, {
+					await this.messageStateHandler.updateClicaMessage(lastApiReqStartedIndex, {
 						text: JSON.stringify({
 							...currentApiReqInfo, // Spread the modified info (with retryStatus removed)
 							// cancelReason: "retries_exhausted", // Indicate that automatic retries failed
 							streamingFailedMessage,
-						} satisfies ClinoApiReqInfo),
+						} satisfies ClicaApiReqInfo),
 					})
 					// this.ask will trigger postStateToWebview, so this change should be picked up.
 				}
 
-				let response: ClinoAskResponse
+				let response: ClicaAskResponse
 				// Auto-retry enabled with max 3 attempts
 				if (this.taskState.autoRetryAttempts < 3) {
 					// Auto-retry enabled with max 3 attempts: automatically approve the retry
@@ -1924,7 +1924,7 @@ export class Task {
 						cancelReason: "streaming_failed",
 						streamingFailedMessage,
 					})
-					await this.messageStateHandler.saveClinoMessagesAndUpdateHistory()
+					await this.messageStateHandler.saveClicaMessagesAndUpdateHistory()
 					await this.postStateToWebview()
 
 					response = "yesButtonClicked"
@@ -1962,14 +1962,14 @@ export class Task {
 
 				// Clear streamingFailedMessage when user manually retries
 				const manualRetryApiReqIndex = findLastIndex(
-					this.messageStateHandler.getClinoMessages(),
+					this.messageStateHandler.getClicaMessages(),
 					(m) => m.say === "api_req_started",
 				)
 				if (manualRetryApiReqIndex !== -1) {
-					const clinoMessages = this.messageStateHandler.getClinoMessages()
-					const currentApiReqInfo: ClinoApiReqInfo = JSON.parse(clinoMessages[manualRetryApiReqIndex].text || "{}")
+					const clicaMessages = this.messageStateHandler.getClicaMessages()
+					const currentApiReqInfo: ClicaApiReqInfo = JSON.parse(clicaMessages[manualRetryApiReqIndex].text || "{}")
 					delete currentApiReqInfo.streamingFailedMessage
-					await this.messageStateHandler.updateClinoMessage(manualRetryApiReqIndex, {
+					await this.messageStateHandler.updateClicaMessage(manualRetryApiReqIndex, {
 						text: JSON.stringify(currentApiReqInfo),
 					})
 				}
@@ -1992,7 +1992,7 @@ export class Task {
 
 	async presentAssistantMessage() {
 		if (this.taskState.abort) {
-			throw new Error("Clino instance aborted")
+			throw new Error("Clica instance aborted")
 		}
 
 		if (this.taskState.presentAssistantMessageLocked) {
@@ -2112,7 +2112,7 @@ export class Task {
 
 	async recursivelyMakeClineRequests(userContent: UserContent, includeFileDetails: boolean = false): Promise<boolean> {
 		if (this.taskState.abort) {
-			throw new Error("Clino instance aborted")
+			throw new Error("Clica instance aborted")
 		}
 
 		// Increment API request counter for focus chain list management
@@ -2136,14 +2136,14 @@ export class Task {
 			if (autoApprovalSettings.enabled && autoApprovalSettings.enableNotifications) {
 				showSystemNotification({
 					subtitle: "Error",
-					message: "Clino is having trouble. Would you like to continue the task?",
+					message: "Clica is having trouble. Would you like to continue the task?",
 				})
 			}
 			const { response, text, images, files } = await this.ask(
 				"mistake_limit_reached",
 				this.api.getModel().id.includes("claude")
 					? `This may indicate a failure in his thought process or inability to use a tool properly, which can be mitigated with some user guidance (e.g. "Try breaking down the task into smaller steps").`
-					: "Clino uses complex prompts and iterative task execution that may be challenging for less capable models. For best results, it's recommended to use Claude 4 Sonnet for its advanced agentic coding capabilities.",
+					: "Clica uses complex prompts and iterative task execution that may be challenging for less capable models. For best results, it's recommended to use Claude 4 Sonnet for its advanced agentic coding capabilities.",
 			)
 			if (response === "messageResponse") {
 				// Display the user's message in the chat UI
@@ -2187,12 +2187,12 @@ export class Task {
 			if (autoApprovalSettings.enableNotifications) {
 				showSystemNotification({
 					subtitle: "Max Requests Reached",
-					message: `Clino has auto-approved ${autoApprovalSettings.maxRequests.toString()} API requests.`,
+					message: `Clica has auto-approved ${autoApprovalSettings.maxRequests.toString()} API requests.`,
 				})
 			}
 			const { response, text, images, files } = await this.ask(
 				"auto_approval_max_req_reached",
-				`Clino has auto-approved ${autoApprovalSettings.maxRequests.toString()} API requests. Would you like to reset the count and proceed with the task?`,
+				`Clica has auto-approved ${autoApprovalSettings.maxRequests.toString()} API requests. Would you like to reset the count and proceed with the task?`,
 			)
 			// if we get past the promise it means the user approved and did not start a new task
 			this.taskState.consecutiveAutoApprovedRequestsCount = 0
@@ -2229,10 +2229,10 @@ export class Task {
 		}
 
 		// get previous api req's index to check token usage and determine if we need to truncate conversation history
-		const previousApiReqIndex = findLastIndex(this.messageStateHandler.getClinoMessages(), (m) => m.say === "api_req_started")
+		const previousApiReqIndex = findLastIndex(this.messageStateHandler.getClicaMessages(), (m) => m.say === "api_req_started")
 
 		// Save checkpoint if this is the first API request
-		const isFirstRequest = this.messageStateHandler.getClinoMessages().filter((m) => m.say === "api_req_started").length === 0
+		const isFirstRequest = this.messageStateHandler.getClicaMessages().filter((m) => m.say === "api_req_started").length === 0
 
 		// getting verbose details is an expensive operation, it uses globby to top-down build file structure of project which for large projects can take a few seconds
 		// for the best UX we show a placeholder api_req_started message with a loading spinner as this happens
@@ -2255,7 +2255,7 @@ export class Task {
 			} catch (error) {
 				const errorMessage = error instanceof Error ? error.message : "Unknown error"
 				console.error("Failed to initialize checkpoint manager:", errorMessage)
-				this.taskState.checkpointManagerErrorMessage = errorMessage // will be displayed right away since we saveClinoMessages next which posts state to webview
+				this.taskState.checkpointManagerErrorMessage = errorMessage // will be displayed right away since we saveClicaMessages next which posts state to webview
 				HostProvider.window.showMessage({
 					type: ShowMessageType.ERROR,
 					message: `Checkpoint initialization timed out: ${errorMessage}`,
@@ -2268,7 +2268,7 @@ export class Task {
 		if (isFirstRequest && this.stateManager.getGlobalSettingsKey("enableCheckpointsSetting") && this.checkpointManager) {
 			await this.say("checkpoint_created") // Now this is conditional
 			const lastCheckpointMessageIndex = findLastIndex(
-				this.messageStateHandler.getClinoMessages(),
+				this.messageStateHandler.getClicaMessages(),
 				(m) => m.say === "checkpoint_created",
 			)
 			if (lastCheckpointMessageIndex !== -1) {
@@ -2276,10 +2276,10 @@ export class Task {
 					?.commit()
 					.then(async (commitHash) => {
 						if (commitHash) {
-							await this.messageStateHandler.updateClinoMessage(lastCheckpointMessageIndex, {
+							await this.messageStateHandler.updateClicaMessage(lastCheckpointMessageIndex, {
 								lastCheckpointHash: commitHash,
 							})
-							// saveClinoMessagesAndUpdateHistory will be called later after API response,
+							// saveClicaMessagesAndUpdateHistory will be called later after API response,
 							// so no need to call it here unless this is the only modification to this message.
 							// For now, assuming it's handled later.
 						}
@@ -2320,7 +2320,7 @@ export class Task {
 					const safeEnd = Math.min(end + 2, apiHistory.length - 1)
 					if (end + 2 <= safeEnd) {
 						this.taskState.conversationHistoryDeletedRange = [start, end + 2]
-						await this.messageStateHandler.saveClinoMessagesAndUpdateHistory()
+						await this.messageStateHandler.saveClicaMessagesAndUpdateHistory()
 					}
 				}
 			} else {
@@ -2328,7 +2328,7 @@ export class Task {
 					| number
 					| undefined
 				shouldCompact = this.contextManager.shouldCompactContextWindow(
-					this.messageStateHandler.getClinoMessages(),
+					this.messageStateHandler.getClicaMessages(),
 					this.api,
 					previousApiReqIndex,
 					autoCondenseThreshold,
@@ -2339,9 +2339,9 @@ export class Task {
 				// estimate, which require a full new message to be completed along with gathering the latest usage block. A proxy for whether
 				// we just summarized would be to check the number of in-range messages, which itself has some extreme edge case (e.g. what if
 				// first+second user messages take up entire context-window, but in this case there's already an issue). TODO: Examine other
-				// approaches such as storing this.taskState.currentlySummarizing on disk in the clinoMessages. This was intentionally not done
+				// approaches such as storing this.taskState.currentlySummarizing on disk in the clicaMessages. This was intentionally not done
 				// for now to prevent additional disk from needing to be used.
-				// The worse case scenario is effectively clino summarizing a summary, which is bad UX, but doesn't break other logic.
+				// The worse case scenario is effectively clica summarizing a summary, which is bad UX, but doesn't break other logic.
 				if (shouldCompact && this.taskState.conversationHistoryDeletedRange) {
 					const apiHistory = this.messageStateHandler.getApiConversationHistory()
 					const activeMessageCount = apiHistory.length - this.taskState.conversationHistoryDeletedRange[1] - 1
@@ -2457,11 +2457,11 @@ export class Task {
 		}
 
 		// since we sent off a placeholder api_req_started message to update the webview while waiting to actually start the API request (to load potential details for example), we need to update the text of that message
-		const lastApiReqIndex = findLastIndex(this.messageStateHandler.getClinoMessages(), (m) => m.say === "api_req_started")
-		await this.messageStateHandler.updateClinoMessage(lastApiReqIndex, {
+		const lastApiReqIndex = findLastIndex(this.messageStateHandler.getClicaMessages(), (m) => m.say === "api_req_started")
+		await this.messageStateHandler.updateClicaMessage(lastApiReqIndex, {
 			text: JSON.stringify({
 				request: userContent.map((block) => formatContentBlockToMarkdown(block)).join("\n\n"),
-			} satisfies ClinoApiReqInfo),
+			} satisfies ClicaApiReqInfo),
 		})
 		await this.postStateToWebview()
 
@@ -2472,19 +2472,19 @@ export class Task {
 			let outputTokens = 0
 			let totalCost: number | undefined
 
-			const abortStream = async (cancelReason: ClinoApiReqCancelReason, streamingFailedMessage?: string) => {
+			const abortStream = async (cancelReason: ClicaApiReqCancelReason, streamingFailedMessage?: string) => {
 				if (this.diffViewProvider.isEditing) {
 					await this.diffViewProvider.revertChanges() // closes diff view
 				}
 
 				// if last message is a partial we need to update and save it
-				const lastMessage = this.messageStateHandler.getClinoMessages().at(-1)
+				const lastMessage = this.messageStateHandler.getClicaMessages().at(-1)
 				if (lastMessage && lastMessage.partial) {
 					// lastMessage.ts = Date.now() DO NOT update ts since it is used as a key for virtuoso list
 					lastMessage.partial = false
 					// instead of streaming partialMessage events, we do a save and post like normal to persist to disk
 					console.log("updating partial message", lastMessage)
-					// await this.saveClinoMessagesAndUpdateHistory()
+					// await this.saveClicaMessagesAndUpdateHistory()
 				}
 
 				// Let assistant know their response was interrupted for when task is resumed
@@ -2517,7 +2517,7 @@ export class Task {
 					cancelReason,
 					streamingFailedMessage,
 				})
-				await this.messageStateHandler.saveClinoMessagesAndUpdateHistory()
+				await this.messageStateHandler.saveClicaMessagesAndUpdateHistory()
 
 				telemetryService.captureConversationTurnEvent(this.ulid, providerId, this.api.getModel().id, "assistant", {
 					tokensIn: inputTokens,
@@ -2573,7 +2573,7 @@ export class Task {
 								await this.say("reasoning", reasoningMessage, undefined, undefined, true)
 							}
 							break
-						// for clino/openrouter providers
+						// for clica/openrouter providers
 						case "reasoning_details":
 							// reasoning_details may be an array of 0 or 1 items depending on how openrouter returns it
 							if (Array.isArray(chunk.reasoning_details)) {
@@ -2619,7 +2619,7 @@ export class Task {
 					if (this.taskState.abort) {
 						console.log("aborting stream...")
 						if (!this.taskState.abandoned) {
-							// only need to gracefully abort if this instance isn't abandoned (sometimes openrouter stream hangs, in which case this would affect future instances of clino)
+							// only need to gracefully abort if this instance isn't abandoned (sometimes openrouter stream hangs, in which case this would affect future instances of clica)
 							await abortStream("user_cancelled")
 						}
 						break // aborts the stream
@@ -2641,9 +2641,9 @@ export class Task {
 					}
 				}
 			} catch (error) {
-				// abandoned happens when extension is no longer waiting for the clino instance to finish aborting (error is thrown here when any function in the for loop throws due to this.abort)
+				// abandoned happens when extension is no longer waiting for the clica instance to finish aborting (error is thrown here when any function in the for loop throws due to this.abort)
 				if (!this.taskState.abandoned) {
-					const clineError = ErrorService.get().toClinoError(error, this.api.getModel().id)
+					const clineError = ErrorService.get().toClicaError(error, this.api.getModel().id)
 					const errorMessage = clineError.serialize()
 					// Auto-retry for streaming failures (always enabled)
 					if (this.taskState.autoRetryAttempts < 3) {
@@ -2694,7 +2694,7 @@ export class Task {
 				this.taskState.isStreaming = false
 			}
 
-			// OpenRouter/Clino may not return token usage as part of the stream (since it may abort early), so we fetch after the stream is finished
+			// OpenRouter/Clica may not return token usage as part of the stream (since it may abort early), so we fetch after the stream is finished
 			// (updateApiReq below will update the api_req_started message with the usage details. we do this async so it updates the api_req_started message in the background)
 			if (!didReceiveUsageChunk) {
 				this.api.getApiStreamUsage?.().then(async (apiStreamUsage) => {
@@ -2715,14 +2715,14 @@ export class Task {
 						api: this.api,
 						totalCost,
 					})
-					await this.messageStateHandler.saveClinoMessagesAndUpdateHistory()
+					await this.messageStateHandler.saveClicaMessagesAndUpdateHistory()
 					await this.postStateToWebview()
 				})
 			}
 
 			// need to call here in case the stream was aborted
 			if (this.taskState.abort) {
-				throw new Error("Clino instance aborted")
+				throw new Error("Clica instance aborted")
 			}
 
 			this.taskState.didCompleteReadingStream = true
@@ -2748,7 +2748,7 @@ export class Task {
 				api: this.api,
 				totalCost,
 			})
-			await this.messageStateHandler.saveClinoMessagesAndUpdateHistory()
+			await this.messageStateHandler.saveClicaMessagesAndUpdateHistory()
 			await this.postStateToWebview()
 
 			// now add to apiconversationhistory
@@ -2773,7 +2773,7 @@ export class Task {
 						{
 							type: "text",
 							text: assistantMessage,
-							// reasoning_details only exists for clino/openrouter providers
+							// reasoning_details only exists for clica/openrouter providers
 							// @ts-ignore-next-line
 							reasoning_details: reasoningDetails.length > 0 ? reasoningDetails : undefined,
 						},
@@ -2830,7 +2830,7 @@ export class Task {
 				})
 
 				const baseErrorMessage =
-					"Invalid API Response: The provider returned an empty or unparsable response. This is a provider-side issue where the model failed to generate valid output or returned tool calls that Clino cannot process. Retrying the request may help resolve this issue."
+					"Invalid API Response: The provider returned an empty or unparsable response. This is a provider-side issue where the model failed to generate valid output or returned tool calls that Clica cannot process. Retrying the request may help resolve this issue."
 				const errorText = reqId ? `${baseErrorMessage} (Request ID: ${reqId})` : baseErrorMessage
 
 				await this.say("error", errorText)
@@ -2844,7 +2844,7 @@ export class Task {
 					],
 				})
 
-				let response: ClinoAskResponse
+				let response: ClicaAskResponse
 
 				if (this.taskState.autoRetryAttempts < 3) {
 					// Auto-retry enabled with max 3 attempts: automatically approve the retry
@@ -2965,7 +2965,7 @@ export class Task {
 		// After processing content, check clinerulesData if needed
 		let clinerulesError = false
 		if (needsClinerulesFileCheck) {
-			clinerulesError = await ensureLocalClineDirExists(this.cwd, GlobalFileNames.clinoRules)
+			clinerulesError = await ensureLocalClineDirExists(this.cwd, GlobalFileNames.clicaRules)
 		}
 
 		// Add focu chain list instructions if needed
@@ -3050,7 +3050,7 @@ export class Task {
 		// Workspace roots (multi-root)
 		details += this.formatWorkspaceRootsSection()
 
-		// It could be useful for clino to know if the user went from one or no file to another between messages, so we always include this context
+		// It could be useful for clica to know if the user went from one or no file to another between messages, so we always include this context
 		details += `\n\n# ${host.platform} Visible Files`
 		const rawVisiblePaths = (await HostProvider.window.getVisibleTabs({})).paths
 		const filteredVisiblePaths = await filterExistingFiles(rawVisiblePaths)
@@ -3203,7 +3203,7 @@ export class Task {
 		const { contextWindow } = getContextWindowInfo(this.api)
 
 		// Get the token count from the most recent API request to accurately reflect context management
-		const getTotalTokensFromApiReqMessage = (msg: ClinoMessage) => {
+		const getTotalTokensFromApiReqMessage = (msg: ClicaMessage) => {
 			if (!msg.text) {
 				return 0
 			}
@@ -3215,8 +3215,8 @@ export class Task {
 			}
 		}
 
-		const clinoMessages = this.messageStateHandler.getClinoMessages()
-		const modifiedMessages = combineApiRequests(combineCommandSequences(clinoMessages.slice(1)))
+		const clicaMessages = this.messageStateHandler.getClicaMessages()
+		const modifiedMessages = combineApiRequests(combineCommandSequences(clicaMessages.slice(1)))
 		const lastApiReqMessage = findLast(modifiedMessages, (msg) => {
 			if (msg.say !== "api_req_started") {
 				return false

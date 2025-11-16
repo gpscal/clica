@@ -14,7 +14,7 @@ import {
 	TaskResumeData,
 	TaskStartData,
 	UserPromptSubmitData,
-} from "../../shared/proto/clino/hooks"
+} from "../../shared/proto/clica/hooks"
 import { getAllHooksDirs } from "../storage/disk"
 import { StateManager } from "../storage/StateManager"
 
@@ -106,7 +106,7 @@ export abstract class HookRunner<Name extends HookName> {
 			hookName: this.hookName,
 			timestamp: Date.now().toString(),
 			workspaceRoots,
-			userId: getDistinctId(), // Always available: Clino User ID, machine ID, or generated UUID
+			userId: getDistinctId(), // Always available: Clica User ID, machine ID, or generated UUID
 			...params,
 		}
 	}
@@ -296,7 +296,7 @@ export class HookFactory {
 
 	/**
 	 * @returns A list of paths to scripts for the given hook name.
-	 * Includes both global hooks (from ~/Documents/Clino/Rules/Hooks/) and workspace hooks
+	 * Includes both global hooks (from ~/Documents/Clica/Rules/Hooks/) and workspace hooks
 	 * (from .clinerules/hooks/ in each workspace root).
 	 */
 	private static async findHookScripts(hookName: HookName): Promise<string[]> {

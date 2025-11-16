@@ -1,5 +1,5 @@
-import { StringArray } from "@shared/proto/clino/common"
-import { OpenAiModelsRequest } from "@shared/proto/clino/models"
+import { StringArray } from "@shared/proto/clica/common"
+import { OpenAiModelsRequest } from "@shared/proto/clica/models"
 import type { AxiosRequestConfig } from "axios"
 import axios from "axios"
 import { Controller } from ".."

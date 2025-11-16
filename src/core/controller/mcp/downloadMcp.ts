@@ -1,6 +1,6 @@
 import { McpServer } from "@shared/mcp"
-import { StringRequest } from "@shared/proto/clino/common"
-import { McpDownloadResponse } from "@shared/proto/clino/mcp"
+import { StringRequest } from "@shared/proto/clica/common"
+import { McpDownloadResponse } from "@shared/proto/clica/mcp"
 import axios from "axios"
 import { ClineEnv } from "@/config"
 import { Controller } from ".."

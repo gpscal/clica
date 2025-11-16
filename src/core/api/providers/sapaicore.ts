@@ -404,7 +404,7 @@ export class SapAiCoreHandler implements ApiHandler {
 			Authorization: `Bearer ${token}`,
 			"AI-Resource-Group": this.options.sapAiResourceGroup || "default",
 			"Content-Type": "application/json",
-			"AI-Client-Type": "Clino",
+			"AI-Client-Type": "Clica",
 		}
 
 		const url = `${this.options.sapAiCoreBaseUrl}/v2/lm/deployments?$top=10000&$skip=0`
@@ -542,7 +542,7 @@ export class SapAiCoreHandler implements ApiHandler {
 			Authorization: `Bearer ${token}`,
 			"AI-Resource-Group": this.options.sapAiResourceGroup || "default",
 			"Content-Type": "application/json",
-			"AI-Client-Type": "Clino",
+			"AI-Client-Type": "Clica",
 		}
 
 		const model = this.getModel()

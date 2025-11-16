@@ -1,7 +1,7 @@
 import { ModelFamily } from "@/shared/prompts"
 import { getModelFamily } from ".."
 import { getSystemPromptComponents } from "../components"
-import { registerClinoToolSets } from "../tools"
+import { registerClicaToolSets } from "../tools"
 import type { ComponentFunction, ComponentRegistry, PromptVariant, SystemPromptContext } from "../types"
 import { loadAllVariantConfigs } from "../variants"
 import { config as genericConfig } from "../variants/generic/config"
@@ -14,7 +14,7 @@ export class PromptRegistry {
 	private loaded: boolean = false
 
 	private constructor() {
-		registerClinoToolSets()
+		registerClicaToolSets()
 	}
 
 	static getInstance(): PromptRegistry {

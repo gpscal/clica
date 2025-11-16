@@ -1,5 +1,5 @@
-import { EmptyRequest } from "@shared/proto/clino/common"
-import { OpenRouterCompatibleModelInfo } from "@shared/proto/clino/models"
+import { EmptyRequest } from "@shared/proto/clica/common"
+import { OpenRouterCompatibleModelInfo } from "@shared/proto/clica/models"
 import { getRequestRegistry, StreamingResponseHandler } from "../grpc-handler"
 import { Controller } from "../index"
 

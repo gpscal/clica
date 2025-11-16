@@ -1,5 +1,5 @@
 import { ModelFamily } from "@/shared/prompts"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaDefaultTool } from "@/shared/tools"
 import { SystemPromptSection } from "../../templates/placeholders"
 import { createVariant } from "../variant-builder"
 import { validateVariant } from "../variant-validator"
@@ -30,22 +30,22 @@ export const config = createVariant(ModelFamily.GLM)
 		SystemPromptSection.USER_INSTRUCTIONS,
 	)
 	.tools(
-		ClinoDefaultTool.BASH,
-		ClinoDefaultTool.FILE_READ,
-		ClinoDefaultTool.FILE_NEW,
-		ClinoDefaultTool.FILE_EDIT,
-		ClinoDefaultTool.SEARCH,
-		ClinoDefaultTool.LIST_FILES,
-		ClinoDefaultTool.LIST_CODE_DEF,
-		ClinoDefaultTool.BROWSER,
-		ClinoDefaultTool.MCP_USE,
-		ClinoDefaultTool.MCP_ACCESS,
-		ClinoDefaultTool.ASK,
-		ClinoDefaultTool.ATTEMPT,
-		ClinoDefaultTool.NEW_TASK,
-		ClinoDefaultTool.PLAN_MODE,
-		ClinoDefaultTool.MCP_DOCS,
-		ClinoDefaultTool.TODO,
+		ClicaDefaultTool.BASH,
+		ClicaDefaultTool.FILE_READ,
+		ClicaDefaultTool.FILE_NEW,
+		ClicaDefaultTool.FILE_EDIT,
+		ClicaDefaultTool.SEARCH,
+		ClicaDefaultTool.LIST_FILES,
+		ClicaDefaultTool.LIST_CODE_DEF,
+		ClicaDefaultTool.BROWSER,
+		ClicaDefaultTool.MCP_USE,
+		ClicaDefaultTool.MCP_ACCESS,
+		ClicaDefaultTool.ASK,
+		ClicaDefaultTool.ATTEMPT,
+		ClicaDefaultTool.NEW_TASK,
+		ClicaDefaultTool.PLAN_MODE,
+		ClicaDefaultTool.MCP_DOCS,
+		ClicaDefaultTool.TODO,
 	)
 	.placeholders({
 		MODEL_FAMILY: "glm",

@@ -1,33 +1,33 @@
 /**
- * Pattern to match simplified Clino CLI syntax: clino "prompt" or clino 'prompt'
+ * Pattern to match simplified Clica CLI syntax: clica "prompt" or clica 'prompt'
  * with optional additional flags after the closing quote
  */
-const CLINE_COMMAND_PATTERN = /^clino\s+(['"])(.+?)\1(\s+.*)?$/
+const CLINE_COMMAND_PATTERN = /^clica\s+(['"])(.+?)\1(\s+.*)?$/
 
 /**
- * Detects if a command is a Clino CLI subagent command.
+ * Detects if a command is a Clica CLI subagent command.
  *
- * Matches the simplified syntax: clino "prompt" or clino 'prompt'
+ * Matches the simplified syntax: clica "prompt" or clica 'prompt'
  * This allows the system to apply subagent-specific settings like autonomous execution.
  *
  * @param command - The command string to check
- * @returns True if the command is a Clino CLI subagent command, false otherwise
+ * @returns True if the command is a Clica CLI subagent command, false otherwise
  */
 export function isSubagentCommand(command: string): boolean {
 	// Match simplified syntaxes
-	// clino "prompt"
-	// clino 'prompt'
+	// clica "prompt"
+	// clica 'prompt'
 	return CLINE_COMMAND_PATTERN.test(command)
 }
 
 /**
- * Transforms simplified Clino CLI command syntax with subagent settings.
+ * Transforms simplified Clica CLI command syntax with subagent settings.
  *
- * Converts: clino "prompt" or clino 'prompt'
- * To: clino "prompt" -s yolo_mode_toggled=true -s max_consecutive_mistakes=6 -F plain -y --oneshot
+ * Converts: clica "prompt" or clica 'prompt'
+ * To: clica "prompt" -s yolo_mode_toggled=true -s max_consecutive_mistakes=6 -F plain -y --oneshot
  *
  * Preserves additional flags like --workdir:
- * clino "prompt" --workdir ./path → clino "prompt" -s ... -F plain -y --oneshot --workdir ./path
+ * clica "prompt" --workdir ./path → clica "prompt" -s ... -F plain -y --oneshot --workdir ./path
  *
  * This enables autonomous subagent execution with proper CLI flags for automation.
  *
@@ -46,13 +46,13 @@ export function transformClineCommand(command: string): string {
 }
 
 /**
- * Injects subagent-specific command structure and settings into Clino CLI commands.
+ * Injects subagent-specific command structure and settings into Clica CLI commands.
  *
- * @param command - The Clino CLI command (simplified or full syntax)
+ * @param command - The Clica CLI command (simplified or full syntax)
  * @returns The command with injected flags and settings
  */
 function injectSubagentSettings(command: string): string {
-	// No pre-prompt flags needed - use standard "clino 'prompt'" syntax
+	// No pre-prompt flags needed - use standard "clica 'prompt'" syntax
 	const prePromptFlags: string[] = []
 
 	// Flags/settings to insert after the prompt
@@ -65,7 +65,7 @@ function injectSubagentSettings(command: string): string {
 		const prompt = match[2]
 		const additionalFlags = match[3] || ""
 		const prePromptPart = prePromptFlags.length > 0 ? prePromptFlags.join(" ") + " " : ""
-		return `clino ${prePromptPart}${quote}${prompt}${quote} ${postPromptFlags.join(" ")}${additionalFlags}`
+		return `clica ${prePromptPart}${quote}${prompt}${quote} ${postPromptFlags.join(" ")}${additionalFlags}`
 	}
 
 	// Already full format: just inject settings after prompt

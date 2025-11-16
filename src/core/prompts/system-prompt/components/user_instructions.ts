@@ -10,8 +10,8 @@ The following additional instructions are provided by the user, and should be fo
 
 export async function getUserInstructions(variant: PromptVariant, context: SystemPromptContext): Promise<string | undefined> {
 	const customInstructions = buildUserInstructions(
-		context.globalClinoRulesFileInstructions,
-		context.localClinoRulesFileInstructions,
+		context.globalClicaRulesFileInstructions,
+		context.localClicaRulesFileInstructions,
 		context.localCursorRulesFileInstructions,
 		context.localCursorRulesDirInstructions,
 		context.localWindsurfRulesFileInstructions,
@@ -32,8 +32,8 @@ export async function getUserInstructions(variant: PromptVariant, context: Syste
 }
 
 function buildUserInstructions(
-	globalClinoRulesFileInstructions?: string,
-	localClinoRulesFileInstructions?: string,
+	globalClicaRulesFileInstructions?: string,
+	localClicaRulesFileInstructions?: string,
 	localCursorRulesFileInstructions?: string,
 	localCursorRulesDirInstructions?: string,
 	localWindsurfRulesFileInstructions?: string,
@@ -44,11 +44,11 @@ function buildUserInstructions(
 	if (preferredLanguageInstructions) {
 		customInstructions.push(preferredLanguageInstructions)
 	}
-	if (globalClinoRulesFileInstructions) {
-		customInstructions.push(globalClinoRulesFileInstructions)
+	if (globalClicaRulesFileInstructions) {
+		customInstructions.push(globalClicaRulesFileInstructions)
 	}
-	if (localClinoRulesFileInstructions) {
-		customInstructions.push(localClinoRulesFileInstructions)
+	if (localClicaRulesFileInstructions) {
+		customInstructions.push(localClicaRulesFileInstructions)
 	}
 	if (localCursorRulesFileInstructions) {
 		customInstructions.push(localCursorRulesFileInstructions)

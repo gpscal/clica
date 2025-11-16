@@ -1,11 +1,11 @@
 import { ModelFamily } from "@/shared/prompts"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaDefaultTool } from "@/shared/tools"
 import type { ClineToolSpec } from "../spec"
 import { TASK_PROGRESS_PARAMETER } from "../types"
 
 const nextGen: ClineToolSpec = {
 	variant: ModelFamily.NEXT_GEN,
-	id: ClinoDefaultTool.WEB_FETCH,
+	id: ClicaDefaultTool.WEB_FETCH,
 	name: "web_fetch",
 	description: `Fetches content from a specified URL and processes into markdown
 - Takes a URL as input

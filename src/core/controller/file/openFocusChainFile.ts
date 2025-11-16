@@ -1,6 +1,6 @@
 import { openFile as openFileIntegration } from "@integrations/misc/open-file"
 import { telemetryService } from "../../../services/telemetry"
-import { Empty, StringRequest } from "../../../shared/proto/clino/common"
+import { Empty, StringRequest } from "../../../shared/proto/clica/common"
 import { ensureFocusChainFile, extractFocusChainListFromText } from "../../task/focus-chain/file-utils"
 import { Controller } from ".."
 
@@ -20,9 +20,9 @@ export async function openFocusChainFile(controller: Controller, request: String
 	const currentTask = controller.task
 	if (currentTask) {
 		// Get the task's message history and find the most recent task_progress message
-		// TODO - can we decouple this from ClinoMessages?
-		const clinoMessages = currentTask.messageStateHandler.getClinoMessages()
-		const lastProgressMessage = clinoMessages
+		// TODO - can we decouple this from ClicaMessages?
+		const clicaMessages = currentTask.messageStateHandler.getClicaMessages()
+		const lastProgressMessage = clicaMessages
 			.slice()
 			.reverse()
 			.find((m) => m.say === "task_progress")

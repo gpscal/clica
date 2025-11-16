@@ -26,13 +26,13 @@ let debounceTimer = null
 let esbuildProcess = null
 let initialBuildDone = false
 
-console.log(`${colors.bright}${colors.cyan}🚀 Clino CLI Dev Watch Mode (Fast Incremental)${colors.reset}`)
+console.log(`${colors.bright}${colors.cyan}🚀 Clica CLI Dev Watch Mode (Fast Incremental)${colors.reset}`)
 console.log(`${colors.dim}Starting initial build...${colors.reset}\n`)
 
 // Function to kill all CLI instances
 function killAllInstances() {
 	try {
-		execSync("./cli/bin/clino instance kill --all", {
+		execSync("./cli/bin/clica instance kill --all", {
 			cwd: projectRoot,
 			stdio: "pipe",
 		})
@@ -45,7 +45,7 @@ function killAllInstances() {
 function startNewInstance() {
 	try {
 		console.log(`${colors.blue}▶️  Starting new CLI instance...${colors.reset}`)
-		const result = execSync("./cli/bin/clino instance new", {
+		const result = execSync("./cli/bin/clica instance new", {
 			cwd: projectRoot,
 			stdio: "pipe",
 			encoding: "utf-8",
@@ -71,12 +71,12 @@ async function rebuildGo() {
 		killAllInstances()
 
 		// Just rebuild Go binaries (skip proto generation)
-		execSync("cd cli && GO111MODULE=on go build -o bin/clino ./cmd/clino", {
+		execSync("cd cli && GO111MODULE=on go build -o bin/clica ./cmd/clica", {
 			cwd: projectRoot,
 			stdio: "inherit",
 			shell: true,
 		})
-		execSync("cd cli && GO111MODULE=on go build -o bin/clino-host ./cmd/clino-host", {
+		execSync("cd cli && GO111MODULE=on go build -o bin/clica-host ./cmd/clica-host", {
 			cwd: projectRoot,
 			stdio: "inherit",
 			shell: true,
@@ -113,12 +113,12 @@ async function rebuildProtos() {
 
 		// esbuild will auto-rebuild TS due to changed generated files
 		// Rebuild Go CLI
-		execSync("cd cli && GO111MODULE=on go build -o bin/clino ./cmd/clino", {
+		execSync("cd cli && GO111MODULE=on go build -o bin/clica ./cmd/clica", {
 			cwd: projectRoot,
 			stdio: "inherit",
 			shell: true,
 		})
-		execSync("cd cli && GO111MODULE=on go build -o bin/clino-host ./cmd/clino-host", {
+		execSync("cd cli && GO111MODULE=on go build -o bin/clica-host ./cmd/clica-host", {
 			cwd: projectRoot,
 			stdio: "inherit",
 			shell: true,
@@ -175,12 +175,12 @@ async function initialBuild() {
 
 		// Build Go CLI
 		console.log(`${colors.blue}🔧 Building Go CLI...${colors.reset}`)
-		execSync("cd cli && GO111MODULE=on go build -o bin/clino ./cmd/clino", {
+		execSync("cd cli && GO111MODULE=on go build -o bin/clica ./cmd/clica", {
 			cwd: projectRoot,
 			stdio: "inherit",
 			shell: true,
 		})
-		execSync("cd cli && GO111MODULE=on go build -o bin/clino-host ./cmd/clino-host", {
+		execSync("cd cli && GO111MODULE=on go build -o bin/clica-host ./cmd/clica-host", {
 			cwd: projectRoot,
 			stdio: "inherit",
 			shell: true,

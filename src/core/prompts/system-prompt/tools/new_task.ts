@@ -1,5 +1,5 @@
 import { ModelFamily } from "@/shared/prompts"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaDefaultTool } from "@/shared/tools"
 import type { ClineToolSpec } from "../spec"
 
 /**
@@ -19,7 +19,7 @@ Usage:
 </new_task>
  */
 
-const id = ClinoDefaultTool.NEW_TASK
+const id = ClicaDefaultTool.NEW_TASK
 
 const generic: ClineToolSpec = {
 	variant: ModelFamily.GENERIC,

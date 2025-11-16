@@ -3,15 +3,15 @@ import { formatResponse } from "@core/prompts/responses"
 import { ensureTaskDirectoryExists } from "@core/storage/disk"
 import { processFilesIntoText } from "@integrations/misc/extract-text"
 import { showSystemNotification } from "@integrations/notifications"
-import { ClinoAsk } from "@shared/ExtensionMessage"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaAsk } from "@shared/ExtensionMessage"
+import { ClicaDefaultTool } from "@/shared/tools"
 import type { ToolResponse } from "../../index"
 import type { IPartialBlockHandler, IToolHandler } from "../ToolExecutorCoordinator"
 import type { TaskConfig } from "../types/TaskConfig"
 import type { StronglyTypedUIHelpers } from "../types/UIHelpers"
 
 export class CondenseHandler implements IToolHandler, IPartialBlockHandler {
-	readonly name = ClinoDefaultTool.CONDENSE
+	readonly name = ClicaDefaultTool.CONDENSE
 
 	constructor() {}
 
@@ -33,8 +33,8 @@ export class CondenseHandler implements IToolHandler, IPartialBlockHandler {
 		// Show notification if auto-approval is enabled
 		if (config.autoApprovalSettings.enabled && config.autoApprovalSettings.enableNotifications) {
 			showSystemNotification({
-				subtitle: "Clino wants to condense the conversation...",
-				message: `Clino is suggesting to condense your conversation with: ${context}`,
+				subtitle: "Clica wants to condense the conversation...",
+				message: `Clica is suggesting to condense your conversation with: ${context}`,
 			})
 		}
 
@@ -67,7 +67,7 @@ export class CondenseHandler implements IToolHandler, IPartialBlockHandler {
 				config.taskState.conversationHistoryDeletedRange,
 				keepStrategy,
 			)
-			await config.messageState.saveClinoMessagesAndUpdateHistory()
+			await config.messageState.saveClicaMessagesAndUpdateHistory()
 			await config.services.contextManager.triggerApplyStandardContextTruncationNoticeChange(
 				Date.now(),
 				await ensureTaskDirectoryExists(config.taskId),
@@ -83,6 +83,6 @@ export class CondenseHandler implements IToolHandler, IPartialBlockHandler {
 		const cleanedContext = uiHelpers.removeClosingTag(block, "context", context)
 
 		await uiHelpers.removeLastPartialMessageIfExistsWithType("say", "condense")
-		await uiHelpers.ask("condense" as ClinoAsk, cleanedContext, block.partial).catch(() => {})
+		await uiHelpers.ask("condense" as ClicaAsk, cleanedContext, block.partial).catch(() => {})
 	}
 }

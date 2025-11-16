@@ -1,10 +1,10 @@
-# A Note on Clino's Diff Evaluation Setup
+# A Note on Clica's Diff Evaluation Setup
 
-Hey there, this note explains what we're doing with Clino's diff evaluation (evals) system. It's all about checking how well various AI models (which users connect to Clino via their own API keys), prompts, and diffing tools can handle file changes.
+Hey there, this note explains what we're doing with Clica's diff evaluation (evals) system. It's all about checking how well various AI models (which users connect to Clica via their own API keys), prompts, and diffing tools can handle file changes.
 
 ## What We're Trying to Figure Out
 
-The main idea here is to figure out which AI models (configured by users) are best at making `replace_in_file` tool calls that work correctly. This helps us understand model capabilities and also speeds up our own experiments with prompts and diffing algorithms to make Clino better over time. We want to know a few key things.
+The main idea here is to figure out which AI models (configured by users) are best at making `replace_in_file` tool calls that work correctly. This helps us understand model capabilities and also speeds up our own experiments with prompts and diffing algorithms to make Clica better over time. We want to know a few key things.
 
 First, can the model create diffs, which are just sets of SEARCH and REPLACE blocks, that apply cleanly to a file? This is what we call `diffEditSuccess`.
 

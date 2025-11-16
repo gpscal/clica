@@ -111,7 +111,7 @@ export class JsonKeyValueStore<T> {
 	}
 }
 
-/** This is not used in clino, none of the methods are implemented. */
+/** This is not used in clica, none of the methods are implemented. */
 export class EnvironmentVariableCollection implements EnvironmentVariableCollection {
 	persistent: boolean = false
 	description: string | undefined = undefined

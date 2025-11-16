@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/clino/cli/pkg/cli/types"
+	"github.com/clica/cli/pkg/cli/types"
 )
 
 // ToolResultParser handles parsing and formatting tool results for display

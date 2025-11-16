@@ -7,15 +7,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/clino/cli/pkg/cli/global"
-	"github.com/clino/cli/pkg/cli/task"
-	"github.com/clino/grpc-go/clino"
+	"github.com/clica/cli/pkg/cli/global"
+	"github.com/clica/cli/pkg/cli/task"
+	"github.com/clica/grpc-go/clica"
 )
 
 // ProviderDisplay represents a configured provider for display purposes
 type ProviderDisplay struct {
 	Mode      string            // "Plan" or "Act"
-	Provider  clino.ApiProvider // Provider enum
+	Provider  clica.ApiProvider // Provider enum
 	ModelID   string            // Model identifier
 	HasAPIKey bool              // Whether an API key is configured (never show actual key)
 	BaseURL   string            // Base URL for providers like Ollama (can be shown publicly)
@@ -28,14 +28,14 @@ type ProviderListResult struct {
 	apiConfig    map[string]interface{} // Store the raw apiConfig for scanning all providers
 }
 
-// GetProviderConfigurations retrieves and parses provider configurations from Clino Core state
+// GetProviderConfigurations retrieves and parses provider configurations from Clica Core state
 func GetProviderConfigurations(ctx context.Context, manager *task.Manager) (*ProviderListResult, error) {
 	if global.Config.Verbose {
-		fmt.Println("[DEBUG] Retrieving provider configurations from Clino Core")
+		fmt.Println("[DEBUG] Retrieving provider configurations from Clica Core")
 	}
 
-	// Get latest state from Clino Core
-	state, err := manager.GetClient().State.GetLatestState(ctx, &clino.EmptyRequest{})
+	// Get latest state from Clica Core
+	state, err := manager.GetClient().State.GetLatestState(ctx, &clica.EmptyRequest{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to get state: %w", err)
 	}
@@ -97,21 +97,21 @@ func (r *ProviderListResult) GetAllReadyProviders() []*ProviderDisplay {
 	}
 
 	var readyProviders []*ProviderDisplay
-	seenProviders := make(map[clino.ApiProvider]bool)
+	seenProviders := make(map[clica.ApiProvider]bool)
 
 	// Check all possible providers
-	allProviders := []clino.ApiProvider{
-		clino.ApiProvider_CLINO,
-		clino.ApiProvider_ANTHROPIC,
-		clino.ApiProvider_OPENAI,
-		clino.ApiProvider_OPENAI_NATIVE,
-		clino.ApiProvider_OPENROUTER,
-		clino.ApiProvider_XAI,
-		clino.ApiProvider_BEDROCK,
-		clino.ApiProvider_GEMINI,
-		clino.ApiProvider_OLLAMA,
-		clino.ApiProvider_CEREBRAS,
-		clino.ApiProvider_OCA,
+	allProviders := []clica.ApiProvider{
+		clica.ApiProvider_CLICA,
+		clica.ApiProvider_ANTHROPIC,
+		clica.ApiProvider_OPENAI,
+		clica.ApiProvider_OPENAI_NATIVE,
+		clica.ApiProvider_OPENROUTER,
+		clica.ApiProvider_XAI,
+		clica.ApiProvider_BEDROCK,
+		clica.ApiProvider_GEMINI,
+		clica.ApiProvider_OLLAMA,
+		clica.ApiProvider_CEREBRAS,
+		clica.ApiProvider_OCA,
 	}
 
 	// Check each provider to see if it's ready to use
@@ -129,7 +129,7 @@ func (r *ProviderListResult) GetAllReadyProviders() []*ProviderDisplay {
 		hasCreds := checkAPIKeyExists(r.apiConfig, provider)
 
 		// Determine readiness: OCA uses auth state presence; others need creds and model
-		if provider == clino.ApiProvider_OCA {
+		if provider == clica.ApiProvider_OCA {
 			state, _ := GetLatestOCAState(context.Background(), 2 *time.Second)
 			if state == nil || state.User == nil {
 				continue
@@ -143,7 +143,7 @@ func (r *ProviderListResult) GetAllReadyProviders() []*ProviderDisplay {
 
 		// Get base URL for Ollama
 		baseURL := ""
-		if provider == clino.ApiProvider_OLLAMA {
+		if provider == clica.ApiProvider_OLLAMA {
 			if url, ok := r.apiConfig["ollamaBaseUrl"].(string); ok {
 				baseURL = url
 			}
@@ -194,7 +194,7 @@ func extractProviderFromState(stateData map[string]interface{}, mode string) *Pr
 
 	// Get base URL for Ollama (can be shown publicly)
 	baseURL := ""
-	if provider == clino.ApiProvider_OLLAMA {
+	if provider == clica.ApiProvider_OLLAMA {
 		if url, ok := stateData["ollamaBaseUrl"].(string); ok {
 			baseURL = url
 		}
@@ -211,61 +211,61 @@ func extractProviderFromState(stateData map[string]interface{}, mode string) *Pr
 
 // mapProviderStringToEnum converts provider string from state to ApiProvider enum
 // Returns (provider, ok) where ok is false if the provider is unknown
-func mapProviderStringToEnum(providerStr string) (clino.ApiProvider, bool) {
+func mapProviderStringToEnum(providerStr string) (clica.ApiProvider, bool) {
 	// Map string values to enum values
 	switch providerStr {
 	case "anthropic":
-		return clino.ApiProvider_ANTHROPIC, true
+		return clica.ApiProvider_ANTHROPIC, true
 	case "openai-compatible": // internal name is 'openai', but this is actually the openai-compatible provider
-		return clino.ApiProvider_OPENAI, true
+		return clica.ApiProvider_OPENAI, true
 	case "openai", "openai-native": // This is the native, official Open AI provider
-		return clino.ApiProvider_OPENAI_NATIVE, true
+		return clica.ApiProvider_OPENAI_NATIVE, true
 	case "openrouter":
-		return clino.ApiProvider_OPENROUTER, true
+		return clica.ApiProvider_OPENROUTER, true
 	case "xai":
-		return clino.ApiProvider_XAI, true
+		return clica.ApiProvider_XAI, true
 	case "bedrock":
-		return clino.ApiProvider_BEDROCK, true
+		return clica.ApiProvider_BEDROCK, true
 	case "gemini":
-		return clino.ApiProvider_GEMINI, true
+		return clica.ApiProvider_GEMINI, true
 	case "ollama":
-		return clino.ApiProvider_OLLAMA, true
+		return clica.ApiProvider_OLLAMA, true
 	case "cerebras":
-		return clino.ApiProvider_CEREBRAS, true
-	case "clino":
-		return clino.ApiProvider_CLINO, true
+		return clica.ApiProvider_CEREBRAS, true
+	case "clica":
+		return clica.ApiProvider_CLICA, true
 	case "oca":
-		return clino.ApiProvider_OCA, true
+		return clica.ApiProvider_OCA, true
 	default:
-		return clino.ApiProvider_ANTHROPIC, false // Return 0 value with false
+		return clica.ApiProvider_ANTHROPIC, false // Return 0 value with false
 	}
 }
 
 // GetProviderIDForEnum converts a provider enum to the provider ID string
 // This is the inverse of mapProviderStringToEnum and is used for provider definitions
-func GetProviderIDForEnum(provider clino.ApiProvider) string {
+func GetProviderIDForEnum(provider clica.ApiProvider) string {
 	switch provider {
-	case clino.ApiProvider_ANTHROPIC:
+	case clica.ApiProvider_ANTHROPIC:
 		return "anthropic"
-	case clino.ApiProvider_OPENAI:
+	case clica.ApiProvider_OPENAI:
 		return "openai-compatible"
-	case clino.ApiProvider_OPENAI_NATIVE:
+	case clica.ApiProvider_OPENAI_NATIVE:
 		return "openai-native"
-	case clino.ApiProvider_OPENROUTER:
+	case clica.ApiProvider_OPENROUTER:
 		return "openrouter"
-	case clino.ApiProvider_XAI:
+	case clica.ApiProvider_XAI:
 		return "xai"
-	case clino.ApiProvider_BEDROCK:
+	case clica.ApiProvider_BEDROCK:
 		return "bedrock"
-	case clino.ApiProvider_GEMINI:
+	case clica.ApiProvider_GEMINI:
 		return "gemini"
-	case clino.ApiProvider_OLLAMA:
+	case clica.ApiProvider_OLLAMA:
 		return "ollama"
-	case clino.ApiProvider_CEREBRAS:
+	case clica.ApiProvider_CEREBRAS:
 		return "cerebras"
-	case clino.ApiProvider_CLINO:
-		return "clino"
-	case clino.ApiProvider_OCA:
+	case clica.ApiProvider_CLICA:
+		return "clica"
+	case clica.ApiProvider_OCA:
 		return "oca"
 	default:
 		return ""
@@ -273,7 +273,7 @@ func GetProviderIDForEnum(provider clino.ApiProvider) string {
 }
 
 // getProviderSpecificModelID gets the provider-specific model ID field from state
-func getProviderSpecificModelID(stateData map[string]interface{}, mode string, provider clino.ApiProvider) string {
+func getProviderSpecificModelID(stateData map[string]interface{}, mode string, provider clica.ApiProvider) string {
 	modelKey, err := GetModelIDFieldName(provider, mode)
 	if err != nil {
 		if global.Config.Verbose {
@@ -292,7 +292,7 @@ func getProviderSpecificModelID(stateData map[string]interface{}, mode string, p
 }
 
 // checkAPIKeyExists checks if API key field exists in state (never retrieve actual key)
-func checkAPIKeyExists(stateData map[string]interface{}, provider clino.ApiProvider) bool {
+func checkAPIKeyExists(stateData map[string]interface{}, provider clica.ApiProvider) bool {
 	// Get field mapping from centralized function
 	fields, err := GetProviderFields(provider)
 	if err != nil {
@@ -320,29 +320,29 @@ func capitalizeMode(mode string) string {
 }
 
 // GetProviderDisplayName returns a user-friendly name for the provider
-func GetProviderDisplayName(provider clino.ApiProvider) string {
+func GetProviderDisplayName(provider clica.ApiProvider) string {
 	switch provider {
-	case clino.ApiProvider_ANTHROPIC:
+	case clica.ApiProvider_ANTHROPIC:
 		return "Anthropic"
-	case clino.ApiProvider_OPENAI:
+	case clica.ApiProvider_OPENAI:
 		return "OpenAI Compatible"
-	case clino.ApiProvider_OPENAI_NATIVE:
+	case clica.ApiProvider_OPENAI_NATIVE:
 		return "OpenAI (Official)"
-	case clino.ApiProvider_OPENROUTER:
+	case clica.ApiProvider_OPENROUTER:
 		return "OpenRouter"
-	case clino.ApiProvider_XAI:
+	case clica.ApiProvider_XAI:
 		return "X AI (Grok)"
-	case clino.ApiProvider_BEDROCK:
+	case clica.ApiProvider_BEDROCK:
 		return "AWS Bedrock"
-	case clino.ApiProvider_GEMINI:
+	case clica.ApiProvider_GEMINI:
 		return "Google Gemini"
-	case clino.ApiProvider_OLLAMA:
+	case clica.ApiProvider_OLLAMA:
 		return "Ollama"
-	case clino.ApiProvider_CEREBRAS:
+	case clica.ApiProvider_CEREBRAS:
 		return "Cerebras"
-	case clino.ApiProvider_CLINO:
-		return "Clino (Official)"
-	case clino.ApiProvider_OCA:
+	case clica.ApiProvider_CLICA:
+		return "Clica (Official)"
+	case clica.ApiProvider_OCA:
 		return "Oracle Code Assist"
 	default:
 		return "Unknown"
@@ -357,7 +357,7 @@ func FormatProviderList(result *ProviderListResult) string {
 	output.WriteString("\n=== Configured API Providers ===\n\n")
 
 	// Get the currently active provider
-	var activeProvider clino.ApiProvider
+	var activeProvider clica.ApiProvider
 	var activeProviderSet bool
 	if result.ActProvider != nil {
 		activeProvider = result.ActProvider.Provider
@@ -387,13 +387,13 @@ func FormatProviderList(result *ProviderListResult) string {
 			output.WriteString(fmt.Sprintf("    Model:    %s\n", display.ModelID))
 
 			// Show status based on provider type
-			if display.Provider == clino.ApiProvider_OLLAMA {
+			if display.Provider == clica.ApiProvider_OLLAMA {
 				if display.BaseURL != "" {
 					output.WriteString(fmt.Sprintf("    Base URL: %s\n", display.BaseURL))
 				} else {
 					output.WriteString("    Base URL: (default)\n")
 				}
-			} else if display.Provider == clino.ApiProvider_CLINO || display.Provider == clino.ApiProvider_OCA {
+			} else if display.Provider == clica.ApiProvider_CLICA || display.Provider == clica.ApiProvider_OCA {
 				output.WriteString("    Status:   Authenticated\n")
 			} else {
 				output.WriteString("    API Key:  Configured\n")
@@ -410,11 +410,11 @@ func FormatProviderList(result *ProviderListResult) string {
 
 // DetectAllConfiguredProviders scans the state to find all providers that have API keys configured.
 // This allows switching between multiple providers even when only one is currently active.
-func DetectAllConfiguredProviders(ctx context.Context, manager *task.Manager) ([]clino.ApiProvider, error) {
+func DetectAllConfiguredProviders(ctx context.Context, manager *task.Manager) ([]clica.ApiProvider, error) {
 	verboseLog("[DEBUG] Detecting all configured providers...")
 
-	// Get latest state from Clino Core
-	state, err := manager.GetClient().State.GetLatestState(ctx, &clino.EmptyRequest{})
+	// Get latest state from Clica Core
+	state, err := manager.GetClient().State.GetLatestState(ctx, &clica.EmptyRequest{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to get state: %w", err)
 	}
@@ -432,39 +432,39 @@ func DetectAllConfiguredProviders(ctx context.Context, manager *task.Manager) ([
 	if !ok {
 		verboseLog("[DEBUG] No apiConfiguration found in state")
 		verboseLog("[DEBUG] Available keys in stateData: %v", getMapKeys(stateData))
-		return []clino.ApiProvider{}, nil
+		return []clica.ApiProvider{}, nil
 	}
 
 	verboseLog("[DEBUG] apiConfiguration keys: %v", getMapKeys(apiConfig))
 
-	var configuredProviders []clino.ApiProvider
+	var configuredProviders []clica.ApiProvider
 
-	// Check for Clino provider (uses authentication instead of API key)
+	// Check for Clica provider (uses authentication instead of API key)
 	if IsAuthenticated(ctx) {
-		configuredProviders = append(configuredProviders, clino.ApiProvider_CLINO)
-		verboseLog("[DEBUG] Clino provider is authenticated")
+		configuredProviders = append(configuredProviders, clica.ApiProvider_CLICA)
+		verboseLog("[DEBUG] Clica provider is authenticated")
 	}
 
 	// Check OCA provider via global auth subscription (state presence)
 	if state, _ := GetLatestOCAState(context.Background(), 2*time.Second); state != nil && state.User != nil {
-		configuredProviders = append(configuredProviders, clino.ApiProvider_OCA)
+		configuredProviders = append(configuredProviders, clica.ApiProvider_OCA)
 		verboseLog("[DEBUG] OCA provider has active auth state")
 	}
 
 	// Check each BYO provider for API key presence
 	providersToCheck := []struct {
-		provider clino.ApiProvider
+		provider clica.ApiProvider
 		keyField string
 	}{
-		{clino.ApiProvider_ANTHROPIC, "apiKey"},
-		{clino.ApiProvider_OPENAI, "openAiApiKey"},
-		{clino.ApiProvider_OPENAI_NATIVE, "openAiNativeApiKey"},
-		{clino.ApiProvider_OPENROUTER, "openRouterApiKey"},
-		{clino.ApiProvider_XAI, "xaiApiKey"},
-		{clino.ApiProvider_BEDROCK, "awsAccessKey"},
-		{clino.ApiProvider_GEMINI, "geminiApiKey"},
-		{clino.ApiProvider_OLLAMA, "ollamaBaseUrl"}, // Ollama uses baseUrl instead of API key
-		{clino.ApiProvider_CEREBRAS, "cerebrasApiKey"},
+		{clica.ApiProvider_ANTHROPIC, "apiKey"},
+		{clica.ApiProvider_OPENAI, "openAiApiKey"},
+		{clica.ApiProvider_OPENAI_NATIVE, "openAiNativeApiKey"},
+		{clica.ApiProvider_OPENROUTER, "openRouterApiKey"},
+		{clica.ApiProvider_XAI, "xaiApiKey"},
+		{clica.ApiProvider_BEDROCK, "awsAccessKey"},
+		{clica.ApiProvider_GEMINI, "geminiApiKey"},
+		{clica.ApiProvider_OLLAMA, "ollamaBaseUrl"}, // Ollama uses baseUrl instead of API key
+		{clica.ApiProvider_CEREBRAS, "cerebrasApiKey"},
 	}
 
 	for _, providerCheck := range providersToCheck {

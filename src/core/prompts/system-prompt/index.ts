@@ -4,7 +4,7 @@ import { ModelFamily } from "@/shared/prompts"
 import { PromptRegistry } from "./registry/PromptRegistry"
 import type { SystemPromptContext } from "./types"
 
-export { ClinoToolSet } from "./registry/ClinoToolSet"
+export { ClicaToolSet } from "./registry/ClicaToolSet"
 export { PromptBuilder } from "./registry/PromptBuilder"
 export { PromptRegistry } from "./registry/PromptRegistry"
 export * from "./templates/placeholders"

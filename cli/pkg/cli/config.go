@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/clino/cli/pkg/cli/config"
-	"github.com/clino/cli/pkg/cli/global"
-	"github.com/clino/cli/pkg/cli/task"
+	"github.com/clica/cli/pkg/cli/config"
+	"github.com/clica/cli/pkg/cli/global"
+	"github.com/clica/cli/pkg/cli/task"
 	"github.com/spf13/cobra"
 )
 
@@ -53,8 +53,8 @@ func NewConfigCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "config",
 		Aliases: []string{"c"},
-		Short:   "Manage Clino configuration",
-		Long:    `Set and manage global Clino configuration variables.`,
+		Short:   "Manage Clica configuration",
+		Long:    `Set and manage global Clica configuration variables.`,
 	}
 
 	cmd.AddCommand(newConfigListCommand())
@@ -87,7 +87,7 @@ func newConfigGetCommand() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&address, "address", "", "specific Clino instance address to use")
+	cmd.Flags().StringVar(&address, "address", "", "specific Clica instance address to use")
 	return cmd
 }
 
@@ -98,7 +98,7 @@ func newConfigListCommand() *cobra.Command {
 		Use:     "list",
 		Aliases: []string{"l"},
 		Short:   "List all configuration settings",
-		Long:    `List all configuration settings from the Clino instance.`,
+		Long:    `List all configuration settings from the Clica instance.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 
@@ -112,7 +112,7 @@ func newConfigListCommand() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&address, "address", "", "specific Clino instance address to use")
+	cmd.Flags().StringVar(&address, "address", "", "specific Clica instance address to use")
 	return cmd
 }
 
@@ -144,6 +144,6 @@ func setCommand() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVar(&address, "address", "", "specific Clino instance address to use")
+	cmd.Flags().StringVar(&address, "address", "", "specific Clica instance address to use")
 	return cmd
 }

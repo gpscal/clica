@@ -7,10 +7,10 @@ import (
 	"path/filepath"
 	"sort"
 
-	"github.com/clino/cli/pkg/cli/display"
-	"github.com/clino/cli/pkg/cli/global"
-	"github.com/clino/cli/pkg/cli/types"
-	"github.com/clino/grpc-go/clino"
+	"github.com/clica/cli/pkg/cli/display"
+	"github.com/clica/cli/pkg/cli/global"
+	"github.com/clica/cli/pkg/cli/types"
+	"github.com/clica/grpc-go/clica"
 )
 
 // ListTasksFromDisk reads task history directly from disk
@@ -21,7 +21,7 @@ func ListTasksFromDisk() error {
 		return fmt.Errorf("failed to get home directory: %w", err)
 	}
 
-	filePath := filepath.Join(homeDir, ".clino", "data", "state", "taskHistory.json")
+	filePath := filepath.Join(homeDir, ".clica", "data", "state", "taskHistory.json")
 
 	// Read the file
 	data, err := os.ReadFile(filePath)
@@ -50,9 +50,9 @@ func ListTasksFromDisk() error {
 	})
 
 	// Convert to protobuf TaskItem format for rendering
-	tasks := make([]*clino.TaskItem, len(historyItems))
+	tasks := make([]*clica.TaskItem, len(historyItems))
 	for i, item := range historyItems {
-		tasks[i] = &clino.TaskItem{
+		tasks[i] = &clica.TaskItem{
 			Id:          item.Id,
 			Task:        item.Task,
 			Ts:          item.Ts,

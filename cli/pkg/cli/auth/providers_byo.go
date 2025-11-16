@@ -4,34 +4,34 @@ import (
 	"fmt"
 
 	"github.com/charmbracelet/huh"
-	"github.com/clino/grpc-go/clino"
+	"github.com/clica/grpc-go/clica"
 )
 
 // BYOProviderOption represents a selectable BYO (bring-your-own) provider option
 type BYOProviderOption struct {
 	Name     string
-	Provider clino.ApiProvider
+	Provider clica.ApiProvider
 }
 
 // GetBYOProviderList returns the list of supported BYO providers for CLI configuration.
-// This list excludes Clino provider which is handled separately.
+// This list excludes Clica provider which is handled separately.
 func GetBYOProviderList() []BYOProviderOption {
 	return []BYOProviderOption{
-		{Name: "Anthropic", Provider: clino.ApiProvider_ANTHROPIC},
-		{Name: "OpenAI Compatible", Provider: clino.ApiProvider_OPENAI},
-		{Name: "OpenAI (Official)", Provider: clino.ApiProvider_OPENAI_NATIVE},
-		{Name: "OpenRouter", Provider: clino.ApiProvider_OPENROUTER},
-		{Name: "X AI (Grok)", Provider: clino.ApiProvider_XAI},
-		{Name: "AWS Bedrock", Provider: clino.ApiProvider_BEDROCK},
-		{Name: "Google Gemini", Provider: clino.ApiProvider_GEMINI},
-		{Name: "Ollama", Provider: clino.ApiProvider_OLLAMA},
-		{Name: "Cerebras", Provider: clino.ApiProvider_CEREBRAS},
-		{Name: "Oracle Code Assist", Provider: clino.ApiProvider_OCA},
+		{Name: "Anthropic", Provider: clica.ApiProvider_ANTHROPIC},
+		{Name: "OpenAI Compatible", Provider: clica.ApiProvider_OPENAI},
+		{Name: "OpenAI (Official)", Provider: clica.ApiProvider_OPENAI_NATIVE},
+		{Name: "OpenRouter", Provider: clica.ApiProvider_OPENROUTER},
+		{Name: "X AI (Grok)", Provider: clica.ApiProvider_XAI},
+		{Name: "AWS Bedrock", Provider: clica.ApiProvider_BEDROCK},
+		{Name: "Google Gemini", Provider: clica.ApiProvider_GEMINI},
+		{Name: "Ollama", Provider: clica.ApiProvider_OLLAMA},
+		{Name: "Cerebras", Provider: clica.ApiProvider_CEREBRAS},
+		{Name: "Oracle Code Assist", Provider: clica.ApiProvider_OCA},
 	}
 }
 
 // SelectBYOProvider displays a menu for selecting a BYO provider.
-func SelectBYOProvider() (clino.ApiProvider, error) {
+func SelectBYOProvider() (clica.ApiProvider, error) {
 	providers := GetBYOProviderList()
 	var selectedIndex int
 
@@ -64,15 +64,15 @@ func SelectBYOProvider() (clino.ApiProvider, error) {
 // SupportsBYOModelFetching returns true if the provider supports fetching models dynamically
 // from a remote API, or if it has a static list of predefined models.
 // This is used to determine whether to show a model list before prompting for manual entry.
-func SupportsBYOModelFetching(provider clino.ApiProvider) bool {
+func SupportsBYOModelFetching(provider clica.ApiProvider) bool {
 	switch provider {
-	case clino.ApiProvider_OPENROUTER:
+	case clica.ApiProvider_OPENROUTER:
 		return true
-	case clino.ApiProvider_OPENAI:
+	case clica.ApiProvider_OPENAI:
 		return true
-	case clino.ApiProvider_OLLAMA:
+	case clica.ApiProvider_OLLAMA:
 		return true
-	case clino.ApiProvider_OCA:
+	case clica.ApiProvider_OCA:
 		return true
 	}
 
@@ -80,27 +80,27 @@ func SupportsBYOModelFetching(provider clino.ApiProvider) bool {
 }
 
 // GetBYOProviderPlaceholder returns a placeholder model ID for manual entry based on provider.
-func GetBYOProviderPlaceholder(provider clino.ApiProvider) string {
+func GetBYOProviderPlaceholder(provider clica.ApiProvider) string {
 	switch provider {
-	case clino.ApiProvider_ANTHROPIC:
+	case clica.ApiProvider_ANTHROPIC:
 		return "e.g., claude-sonnet-4-5-20250929"
-	case clino.ApiProvider_OPENAI:
+	case clica.ApiProvider_OPENAI:
 		return "e.g., openai/gpt-oss-120b"
-	case clino.ApiProvider_OPENAI_NATIVE:
+	case clica.ApiProvider_OPENAI_NATIVE:
 		return "e.g., gpt-5-2025-08-07"
-	case clino.ApiProvider_OPENROUTER:
+	case clica.ApiProvider_OPENROUTER:
 		return "e.g., google/gemini-2.0-flash-exp:free"
-	case clino.ApiProvider_XAI:
+	case clica.ApiProvider_XAI:
 		return "e.g., grok-code-fast-1"
-	case clino.ApiProvider_BEDROCK:
+	case clica.ApiProvider_BEDROCK:
 		return "e.g., anthropic.claude-sonnet-4-5-20250929-v1:0"
-	case clino.ApiProvider_GEMINI:
+	case clica.ApiProvider_GEMINI:
 		return "e.g., gemini-2.5-pro"
-	case clino.ApiProvider_OLLAMA:
+	case clica.ApiProvider_OLLAMA:
 		return "e.g., qwen3-coder:30b"
-	case clino.ApiProvider_CEREBRAS:
+	case clica.ApiProvider_CEREBRAS:
 		return "e.g., gpt-oss-120b"
-	case clino.ApiProvider_OCA:
+	case clica.ApiProvider_OCA:
 		return "e.g., oca/llama4"
 	default:
 		return "Enter model ID"
@@ -115,8 +115,8 @@ type APIKeyFieldConfig struct {
 }
 
 // GetBYOAPIKeyFieldConfig returns the configuration for the API key field based on provider.
-func GetBYOAPIKeyFieldConfig(provider clino.ApiProvider) APIKeyFieldConfig {
-	if provider == clino.ApiProvider_OLLAMA {
+func GetBYOAPIKeyFieldConfig(provider clica.ApiProvider) APIKeyFieldConfig {
+	if provider == clica.ApiProvider_OLLAMA {
 		return APIKeyFieldConfig{
 			Title:      "Base URL (optional, press Enter for default)",
 			EchoMode:   huh.EchoModeNormal,
@@ -133,7 +133,7 @@ func GetBYOAPIKeyFieldConfig(provider clino.ApiProvider) APIKeyFieldConfig {
 
 // PromptForAPIKey prompts the user to enter an API key (or base URL for Ollama).
 // For OpenAI (Compatible) provider, also prompts for an optional base URL.
-func PromptForAPIKey(provider clino.ApiProvider) (string, string, error) {
+func PromptForAPIKey(provider clica.ApiProvider) (string, string, error) {
 	var apiKey string
 	config := GetBYOAPIKeyFieldConfig(provider)
 
@@ -158,7 +158,7 @@ func PromptForAPIKey(provider clino.ApiProvider) (string, string, error) {
 	}
 
 	// For OpenAI (Compatible) provider, prompt for base URL
-	if provider == clino.ApiProvider_OPENAI {
+	if provider == clica.ApiProvider_OPENAI {
 		var baseURL string
 		baseURLForm := huh.NewForm(
 			huh.NewGroup(

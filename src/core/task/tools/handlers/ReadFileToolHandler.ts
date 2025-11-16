@@ -5,8 +5,8 @@ import { getWorkspaceBasename, resolveWorkspacePath } from "@core/workspace"
 import { extractFileContent } from "@integrations/misc/extract-file-content"
 import { arePathsEqual, getReadablePath, isLocatedInWorkspace } from "@utils/path"
 import { telemetryService } from "@/services/telemetry"
-import { ClinoSayTool } from "@/shared/ExtensionMessage"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaSayTool } from "@/shared/ExtensionMessage"
+import { ClicaDefaultTool } from "@/shared/tools"
 import type { ToolResponse } from "../../index"
 import { showNotificationForApprovalIfAutoApprovalEnabled } from "../../utils"
 import type { IFullyManagedTool } from "../ToolExecutorCoordinator"
@@ -16,7 +16,7 @@ import type { StronglyTypedUIHelpers } from "../types/UIHelpers"
 import { ToolResultUtils } from "../utils/ToolResultUtils"
 
 export class ReadFileToolHandler implements IFullyManagedTool {
-	readonly name = ClinoDefaultTool.FILE_READ
+	readonly name = ClicaDefaultTool.FILE_READ
 
 	constructor(private validator: ToolValidator) {}
 
@@ -60,7 +60,7 @@ export class ReadFileToolHandler implements IFullyManagedTool {
 		}
 
 		// Check clineignore access
-		const accessValidation = this.validator.checkClinoIgnorePath(relPath!)
+		const accessValidation = this.validator.checkClicaIgnorePath(relPath!)
 		if (!accessValidation.ok) {
 			await config.callbacks.say("clineignore_error", relPath)
 			return formatResponse.toolError(formatResponse.clineIgnoreError(relPath!))
@@ -88,7 +88,7 @@ export class ReadFileToolHandler implements IFullyManagedTool {
 			path: getReadablePath(config.cwd, displayPath),
 			content: absolutePath,
 			operationIsLocatedInWorkspace: await isLocatedInWorkspace(relPath!),
-		} satisfies ClinoSayTool
+		} satisfies ClicaSayTool
 
 		const completeMessage = JSON.stringify(sharedMessageProps)
 
@@ -104,7 +104,7 @@ export class ReadFileToolHandler implements IFullyManagedTool {
 			telemetryService.captureToolUsage(config.ulid, block.name, config.api.getModel().id, true, true, workspaceContext)
 		} else {
 			// Manual approval flow
-			const notificationMessage = `Clino wants to read ${getWorkspaceBasename(absolutePath, "ReadFileToolHandler.notification")}`
+			const notificationMessage = `Clica wants to read ${getWorkspaceBasename(absolutePath, "ReadFileToolHandler.notification")}`
 
 			// Show notification
 			showNotificationForApprovalIfAutoApprovalEnabled(

@@ -1,5 +1,5 @@
-import { EmptyRequest } from "@shared/proto/clino/common"
-import { OcaAuthState } from "@shared/proto/clino/oca_account"
+import { EmptyRequest } from "@shared/proto/clica/common"
+import { OcaAuthState } from "@shared/proto/clica/oca_account"
 import { OcaAuthService } from "@/services/auth/oca/OcaAuthService"
 import { Controller } from ".."
 import { StreamingResponseHandler } from "../grpc-handler"

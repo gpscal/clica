@@ -1,5 +1,5 @@
-import { Empty } from "@shared/proto/clino/common"
-import { ResetStateRequest } from "@shared/proto/clino/state"
+import { Empty } from "@shared/proto/clica/common"
+import { ResetStateRequest } from "@shared/proto/clica/state"
 import { resetGlobalState, resetWorkspaceState } from "@/core/storage/utils/state-helpers"
 import { HostProvider } from "@/hosts/host-provider"
 import { ShowMessageType } from "@/shared/proto/host/window"

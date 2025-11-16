@@ -1,5 +1,5 @@
-import type { EmptyRequest } from "@shared/proto/clino/common"
-import { McpMarketplaceCatalog } from "@shared/proto/clino/mcp"
+import type { EmptyRequest } from "@shared/proto/clica/common"
+import { McpMarketplaceCatalog } from "@shared/proto/clica/mcp"
 import type { Controller } from "../index"
 
 /**

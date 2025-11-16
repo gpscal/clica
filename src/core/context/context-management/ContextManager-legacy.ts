@@ -1,12 +1,12 @@
 import { Anthropic } from "@anthropic-ai/sdk"
 import { ApiHandler } from "@core/api"
-import { ClinoApiReqInfo, ClinoMessage } from "@shared/ExtensionMessage"
+import { ClicaApiReqInfo, ClicaMessage } from "@shared/ExtensionMessage"
 import { getContextWindowInfo } from "./context-window-utils"
 
 class ContextManager {
 	getNewContextMessagesAndMetadata(
 		apiConversationHistory: Anthropic.Messages.MessageParam[],
-		clinoMessages: ClinoMessage[],
+		clicaMessages: ClicaMessage[],
 		api: ApiHandler,
 		conversationHistoryDeletedRange: [number, number] | undefined,
 		previousApiReqIndex: number,
@@ -15,9 +15,9 @@ class ContextManager {
 
 		// If the previous API request's total token usage is close to the context window, truncate the conversation history to free up space for the new request
 		if (previousApiReqIndex >= 0) {
-			const previousRequest = clinoMessages[previousApiReqIndex]
+			const previousRequest = clicaMessages[previousApiReqIndex]
 			if (previousRequest && previousRequest.text) {
-				const { tokensIn, tokensOut, cacheWrites, cacheReads }: ClinoApiReqInfo = JSON.parse(previousRequest.text)
+				const { tokensIn, tokensOut, cacheWrites, cacheReads }: ClicaApiReqInfo = JSON.parse(previousRequest.text)
 				const totalTokens = (tokensIn || 0) + (tokensOut || 0) + (cacheWrites || 0) + (cacheReads || 0)
 				const { maxAllowedSize } = getContextWindowInfo(api)
 
@@ -77,7 +77,7 @@ class ContextManager {
 		let rangeEndIndex = startOfRest + messagesToRemove - 1
 
 		// Make sure the last message being removed is a user message, so that the next message after the initial task message is an assistant message. This preservers the user-assistant-user-assistant structure.
-		// NOTE: anthropic format messages are always user-assistant-user-assistant, while openai format messages can have multiple user messages in a row (we use anthropic format throughout clino)
+		// NOTE: anthropic format messages are always user-assistant-user-assistant, while openai format messages can have multiple user messages in a row (we use anthropic format throughout clica)
 		if (apiMessages[rangeEndIndex].role !== "user") {
 			rangeEndIndex -= 1
 		}

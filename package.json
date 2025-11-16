@@ -1,11 +1,12 @@
 {
-	"name": "clino",
-	"displayName": "Clino",
+	"name": "clica",
+	"publisher": "clica",
+	"displayName": "Clica",
 	"description": "CLI-only autonomous coding agent, capable of creating/editing files, running commands, using the browser, and more with your permission every step of the way.",
 	"version": "3.34.0",
 	"license": "Apache-2.0",
 	"keywords": [
-		"clino",
+		"clica",
 		"claude",
 		"dev",
 		"mcp",
@@ -20,7 +21,7 @@
 		"cli"
 	],
 	"bin": {
-		"clino": "./cli/bin/clino"
+		"clica": "./cli/bin/clica"
 	},
 	"scripts": {
 		"compile": "npm run check-types && npm run lint && node esbuild.mjs --standalone",
@@ -28,7 +29,7 @@
 		"compile-standalone-npm": "npm run protos && npm run protos-go && npm run check-types && npm run lint && node esbuild.mjs --standalone",
 		"compile-cli": "scripts/build-cli.sh",
 		"compile-cli-all-platforms": "scripts/build-cli-all-platforms.sh",
-		"compile-cli-man-page": "pandoc cli/man/clino.1.md -s -t man -o cli/man/clino.1",
+		"compile-cli-man-page": "pandoc cli/man/clica.1.md -s -t man -o cli/man/clica.1",
 		"build:npm": "scripts/build-npm-package.sh",
 		"test:install": "bash scripts/test-install.sh",
 		"dev:cli:watch": "node scripts/dev-cli-watch.mjs",
@@ -41,7 +42,7 @@
 		"protos-go": "node scripts/build-go-proto.mjs",
 		"cli-providers": "node scripts/cli-providers.mjs",
 		"download-ripgrep": "node scripts/download-ripgrep.mjs",
-		"postprotos": "biome format src/shared/proto src/core/controller src/hosts/ src/generated --write --no-errors-on-unmatched",
+		"postprotos": "biome format src/shared/proto src/core/controller src/hosts/ src/generated --write --no-errors-on-unmatched || true",
 		"clean:build": "rimraf dist dist-standalone src/generated out/",
 		"clean:deps": "rimraf node_modules",
 		"clean:all": "npm run clean:build && npm run clean:deps",

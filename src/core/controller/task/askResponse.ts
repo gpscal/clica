@@ -1,6 +1,6 @@
-import { Empty } from "@shared/proto/clino/common"
-import { AskResponseRequest } from "@shared/proto/clino/task"
-import { ClinoAskResponse } from "../../../shared/WebviewMessage"
+import { Empty } from "@shared/proto/clica/common"
+import { AskResponseRequest } from "@shared/proto/clica/task"
+import { ClicaAskResponse } from "../../../shared/WebviewMessage"
 import { Controller } from ".."
 
 /**
@@ -17,8 +17,8 @@ export async function askResponse(controller: Controller, request: AskResponseRe
 			return Empty.create()
 		}
 
-		// Map the string responseType to the ClinoAskResponse enum
-		let responseType: ClinoAskResponse
+		// Map the string responseType to the ClicaAskResponse enum
+		let responseType: ClicaAskResponse
 		switch (request.responseType) {
 			case "yesButtonClicked":
 				responseType = "yesButtonClicked"

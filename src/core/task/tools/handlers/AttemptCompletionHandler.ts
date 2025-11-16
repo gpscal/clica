@@ -6,7 +6,7 @@ import { showSystemNotification } from "@integrations/notifications"
 import { findLastIndex } from "@shared/array"
 import { COMPLETION_RESULT_CHANGES_FLAG } from "@shared/ExtensionMessage"
 import { telemetryService } from "@/services/telemetry"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaDefaultTool } from "@/shared/tools"
 import type { ToolResponse } from "../../index"
 import type { IPartialBlockHandler, IToolHandler } from "../ToolExecutorCoordinator"
 import type { TaskConfig } from "../types/TaskConfig"
@@ -14,7 +14,7 @@ import type { StronglyTypedUIHelpers } from "../types/UIHelpers"
 import { ToolResultUtils } from "../utils/ToolResultUtils"
 
 export class AttemptCompletionHandler implements IToolHandler, IPartialBlockHandler {
-	readonly name = ClinoDefaultTool.ATTEMPT
+	readonly name = ClicaDefaultTool.ATTEMPT
 
 	getDescription(block: ToolUse): string {
 		return `[${block.name}]`
@@ -63,25 +63,25 @@ export class AttemptCompletionHandler implements IToolHandler, IPartialBlockHand
 		const addNewChangesFlagToLastCompletionResultMessage = async () => {
 			// Add newchanges flag if there are new changes to the workspace
 			const hasNewChanges = await config.callbacks.doesLatestTaskCompletionHaveNewChanges()
-			const clinoMessages = config.messageState.getClinoMessages()
+			const clicaMessages = config.messageState.getClicaMessages()
 
-			const lastCompletionResultMessageIndex = findLastIndex(clinoMessages, (m: any) => m.say === "completion_result")
+			const lastCompletionResultMessageIndex = findLastIndex(clicaMessages, (m: any) => m.say === "completion_result")
 			const lastCompletionResultMessage =
-				lastCompletionResultMessageIndex !== -1 ? clinoMessages[lastCompletionResultMessageIndex] : undefined
+				lastCompletionResultMessageIndex !== -1 ? clicaMessages[lastCompletionResultMessageIndex] : undefined
 			if (
 				lastCompletionResultMessage &&
 				lastCompletionResultMessageIndex !== -1 &&
 				hasNewChanges &&
 				!lastCompletionResultMessage.text?.endsWith(COMPLETION_RESULT_CHANGES_FLAG)
 			) {
-				await config.messageState.updateClinoMessage(lastCompletionResultMessageIndex, {
+				await config.messageState.updateClicaMessage(lastCompletionResultMessageIndex, {
 					text: lastCompletionResultMessage.text + COMPLETION_RESULT_CHANGES_FLAG,
 				})
 			}
 		}
 
 		let commandResult: any
-		const lastMessage = config.messageState.getClinoMessages().at(-1)
+		const lastMessage = config.messageState.getClicaMessages().at(-1)
 
 		if (command) {
 			if (lastMessage && lastMessage.ask !== "command") {
@@ -123,7 +123,7 @@ export class AttemptCompletionHandler implements IToolHandler, IPartialBlockHand
 
 		// we already sent completion_result says, an empty string asks relinquishes control over button and field
 		// in case last command was interactive and in partial state, the UI is expecting an ask response. This ends the command ask response, freeing up the UI to proceed with the completion ask.
-		if (config.messageState.getClinoMessages().at(-1)?.ask === "command_output") {
+		if (config.messageState.getClicaMessages().at(-1)?.ask === "command_output") {
 			await config.callbacks.say("command_output", "")
 		}
 

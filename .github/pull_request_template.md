@@ -1,5 +1,5 @@
 <!--
-Thank you for contributing to Clino!
+Thank you for contributing to Clica!
 
 ⚠️ Important: Before submitting this PR, please ensure you have:
 - For feature requests: Created a discussion and received approval from core maintainers before implementation
@@ -9,7 +9,7 @@ Limited exceptions:
 Small bug fixes, typo corrections, minor wording improvements, or simple type fixes that don't change functionality may be submitted directly without prior discussion.
 
 Why this requirement?
-We deeply appreciate all community contributions - they are essential to Clino's success! To ensure the best use of everyone's time and maintain project direction, we use our Feature Requests discussions board to gauge community interest and validate feature ideas before implementation begins. This helps us focus development efforts on features that will benefit the most users.
+We deeply appreciate all community contributions - they are essential to Clica's success! To ensure the best use of everyone's time and maintain project direction, we use our Feature Requests discussions board to gauge community interest and validate feature ideas before implementation begins. This helps us focus development efforts on features that will benefit the most users.
 -->
 
 ### Related Issue

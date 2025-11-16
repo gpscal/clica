@@ -1,5 +1,5 @@
-import { StringRequest } from "@shared/proto/clino/common"
-import { TaskResponse } from "@shared/proto/clino/task"
+import { StringRequest } from "@shared/proto/clica/common"
+import { TaskResponse } from "@shared/proto/clica/task"
 import { Controller } from ".."
 import { sendChatButtonClickedEvent } from "../ui/subscribeToChatButtonClicked"
 

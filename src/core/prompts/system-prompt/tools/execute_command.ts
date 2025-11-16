@@ -1,11 +1,11 @@
 import { ModelFamily } from "@/shared/prompts"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaDefaultTool } from "@/shared/tools"
 import type { ClineToolSpec } from "../spec"
 import { TASK_PROGRESS_PARAMETER } from "../types"
 
 const generic: ClineToolSpec = {
 	variant: ModelFamily.GENERIC,
-	id: ClinoDefaultTool.BASH,
+	id: ClicaDefaultTool.BASH,
 	name: "execute_command",
 	description: `Request to execute a CLI command on the system. Use this when you need to perform system operations or run specific commands to accomplish any step in the user's task. You must tailor your command to the user's system and provide a clear explanation of what the command does. For command chaining, use the appropriate chaining syntax for the user's shell. Prefer to execute complex CLI commands over creating executable scripts, as they are more flexible and easier to run. Commands will be executed in the current working directory: {{CWD}}{{MULTI_ROOT_HINT}}`,
 	parameters: [
@@ -35,7 +35,7 @@ const generic: ClineToolSpec = {
 
 const gpt: ClineToolSpec = {
 	variant: ModelFamily.GPT,
-	id: ClinoDefaultTool.BASH,
+	id: ClicaDefaultTool.BASH,
 	name: "bash",
 	description:
 		"Run an arbitrary terminal command at the root of the users project. E.g. `ls -la` for listing files, or `find` for searching latest version of the codebase files locally.",

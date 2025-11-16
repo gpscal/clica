@@ -6,7 +6,7 @@ import (
 	"google.golang.org/grpc/health/grpc_health_v1"
 )
 
-// CoreInstanceInfo represents a discovered Clino instance
+// CoreInstanceInfo represents a discovered Clica instance
 // This is the canonical definition used across all CLI packages
 type CoreInstanceInfo struct {
 	// Full core address including port

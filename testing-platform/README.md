@@ -1,12 +1,12 @@
-# Clino Testing Platform
+# Clica Testing Platform
 
-A CLI testing framework for the Clino Core extension, providing gRPC-based integration clients and utilities for automated scenarios.
+A CLI testing framework for the Clica Core extension, providing gRPC-based integration clients and utilities for automated scenarios.
 
 ## Overview
 
-The platform enables end-to-end validation of Clino's core functionality through:
+The platform enables end-to-end validation of Clica's core functionality through:
 
-- **gRPC Adapters** – clients for Clino’s gRPC services  
+- **gRPC Adapters** – clients for Clica’s gRPC services  
 - **Test Harness** – runner, utilities, and type definitions  
 - **Spec Files** – JSON instructions for automated test cases  
 
@@ -27,7 +27,7 @@ testing-platform/
 - **Node.js** ≥ 18 and **npm** ≥ 8  
 - **Protocol Buffers** (used for gRPC)  
 
-Generate proto files in the **root Clino project**:
+Generate proto files in the **root Clica project**:
 
 ```bash
 npm run protos
@@ -35,7 +35,7 @@ npm run protos
 
 ## Setup
 
-From the root of the Clino project:
+From the root of the Clica project:
 
 ```bash
 npm run install:all
@@ -52,7 +52,7 @@ npm run build
 
 ## Running Spec File Tests
 
-Before running specs, make sure the standalone Clino Core gRPC server (that runs mocks and host gRPC as well) is running:
+Before running specs, make sure the standalone Clica Core gRPC server (that runs mocks and host gRPC as well) is running:
 
 ```bash
 npm run test:sca-server

@@ -533,7 +533,7 @@ export class ExercismAdapter implements BenchmarkAdapter {
 
 		try {
 			// Step 1: Start a new Clino instance in the working directory
-			const instanceResult = await execa("clino", ["instance", "new"], {
+			const instanceResult = await execa("clica", ["instance", "new"], {
 				cwd: task.workspacePath,
 				stdin: "ignore",
 			})
@@ -546,14 +546,14 @@ export class ExercismAdapter implements BenchmarkAdapter {
 			instanceAddress = addressMatch[1]
 
 			// Step 3: Create the initial task on this specific instance
-			await execa("clino", ["task", "new", "--yolo", "--address", instanceAddress, task.description], {
+			await execa("clica", ["task", "new", "--yolo", "--address", instanceAddress, task.description], {
 				cwd: task.workspacePath,
 				stdin: "ignore",
 			})
 
 			// Step 4: Wait for initial implementation to complete
 			console.log(chalk.blue(`Waiting for first attempt to complete...`))
-			await execa("clino", ["task", "view", "--follow-complete", "--address", instanceAddress], {
+			await execa("clica", ["task", "view", "--follow-complete", "--address", instanceAddress], {
 				cwd: task.workspacePath,
 				stdin: "ignore",
 			})
@@ -577,13 +577,13 @@ export class ExercismAdapter implements BenchmarkAdapter {
 				const retryMessage = this.buildRetryMessage(firstVerification.rawOutput || "", solutionFiles)
 
 				// Send retry task message
-				await execa("clino", ["task", "send", "--yolo", "--address", instanceAddress], {
+				await execa("clica", ["task", "send", "--yolo", "--address", instanceAddress], {
 					cwd: task.workspacePath,
 					input: retryMessage,
 				})
 
 				// Follow retry until complete
-				await execa("clino", ["task", "view", "--follow-complete", "--address", instanceAddress], {
+				await execa("clica", ["task", "view", "--follow-complete", "--address", instanceAddress], {
 					cwd: task.workspacePath,
 					stdin: "ignore",
 				})
@@ -610,7 +610,7 @@ export class ExercismAdapter implements BenchmarkAdapter {
 			// Step 7: Always clean up the instance, even if task failed
 			if (instanceAddress) {
 				try {
-					await execa("clino", ["instance", "kill", instanceAddress], {
+					await execa("clica", ["instance", "kill", instanceAddress], {
 						stdin: "ignore",
 					})
 				} catch (cleanupError: any) {

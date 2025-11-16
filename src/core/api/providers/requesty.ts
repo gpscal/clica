@@ -45,7 +45,7 @@ export class RequestyHandler implements ApiHandler {
 					baseURL: toRequestyServiceStringUrl(this.options.requestyBaseUrl),
 					apiKey: this.options.requestyApiKey,
 					defaultHeaders: {
-						"X-Title": "Clino",
+						"X-Title": "Clica",
 					},
 				})
 			} catch (error: any) {

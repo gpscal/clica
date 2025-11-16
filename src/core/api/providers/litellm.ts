@@ -276,7 +276,7 @@ export class LiteLlmHandler implements ApiHandler {
 			stream: true,
 			stream_options: { include_usage: true },
 			...(thinkingConfig && { thinking: thinkingConfig }), // Add thinking configuration when applicable
-			...(this.options.ulid && { litellm_session_id: `clino-${this.options.ulid}` }), // Add session ID for LiteLLM tracking
+			...(this.options.ulid && { litellm_session_id: `clica-${this.options.ulid}` }), // Add session ID for LiteLLM tracking
 		})
 
 		for await (const chunk of stream) {

@@ -33,7 +33,7 @@ export class HuggingFaceHandler implements ApiHandler {
 					baseURL: "https://router.huggingface.co/v1",
 					apiKey: this.options.huggingFaceApiKey,
 					defaultHeaders: {
-						"User-Agent": "Clino/1.0",
+						"User-Agent": "Clica/1.0",
 					},
 				})
 			} catch (error: any) {

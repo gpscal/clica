@@ -1,5 +1,5 @@
-import type { BooleanRequest } from "@shared/proto/clino/common"
-import { Empty } from "@shared/proto/clino/common"
+import type { BooleanRequest } from "@shared/proto/clica/common"
+import { Empty } from "@shared/proto/clica/common"
 import type { Controller } from "../index"
 
 /**

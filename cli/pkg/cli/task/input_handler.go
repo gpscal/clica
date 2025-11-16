@@ -11,9 +11,9 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/clino/cli/pkg/cli/global"
-	"github.com/clino/cli/pkg/cli/output"
-	"github.com/clino/cli/pkg/cli/types"
+	"github.com/clica/cli/pkg/cli/global"
+	"github.com/clica/cli/pkg/cli/output"
+	"github.com/clica/cli/pkg/cli/types"
 )
 
 // InputHandler manages interactive user input during follow mode
@@ -31,7 +31,7 @@ type InputHandler struct {
 	cancelChan       chan struct{}
 	feedbackApproval bool                // Track if we're in feedback after approval
 	feedbackApproved bool                // Track the approval decision
-	approvalMessage  *types.ClinoMessage // Store the approval message for determining action
+	approvalMessage  *types.ClicaMessage // Store the approval message for determining action
 	ctx              context.Context     // Context for restart callback
 }
 
@@ -235,7 +235,7 @@ func (ih *InputHandler) Start(ctx context.Context, errChan chan error) {
 }
 
 // determineAutoApprovalAction determines which auto-approval action to enable based on the ask type
-func determineAutoApprovalAction(msg *types.ClinoMessage) (string, error) {
+func determineAutoApprovalAction(msg *types.ClicaMessage) (string, error) {
 	switch types.AskType(msg.Ask) {
 	case types.AskTypeTool:
 		// Parse tool message to determine if it's a read or edit operation
@@ -280,7 +280,7 @@ func (ih *InputHandler) promptForInput(ctx context.Context) (string, bool, error
 
 	model := output.NewInputModel(
 		output.InputTypeMessage,
-		"Clino is ready for your message...",
+		"Clica is ready for your message...",
 		"/plan or /act to switch modes\nctrl+e to open editor",
 		currentMode,
 	)
@@ -289,13 +289,13 @@ func (ih *InputHandler) promptForInput(ctx context.Context) (string, bool, error
 }
 
 // promptForApproval displays an approval prompt for tool/command requests
-func (ih *InputHandler) promptForApproval(ctx context.Context, msg *types.ClinoMessage) (bool, string, error) {
+func (ih *InputHandler) promptForApproval(ctx context.Context, msg *types.ClicaMessage) (bool, string, error) {
 	// Store the approval message for later use in determining auto-approval action
 	ih.approvalMessage = msg
 	
 	model := output.NewInputModel(
 		output.InputTypeApproval,
-		"Let Clino use this tool?",
+		"Let Clica use this tool?",
 		"",
 		ih.manager.GetCurrentMode(),
 	)

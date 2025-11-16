@@ -1,11 +1,11 @@
 import { ModelFamily } from "@/shared/prompts"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaDefaultTool } from "@/shared/tools"
 import type { ClineToolSpec } from "../spec"
 import { TASK_PROGRESS_PARAMETER } from "../types"
 
 const generic: ClineToolSpec = {
 	variant: ModelFamily.GENERIC,
-	id: ClinoDefaultTool.ASK,
+	id: ClicaDefaultTool.ASK,
 	name: "ask_followup_question",
 	description:
 		"Ask the user a question to gather additional information needed to complete the task. This tool should be used when you encounter ambiguities, need clarification, or require more details to proceed effectively. It allows for interactive problem-solving by enabling direct communication with the user. Use this tool judiciously to maintain a balance between gathering necessary information and avoiding excessive back-and-forth.",

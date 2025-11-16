@@ -39,7 +39,7 @@ export class OpenRouterHandler implements ApiHandler {
 					apiKey: this.options.openRouterApiKey,
 					defaultHeaders: {
 						// HTTP-Referer header removed
-						"X-Title": "Clino", // Optional. Shows in rankings on openrouter.ai.
+						"X-Title": "Clica", // Optional. Shows in rankings on openrouter.ai.
 					},
 				})
 			} catch (error: any) {

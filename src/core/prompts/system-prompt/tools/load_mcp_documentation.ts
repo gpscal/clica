@@ -1,5 +1,5 @@
 import { ModelFamily } from "@/shared/prompts"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaDefaultTool } from "@/shared/tools"
 import type { ClineToolSpec } from "../spec"
 
 /**
@@ -11,7 +11,7 @@ Usage:
 </load_mcp_documentation>
  */
 
-const id = ClinoDefaultTool.MCP_DOCS
+const id = ClicaDefaultTool.MCP_DOCS
 
 const generic: ClineToolSpec = {
 	id,

@@ -154,9 +154,9 @@ export async function goProtoc(outDir, protoFiles) {
 		PROTOC,
 		`--proto_path="${PROTO_DIR}"`,
 		`--go_out="${outDir}"`,
-		`--go_opt=module=github.com/clino/grpc-go`,
+		`--go_opt=module=github.com/clica/grpc-go`,
 		`--go-grpc_out="${outDir}"`,
-		`--go-grpc_opt=module=github.com/clino/grpc-go`,
+		`--go-grpc_opt=module=github.com/clica/grpc-go`,
 		...protoFiles,
 	].join(" ")
 
@@ -185,7 +185,7 @@ export async function goProtoc(outDir, protoFiles) {
 async function generateGoMod() {
 	console.log(chalk.cyan("Generating Go module file..."))
 
-	const goModContent = `module github.com/clino/grpc-go
+	const goModContent = `module github.com/clica/grpc-go
 
 go 1.21
 
@@ -352,11 +352,11 @@ import (
 	"sync"
 
 	"google.golang.org/grpc"
-	"github.com/clino/grpc-go/client/services"
+	"github.com/clica/grpc-go/client/services"
 )
 
-// ClinoClient provides a unified interface to all Clino services
-type ClinoClient struct {
+// ClicaClient provides a unified interface to all Clica services
+type ClicaClient struct {
 	connManager *ConnectionManager
 	
 	// Service clients
@@ -367,30 +367,30 @@ ${serviceClients}
 	connected bool
 }
 
-// NewClinoClient creates a new unified Clino client
-func NewClinoClient(address string) (*ClinoClient, error) {
+// NewClicaClient creates a new unified Clica client
+func NewClicaClient(address string) (*ClicaClient, error) {
 	config := &ConnectionConfig{
 		Address: address,
 	}
 	
 	connManager := NewConnectionManager(config)
 	
-	return &ClinoClient{
+	return &ClicaClient{
 		connManager: connManager,
 	}, nil
 }
 
-// NewClinoClientWithConfig creates a new Clino client with custom configuration
-func NewClinoClientWithConfig(config *ConnectionConfig) (*ClinoClient, error) {
+// NewClicaClientWithConfig creates a new Clica client with custom configuration
+func NewClicaClientWithConfig(config *ConnectionConfig) (*ClicaClient, error) {
 	connManager := NewConnectionManager(config)
 	
-	return &ClinoClient{
+	return &ClicaClient{
 		connManager: connManager,
 	}, nil
 }
 
-// Connect establishes connection to Clino Core and initializes service clients
-func (c *ClinoClient) Connect(ctx context.Context) error {
+// Connect establishes connection to Clica Core and initializes service clients
+func (c *ClicaClient) Connect(ctx context.Context) error {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	
@@ -411,8 +411,8 @@ ${serviceInitializers}
 	return nil
 }
 
-// Disconnect closes the connection to Clino Core
-func (c *ClinoClient) Disconnect() error {
+// Disconnect closes the connection to Clica Core
+func (c *ClicaClient) Disconnect() error {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	
@@ -429,15 +429,15 @@ ${serviceNilOut}
 	return err
 }
 
-// IsConnected returns true if the client is connected to Clino Core
-func (c *ClinoClient) IsConnected() bool {
+// IsConnected returns true if the client is connected to Clica Core
+func (c *ClicaClient) IsConnected() bool {
 	c.mutex.RLock()
 	defer c.mutex.RUnlock()
 	return c.connected
 }
 
 // Reconnect closes the current connection and establishes a new one
-func (c *ClinoClient) Reconnect(ctx context.Context) error {
+func (c *ClicaClient) Reconnect(ctx context.Context) error {
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	
@@ -463,11 +463,11 @@ ${serviceInitializers}
 }
 
 // GetConnection returns the underlying gRPC connection
-func (c *ClinoClient) GetConnection() *grpc.ClientConn {
+func (c *ClicaClient) GetConnection() *grpc.ClientConn {
 	return c.connManager.GetConnection()
 }
 `
-	const clientPath = path.join(GO_CLIENT_DIR, "clino_client.go")
+	const clientPath = path.join(GO_CLIENT_DIR, "clica_client.go")
 	await fs.writeFile(clientPath, content)
 	console.log(chalk.green(`Generated Go client at ${clientPath}`))
 }
@@ -492,12 +492,12 @@ async function generateGoServiceClients() {
 				const requestTypeName = method.requestType.split(".").pop()
 				const responseTypeName = method.responseType.split(".").pop()
 
-				// Common types like StringRequest, Empty, etc. are in the clino package
+				// Common types like StringRequest, Empty, etc. are in the clica package
 				const requestType = COMMON_TYPES.includes(requestTypeName)
-					? `*clino.${requestTypeName}`
+					? `*clica.${requestTypeName}`
 					: `*proto.${requestTypeName}`
 				const responseType = COMMON_TYPES.includes(responseTypeName)
-					? `*clino.${responseTypeName}`
+					? `*clica.${responseTypeName}`
 					: `*proto.${responseTypeName}`
 
 				if (method.isResponseStreaming) {
@@ -528,18 +528,18 @@ func (sc *${capitalizedServiceName}Client) ${capitalizedMethodName}(ctx context.
 
 		// Determine the correct proto import path based on the service location
 		const protoImportPath =
-			serviceDef.protoPackage === "host" ? '"github.com/clino/grpc-go/host"' : '"github.com/clino/grpc-go/clino"'
+			serviceDef.protoPackage === "host" ? '"github.com/clica/grpc-go/host"' : '"github.com/clica/grpc-go/clica"'
 
-		// Check if we need to import clino package for common types
-		const needsClinoImport = serviceDef.methods.some((method) => {
+		// Check if we need to import clica package for common types
+		const needsClicaImport = serviceDef.methods.some((method) => {
 			const requestTypeName = method.requestType.split(".").pop()
 			const responseTypeName = method.responseType.split(".").pop()
 			const commonTypes = ["StringRequest", "EmptyRequest", "Empty", "String", "Int64Request", "KeyValuePair"]
 			return commonTypes.includes(requestTypeName) || commonTypes.includes(responseTypeName)
 		})
 
-		// Always import clino package if we need common types, regardless of service package
-		const clinoImport = needsClinoImport ? '	clino "github.com/clino/grpc-go/clino"\n' : ""
+		// Always import clica package if we need common types, regardless of service package
+		const clicaImport = needsClicaImport ? '	clica "github.com/clica/grpc-go/clica"\n' : ""
 
 		const content = `// AUTO-GENERATED FILE - DO NOT MODIFY DIRECTLY
 // Generated by scripts/build-go-proto.mjs
@@ -550,7 +550,7 @@ import (
 	"context"
 	"fmt"
 
-${clinoImport}	proto ${protoImportPath}
+${clicaImport}	proto ${protoImportPath}
 	"google.golang.org/grpc"
 )
 

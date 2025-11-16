@@ -1,4 +1,4 @@
-import { ClinoDefaultTool } from "@shared/tools"
+import { ClicaDefaultTool } from "@shared/tools"
 export type AssistantMessageContent = TextContent | ToolUse
 
 export { parseAssistantMessageV2 } from "./parse-assistant-message"
@@ -45,7 +45,7 @@ export type ToolParamName = (typeof toolParamNames)[number]
 
 export interface ToolUse {
 	type: "tool_use"
-	name: ClinoDefaultTool // id of the tool being used
+	name: ClicaDefaultTool // id of the tool being used
 	// params is a partial record, allowing only some or none of the possible parameters to be used
 	params: Partial<Record<ToolParamName, string>>
 	partial: boolean

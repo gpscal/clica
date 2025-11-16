@@ -3,7 +3,7 @@
  * Allows switching between different error tracking providers (PostHog, Sentry, etc.)
  */
 
-import type { ClinoError } from "../ClinoError"
+import type { ClicaError } from "../ClicaError"
 
 /**
  * Error settings that control when and how errors are logged
@@ -24,10 +24,10 @@ export interface ErrorSettings {
 export interface IErrorProvider {
 	/**
 	 * Log an exception with error details
-	 * @param error The error to log (Error or ClinoError)
+	 * @param error The error to log (Error or ClicaError)
 	 * @param properties Optional additional properties to attach
 	 */
-	logException(error: Error | ClinoError, properties?: Record<string, unknown>): void
+	logException(error: Error | ClicaError, properties?: Record<string, unknown>): void
 
 	/**
 	 * Log a message with specified level

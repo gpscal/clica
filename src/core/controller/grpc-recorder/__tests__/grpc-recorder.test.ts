@@ -120,11 +120,11 @@ describe("grpc-recorder", () => {
 			const customRecorder = GrpcRecorder.builder()
 				.withFilters(
 					(req) => req.is_streaming,
-					(req) => ["clino.UiService", "clino.McpService", "clino.WebService"].includes(req.service),
+					(req) => ["clica.UiService", "clica.McpService", "clica.WebService"].includes(req.service),
 				)
 				.enableIf(true)
 				.build()
-			const unwantedServices = ["clino.UiService", "clino.McpService", "clino.WebService"]
+			const unwantedServices = ["clica.UiService", "clica.McpService", "clica.WebService"]
 			unwantedServices.forEach((us) => {
 				customRecorder.recordRequest({
 					service: us,

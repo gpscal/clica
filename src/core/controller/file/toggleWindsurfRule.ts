@@ -1,5 +1,5 @@
-import type { ToggleWindsurfRuleRequest } from "@shared/proto/clino/file"
-import { ClinoRulesToggles } from "@shared/proto/clino/file"
+import type { ToggleWindsurfRuleRequest } from "@shared/proto/clica/file"
+import { ClicaRulesToggles } from "@shared/proto/clica/file"
 import type { Controller } from "../index"
 
 /**
@@ -8,7 +8,7 @@ import type { Controller } from "../index"
  * @param request The toggle request
  * @returns The updated Windsurf rule toggles
  */
-export async function toggleWindsurfRule(controller: Controller, request: ToggleWindsurfRuleRequest): Promise<ClinoRulesToggles> {
+export async function toggleWindsurfRule(controller: Controller, request: ToggleWindsurfRuleRequest): Promise<ClicaRulesToggles> {
 	const { rulePath, enabled } = request
 
 	if (!rulePath || typeof enabled !== "boolean") {
@@ -25,5 +25,5 @@ export async function toggleWindsurfRule(controller: Controller, request: Toggle
 	controller.stateManager.setWorkspaceState("localWindsurfRulesToggles", toggles)
 
 	// Return the toggles directly
-	return ClinoRulesToggles.create({ toggles: toggles })
+	return ClicaRulesToggles.create({ toggles: toggles })
 }

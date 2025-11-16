@@ -1,5 +1,5 @@
-import { Empty } from "@shared/proto/clino/common"
-import { UpdateApiConfigurationRequest } from "@shared/proto/clino/models"
+import { Empty } from "@shared/proto/clica/common"
+import { UpdateApiConfigurationRequest } from "@shared/proto/clica/models"
 import { convertProtoToApiProvider } from "@shared/proto-conversions/models/api-configuration-conversion"
 import {
 	fromProtobufLiteLLMModelInfo,

@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/clino/grpc-go/host"
+	"github.com/clica/grpc-go/host"
 )
 
 // WorkspaceService implements the host.WorkspaceServiceServer interface

@@ -4,11 +4,11 @@ import getFolderSize from "get-folder-size"
 import { findLastIndex } from "@/shared/array"
 import { combineApiRequests } from "@/shared/combineApiRequests"
 import { combineCommandSequences } from "@/shared/combineCommandSequences"
-import { ClinoMessage } from "@/shared/ExtensionMessage"
+import { ClicaMessage } from "@/shared/ExtensionMessage"
 import { getApiMetrics } from "@/shared/getApiMetrics"
 import { HistoryItem } from "@/shared/HistoryItem"
 import { getCwd, getDesktopDir } from "@/utils/path"
-import { ensureTaskDirectoryExists, saveApiConversationHistory, saveClinoMessages } from "../storage/disk"
+import { ensureTaskDirectoryExists, saveApiConversationHistory, saveClicaMessages } from "../storage/disk"
 import { TaskState } from "./TaskState"
 
 interface MessageStateHandlerParams {
@@ -22,7 +22,7 @@ interface MessageStateHandlerParams {
 
 export class MessageStateHandler {
 	private apiConversationHistory: Anthropic.MessageParam[] = []
-	private clinoMessages: ClinoMessage[] = []
+	private clicaMessages: ClicaMessage[] = []
 	private taskIsFavorited: boolean
 	private checkpointTracker: CheckpointTracker | undefined
 	private updateTaskHistory: (historyItem: HistoryItem) => Promise<HistoryItem[]>
@@ -50,25 +50,25 @@ export class MessageStateHandler {
 		this.apiConversationHistory = newHistory
 	}
 
-	getClinoMessages(): ClinoMessage[] {
-		return this.clinoMessages
+	getClicaMessages(): ClicaMessage[] {
+		return this.clicaMessages
 	}
 
-	setClinoMessages(newMessages: ClinoMessage[]) {
-		this.clinoMessages = newMessages
+	setClicaMessages(newMessages: ClicaMessage[]) {
+		this.clicaMessages = newMessages
 	}
 
-	async saveClinoMessagesAndUpdateHistory(): Promise<void> {
+	async saveClicaMessagesAndUpdateHistory(): Promise<void> {
 		try {
-			await saveClinoMessages(this.taskId, this.clinoMessages)
+			await saveClicaMessages(this.taskId, this.clicaMessages)
 
 			// combined as they are in ChatView
-			const apiMetrics = getApiMetrics(combineApiRequests(combineCommandSequences(this.clinoMessages.slice(1))))
-			const taskMessage = this.clinoMessages[0] // first message is always the task say
+			const apiMetrics = getApiMetrics(combineApiRequests(combineCommandSequences(this.clicaMessages.slice(1))))
+			const taskMessage = this.clicaMessages[0] // first message is always the task say
 			const lastRelevantMessage =
-				this.clinoMessages[
+				this.clicaMessages[
 					findLastIndex(
-						this.clinoMessages,
+						this.clicaMessages,
 						(message) => !(message.ask === "resume_task" || message.ask === "resume_completed_task"),
 					)
 				]
@@ -100,7 +100,7 @@ export class MessageStateHandler {
 				checkpointManagerErrorMessage: this.taskState.checkpointManagerErrorMessage,
 			})
 		} catch (error) {
-			console.error("Failed to save clino messages:", error)
+			console.error("Failed to save clica messages:", error)
 		}
 	}
 
@@ -114,29 +114,29 @@ export class MessageStateHandler {
 		await saveApiConversationHistory(this.taskId, this.apiConversationHistory)
 	}
 
-	async addToClinoMessages(message: ClinoMessage) {
-		// these values allow us to reconstruct the conversation history at the time this clino message was created
-		// it's important that apiConversationHistory is initialized before we add clino messages
+	async addToClicaMessages(message: ClicaMessage) {
+		// these values allow us to reconstruct the conversation history at the time this clica message was created
+		// it's important that apiConversationHistory is initialized before we add clica messages
 		message.conversationHistoryIndex = this.apiConversationHistory.length - 1 // NOTE: this is the index of the last added message which is the user message, and once the clinemessages have been presented we update the apiconversationhistory with the completed assistant message. This means when resetting to a message, we need to +1 this index to get the correct assistant message that this tool use corresponds to
 		message.conversationHistoryDeletedRange = this.taskState.conversationHistoryDeletedRange
-		this.clinoMessages.push(message)
-		await this.saveClinoMessagesAndUpdateHistory()
+		this.clicaMessages.push(message)
+		await this.saveClicaMessagesAndUpdateHistory()
 	}
 
-	async overwriteClinoMessages(newMessages: ClinoMessage[]) {
-		this.clinoMessages = newMessages
-		await this.saveClinoMessagesAndUpdateHistory()
+	async overwriteClicaMessages(newMessages: ClicaMessage[]) {
+		this.clicaMessages = newMessages
+		await this.saveClicaMessagesAndUpdateHistory()
 	}
 
-	async updateClinoMessage(index: number, updates: Partial<ClinoMessage>): Promise<void> {
-		if (index < 0 || index >= this.clinoMessages.length) {
+	async updateClicaMessage(index: number, updates: Partial<ClicaMessage>): Promise<void> {
+		if (index < 0 || index >= this.clicaMessages.length) {
 			throw new Error(`Invalid message index: ${index}`)
 		}
 
 		// Apply updates to the message
-		Object.assign(this.clinoMessages[index], updates)
+		Object.assign(this.clicaMessages[index], updates)
 
 		// Save changes and update history
-		await this.saveClinoMessagesAndUpdateHistory()
+		await this.saveClicaMessagesAndUpdateHistory()
 	}
 }

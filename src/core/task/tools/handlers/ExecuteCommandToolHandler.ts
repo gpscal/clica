@@ -3,11 +3,11 @@ import { formatResponse } from "@core/prompts/responses"
 import { WorkspacePathAdapter } from "@core/workspace/WorkspacePathAdapter"
 import { showSystemNotification } from "@integrations/notifications"
 import { COMMAND_REQ_APP_STRING } from "@shared/combineCommandSequences"
-import { ClinoAsk } from "@shared/ExtensionMessage"
+import { ClicaAsk } from "@shared/ExtensionMessage"
 import { arePathsEqual } from "@utils/path"
 import { fixModelHtmlEscaping } from "@utils/string"
 import { telemetryService } from "@/services/telemetry"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaDefaultTool } from "@/shared/tools"
 import type { ToolResponse } from "../../index"
 import { showNotificationForApprovalIfAutoApprovalEnabled } from "../../utils"
 import type { IFullyManagedTool } from "../ToolExecutorCoordinator"
@@ -17,7 +17,7 @@ import type { StronglyTypedUIHelpers } from "../types/UIHelpers"
 import { ToolResultUtils } from "../utils/ToolResultUtils"
 
 export class ExecuteCommandToolHandler implements IFullyManagedTool {
-	readonly name = ClinoDefaultTool.BASH
+	readonly name = ClicaDefaultTool.BASH
 
 	constructor(_validator: ToolValidator) {}
 
@@ -38,7 +38,7 @@ export class ExecuteCommandToolHandler implements IFullyManagedTool {
 			return
 		} else {
 			await uiHelpers
-				.ask("command" as ClinoAsk, uiHelpers.removeClosingTag(block, "command", command), block.partial)
+				.ask("command" as ClicaAsk, uiHelpers.removeClosingTag(block, "command", command), block.partial)
 				.catch(() => {})
 		}
 	}
@@ -161,7 +161,7 @@ export class ExecuteCommandToolHandler implements IFullyManagedTool {
 		} else {
 			// Manual approval flow
 			showNotificationForApprovalIfAutoApprovalEnabled(
-				`Clino wants to execute a command: ${actualCommand}`,
+				`Clica wants to execute a command: ${actualCommand}`,
 				config.autoApprovalSettings.enabled,
 				config.autoApprovalSettings.enableNotifications,
 			)

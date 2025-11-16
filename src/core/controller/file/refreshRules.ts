@@ -1,13 +1,13 @@
-import { refreshClinoRulesToggles } from "@core/context/instructions/user-instructions/clino-rules"
+import { refreshClicaRulesToggles } from "@core/context/instructions/user-instructions/clica-rules"
 import { refreshExternalRulesToggles } from "@core/context/instructions/user-instructions/external-rules"
 import { refreshWorkflowToggles } from "@core/context/instructions/user-instructions/workflows"
-import { EmptyRequest } from "@shared/proto/clino/common"
-import { RefreshedRules } from "@shared/proto/clino/file"
+import { EmptyRequest } from "@shared/proto/clica/common"
+import { RefreshedRules } from "@shared/proto/clica/file"
 import { getCwd, getDesktopDir } from "@/utils/path"
 import type { Controller } from "../index"
 
 /**
- * Refreshes all rule toggles (Clino, External, and Workflows)
+ * Refreshes all rule toggles (Clica, External, and Workflows)
  * @param controller The controller instance
  * @param _request The empty request
  * @returns RefreshedRules containing updated toggles for all rule types
@@ -15,13 +15,13 @@ import type { Controller } from "../index"
 export async function refreshRules(controller: Controller, _request: EmptyRequest): Promise<RefreshedRules> {
 	try {
 		const cwd = await getCwd(getDesktopDir())
-		const { globalToggles, localToggles } = await refreshClinoRulesToggles(controller, cwd)
+		const { globalToggles, localToggles } = await refreshClicaRulesToggles(controller, cwd)
 		const { cursorLocalToggles, windsurfLocalToggles } = await refreshExternalRulesToggles(controller, cwd)
 		const { localWorkflowToggles, globalWorkflowToggles } = await refreshWorkflowToggles(controller, cwd)
 
 		return RefreshedRules.create({
-			globalClinoRulesToggles: { toggles: globalToggles },
-			localClinoRulesToggles: { toggles: localToggles },
+			globalClicaRulesToggles: { toggles: globalToggles },
+			localClicaRulesToggles: { toggles: localToggles },
 			localCursorRulesToggles: { toggles: cursorLocalToggles },
 			localWindsurfRulesToggles: { toggles: windsurfLocalToggles },
 			localWorkflowToggles: { toggles: localWorkflowToggles },

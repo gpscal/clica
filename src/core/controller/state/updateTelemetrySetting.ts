@@ -1,5 +1,5 @@
-import { Empty } from "@shared/proto/clino/common"
-import { TelemetrySettingRequest } from "@shared/proto/clino/state"
+import { Empty } from "@shared/proto/clica/common"
+import { TelemetrySettingRequest } from "@shared/proto/clica/state"
 import { convertProtoTelemetrySettingToDomain } from "../../../shared/proto-conversions/state/telemetry-setting-conversion"
 import { Controller } from ".."
 

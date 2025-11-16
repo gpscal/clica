@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/clino/cli/pkg/common"
+	"github.com/clica/cli/pkg/common"
 	_ "github.com/glebarez/go-sqlite"
 	"google.golang.org/grpc/health/grpc_health_v1"
 )

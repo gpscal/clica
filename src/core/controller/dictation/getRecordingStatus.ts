@@ -1,4 +1,4 @@
-import { RecordingStatus } from "@shared/proto/clino/dictation"
+import { RecordingStatus } from "@shared/proto/clica/dictation"
 import { audioRecordingService } from "@/services/dictation/AudioRecordingService"
 
 /**

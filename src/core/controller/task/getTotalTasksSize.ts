@@ -1,4 +1,4 @@
-import { EmptyRequest, Int64 } from "@shared/proto/clino/common"
+import { EmptyRequest, Int64 } from "@shared/proto/clica/common"
 import { getTotalTasksSize as calculateTotalTasksSize } from "../../../utils/storage"
 import { Controller } from ".."
 

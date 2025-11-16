@@ -49,8 +49,8 @@ func RenderSessionBanner(info BannerInfo) string {
 		versionStr = "v" + versionStr
 	}
 
-	// First line: "clino cli vX.X.X" on left, "plan mode" on right
-	leftSide := titleStyle.Render("clino cli preview") + " " + dimStyle.Render(versionStr)
+	// First line: "clica cli vX.X.X" on left, "plan mode" on right
+	leftSide := titleStyle.Render("clica cli preview") + " " + dimStyle.Render(versionStr)
 
 	if info.Mode != "" {
 		modeColor := lipgloss.Color("3") // Yellow for plan

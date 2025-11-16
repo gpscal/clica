@@ -6,7 +6,7 @@ import { GIT_DISABLED_SUFFIX } from "./CheckpointGitOperations"
 /**
  * CheckpointExclusions Module
  *
- * A specialized module within Clino's Checkpoints system that manages file exclusion rules
+ * A specialized module within Clica's Checkpoints system that manages file exclusion rules
  * for the checkpoint tracking process. It provides:
  *
  * File Filtering:

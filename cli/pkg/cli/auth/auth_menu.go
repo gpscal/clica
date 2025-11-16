@@ -5,10 +5,10 @@ import (
 	"fmt"
 
 	"github.com/charmbracelet/huh"
-	"github.com/clino/cli/pkg/cli/display"
-	"github.com/clino/cli/pkg/cli/global"
-	"github.com/clino/cli/pkg/cli/task"
-	"github.com/clino/grpc-go/clino"
+	"github.com/clica/cli/pkg/cli/display"
+	"github.com/clica/cli/pkg/cli/global"
+	"github.com/clica/cli/pkg/cli/task"
+	"github.com/clica/grpc-go/clica"
 )
 
 // contextKey is a distinct type for context keys to avoid collisions
@@ -28,17 +28,17 @@ const (
 	AuthActionExit               AuthAction = "exit_wizard"
 )
 
-//  Clino Auth Menu
+//  Clica Auth Menu
 //  Example Layout
 //
-//	┃ Clino Account: <authenticated/not authenticated>
+//	┃ Clica Account: <authenticated/not authenticated>
 //	┃ Active Provider: <provider name or none configured>
 //	┃ Active Model: <model name or none configured>
 //	┃
 //	┃ What would you like to do?
-//	┃   Change Clino model (only if authenticated)				- hidden if not authenticated
-//	┃   Authenticate with Clino account / Sign out of Clino		- changes based on auth status
-//	┃   Select active provider (Clino or BYO)					- always shown. Used to switch between Clino and BYO providers
+//	┃   Change Clica model (only if authenticated)				- hidden if not authenticated
+//	┃   Authenticate with Clica account / Sign out of Clica		- changes based on auth status
+//	┃   Select active provider (Clica or BYO)					- always shown. Used to switch between Clica and BYO providers
 //	┃   Configure BYO API providers								- always shown. Launches provider setup wizard
 //	┃   Exit authorization wizard								- always shown. Exits the auth menu
 
@@ -66,14 +66,14 @@ func RunAuthFlow(ctx context.Context, args []string) error {
 	return HandleAuthCommand(authCtx, args)
 }
 
-// Main entry point for handling the `clino auth` command
+// Main entry point for handling the `clica auth` command
 // HandleAuthCommand routes the auth command based on the number of arguments
 func HandleAuthCommand(ctx context.Context, args []string) error {
 
 	// Check if flags are provided for quick setup
 	if QuickProvider != "" || QuickAPIKey != "" || QuickModelID != "" || QuickBaseURL != "" {
 		if QuickProvider == "" || QuickAPIKey == "" || QuickModelID == "" {
-			return fmt.Errorf("quick setup requires --provider, --apikey, and --modelid flags. Use 'clino auth --help' for more information")
+			return fmt.Errorf("quick setup requires --provider, --apikey, and --modelid flags. Use 'clica auth --help' for more information")
 		}
 		return QuickSetupFromFlags(ctx, QuickProvider, QuickAPIKey, QuickModelID, QuickBaseURL)
 	}
@@ -84,7 +84,7 @@ func HandleAuthCommand(ctx context.Context, args []string) error {
 		return HandleAuthMenuNoArgs(ctx)
 	case 1, 2, 3, 4:
 		fmt.Println("Invalid positional arguments. Correct usage:")
-		fmt.Println("  clino auth --provider <provider> --apikey <key> --modelid <model> --baseurl <optional>")
+		fmt.Println("  clica auth --provider <provider> --apikey <key> --modelid <model> --baseurl <optional>")
 		return nil
 	default:
 		return fmt.Errorf("too many arguments. Use flags for quick setup: --provider, --apikey, --modelid --baseurl(optional)")
@@ -102,7 +102,7 @@ func getAuthInstanceAddress(ctx context.Context) string {
 
 // HandleAuthMenuNoArgs prepares the auth menu when no arguments are provided
 func HandleAuthMenuNoArgs(ctx context.Context) error {
-	// Check if Clino is authenticated
+	// Check if Clica is authenticated
 	isClineAuth := IsAuthenticated(ctx)
 
 	// Get current provider config for display
@@ -121,7 +121,7 @@ func HandleAuthMenuNoArgs(ctx context.Context) error {
 	var hasOrganizations bool
 	if isClineAuth {
 		if client, err := global.GetDefaultClient(ctx); err == nil {
-			if orgsResponse, err := client.Account.GetUserOrganizations(ctx, &clino.EmptyRequest{}); err == nil {
+			if orgsResponse, err := client.Account.GetUserOrganizations(ctx, &clica.EmptyRequest{}); err == nil {
 				hasOrganizations = len(orgsResponse.GetOrganizations()) > 0
 			}
 		}
@@ -154,7 +154,7 @@ func HandleAuthMenuNoArgs(ctx context.Context) error {
 	}
 }
 
-// ShowAuthMenuWithStatus displays the main auth menu with Clino + provider status
+// ShowAuthMenuWithStatus displays the main auth menu with Clica + provider status
 func ShowAuthMenuWithStatus(isClineAuthenticated bool, hasOrganizations bool, currentProvider, currentModel string) (AuthAction, error) {
 	var action AuthAction
 	var options []huh.Option[AuthAction]
@@ -162,7 +162,7 @@ func ShowAuthMenuWithStatus(isClineAuthenticated bool, hasOrganizations bool, cu
 	// Build menu options based on authentication status
 	if isClineAuthenticated {
 		options = []huh.Option[AuthAction]{
-			huh.NewOption("Change Clino model", AuthActionChangeClineModel),
+			huh.NewOption("Change Clica model", AuthActionChangeClineModel),
 		}
 
 		// Add organization selection if user has organizations
@@ -171,15 +171,15 @@ func ShowAuthMenuWithStatus(isClineAuthenticated bool, hasOrganizations bool, cu
 		}
 
 		options = append(options,
-			huh.NewOption("Sign out of Clino", AuthActionClineLogin),
-			huh.NewOption("Select active provider (Clino or BYO)", AuthActionSelectProvider),
+			huh.NewOption("Sign out of Clica", AuthActionClineLogin),
+			huh.NewOption("Select active provider (Clica or BYO)", AuthActionSelectProvider),
 			huh.NewOption("Configure BYO API providers", AuthActionBYOSetup),
 			huh.NewOption("Exit authorization wizard", AuthActionExit),
 		)
 	} else {
 		options = []huh.Option[AuthAction]{
-			huh.NewOption("Authenticate with Clino account", AuthActionClineLogin),
-			huh.NewOption("Select active provider (Clino or BYO)", AuthActionSelectProvider),
+			huh.NewOption("Authenticate with Clica account", AuthActionClineLogin),
+			huh.NewOption("Select active provider (Clica or BYO)", AuthActionSelectProvider),
 			huh.NewOption("Configure BYO API providers", AuthActionBYOSetup),
 			huh.NewOption("Exit authorization wizard", AuthActionExit),
 		}
@@ -189,14 +189,14 @@ func ShowAuthMenuWithStatus(isClineAuthenticated bool, hasOrganizations bool, cu
 	var title string
 	renderer := display.NewRenderer(global.Config.OutputFormat)
 
-	// Always show Clino authentication status
+	// Always show Clica authentication status
 	if isClineAuthenticated {
-		title = fmt.Sprintf("Clino Account: %s Authenticated\n", renderer.Green("✓"))
+		title = fmt.Sprintf("Clica Account: %s Authenticated\n", renderer.Green("✓"))
 	} else {
-		title = fmt.Sprintf("Clino Account: %s Not authenticated\n", renderer.Red("✗"))
+		title = fmt.Sprintf("Clica Account: %s Not authenticated\n", renderer.Red("✗"))
 	}
 
-	// Show active provider and model if configured (regardless of Clino auth status)
+	// Show active provider and model if configured (regardless of Clica auth status)
 	if currentProvider != "" && currentModel != "" {
 		title += fmt.Sprintf("Active Provider: %s\nActive Model: %s\n",
 			renderer.White(currentProvider),
@@ -237,7 +237,7 @@ func HandleAPIProviderSetup(ctx context.Context) error {
 	return wizard.Run()
 }
 
-// HandleSelectProvider allows users to switch between Clino provider and BYO providers
+// HandleSelectProvider allows users to switch between Clica provider and BYO providers
 func HandleSelectProvider(ctx context.Context) error {
 	// Get task manager
 	manager, err := createTaskManager(ctx)
@@ -253,7 +253,7 @@ func HandleSelectProvider(ctx context.Context) error {
 
 	// Build list of available providers
 	var providerOptions []huh.Option[string]
-	var providerMapping = make(map[string]clino.ApiProvider)
+	var providerMapping = make(map[string]clica.ApiProvider)
 
 	// Add each configured provider to the selection menu
 	for _, provider := range availableProviders {
@@ -297,8 +297,8 @@ func HandleSelectProvider(ctx context.Context) error {
 	selectedProvider := providerMapping[selected]
 
 	// Apply the selected provider
-	if selectedProvider == clino.ApiProvider_CLINO {
-		// Configure Clino as the active provider
+	if selectedProvider == clica.ApiProvider_CLICA {
+		// Configure Clica as the active provider
 		return SelectClineModel(ctx, manager)
 	} else {
 		// Switch to the selected BYO provider

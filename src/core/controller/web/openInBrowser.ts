@@ -1,4 +1,4 @@
-import { Empty, StringRequest } from "@shared/proto/clino/common"
+import { Empty, StringRequest } from "@shared/proto/clica/common"
 import { openExternal } from "@utils/env"
 import { Controller } from ".."
 

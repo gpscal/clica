@@ -1,6 +1,6 @@
 # Hook Test Fixtures
 
-This directory contains pre-written hook scripts for testing the Clino hooks system.
+This directory contains pre-written hook scripts for testing the Clica hooks system.
 
 ## Directory Structure
 

@@ -30,8 +30,8 @@ export class PostHogClientProvider {
 
 	/**
 	 * Filters PostHog events before they are sent.
-	 * For exceptions, we only capture those from the Clino extension.
-	 * this is specifically to avoid capturing errors from anything other than Clino
+	 * For exceptions, we only capture those from the Clica extension.
+	 * this is specifically to avoid capturing errors from anything other than Clica
 	 */
 	static eventFilter(event: EventMessage | null) {
 		if (!event || event?.event !== "$exception") {
@@ -41,14 +41,14 @@ export class PostHogClientProvider {
 		if (!exceptionList?.length) {
 			return null
 		}
-		// Check if any exception is from Clino
+		// Check if any exception is from Clica
 		for (let i = 0; i < exceptionList.length; i++) {
 			const stacktrace = exceptionList[i].stacktrace
-			// Fast check: error message contains "clino"
-			if (stacktrace?.value?.toLowerCase().includes("clino")) {
+			// Fast check: error message contains "clica"
+			if (stacktrace?.value?.toLowerCase().includes("clica")) {
 				return event
 			}
-			// Check stack frames for Clino extension path
+			// Check stack frames for Clica extension path
 			const frames = stacktrace?.frames
 			if (frames?.length) {
 				for (let j = 0; j < frames.length; j++) {

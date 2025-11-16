@@ -8,7 +8,7 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/clino/cli/pkg/common"
+	"github.com/clica/cli/pkg/common"
 )
 
 // 2. Multi-instance start: default_instance remains the first started.
@@ -72,7 +72,7 @@ func TestDefaultJsonUpdateAfterRemoval(t *testing.T) {
 	if corePID <= 0 {
 		t.Fatalf("could not find PID for core process at %s", target.Address)
 	}
-	t.Logf("Killing clino-core process PID %d for instance %s", corePID, target.Address)
+	t.Logf("Killing clica-core process PID %d for instance %s", corePID, target.Address)
 	if err := syscall.Kill(corePID, syscall.SIGKILL); err != nil {
 		t.Fatalf("kill pid %d: %v", corePID, err)
 	}

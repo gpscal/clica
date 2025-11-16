@@ -1,10 +1,10 @@
 import type { ModelFamily } from "@/shared/prompts"
-import type { ClinoDefaultTool } from "@/shared/tools"
+import type { ClicaDefaultTool } from "@/shared/tools"
 import type { SystemPromptContext } from "./types"
 
 export interface ClineToolSpec {
 	variant: ModelFamily
-	id: ClinoDefaultTool
+	id: ClicaDefaultTool
 	name: string
 	description: string
 	instruction?: string
@@ -17,7 +17,7 @@ interface ClineToolSpecParameter {
 	required: boolean
 	instruction: string
 	usage?: string
-	dependencies?: ClinoDefaultTool[]
+	dependencies?: ClicaDefaultTool[]
 	description?: string
 	contextRequirements?: (context: SystemPromptContext) => boolean
 }

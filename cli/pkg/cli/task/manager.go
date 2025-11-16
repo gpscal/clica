@@ -11,12 +11,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/clino/cli/pkg/cli/display"
-	"github.com/clino/cli/pkg/cli/global"
-	"github.com/clino/cli/pkg/cli/handlers"
-	"github.com/clino/cli/pkg/cli/types"
-	"github.com/clino/grpc-go/client"
-	"github.com/clino/grpc-go/clino"
+	"github.com/clica/cli/pkg/cli/display"
+	"github.com/clica/cli/pkg/cli/global"
+	"github.com/clica/cli/pkg/cli/handlers"
+	"github.com/clica/cli/pkg/cli/types"
+	"github.com/clica/grpc-go/client"
+	"github.com/clica/grpc-go/clica"
 )
 
 // Sentinel errors for CheckSendEnabled
@@ -28,7 +28,7 @@ var (
 // Manager handles task execution and message display
 type Manager struct {
 	mu               sync.RWMutex
-	client           *client.ClinoClient
+	client           *client.ClicaClient
 	clientAddress    string
 	state            *types.ConversationState
 	renderer         *display.Renderer
@@ -42,7 +42,7 @@ type Manager struct {
 }
 
 // NewManager creates a new task manager
-func NewManager(client *client.ClinoClient) *Manager {
+func NewManager(client *client.ClicaClient) *Manager {
 	state := types.NewConversationState()
 	renderer := display.NewRenderer(global.Config.OutputFormat)
 	toolRenderer := display.NewToolRenderer(renderer.GetMdRenderer(), global.Config.OutputFormat)
@@ -96,7 +96,7 @@ func NewManagerForDefault(ctx context.Context) (*Manager, error) {
 	return manager, nil
 }
 
-// SwitchToInstance switches the manager to use a different Clino instance
+// SwitchToInstance switches the manager to use a different Clica instance
 func (m *Manager) SwitchToInstance(ctx context.Context, address string) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
@@ -149,7 +149,7 @@ func (m *Manager) CreateTask(ctx context.Context, prompt string, images, files [
 	}
 
 	// Parse task settings if provided
-	var taskSettings *clino.Settings
+	var taskSettings *clica.Settings
 	if len(settingsFlags) > 0 {
 		var err error
 		taskSettings, _, err = ParseTaskSettings(settingsFlags)
@@ -159,7 +159,7 @@ func (m *Manager) CreateTask(ctx context.Context, prompt string, images, files [
 	}
 
 	// Create task request
-	req := &clino.NewTaskRequest{
+	req := &clica.NewTaskRequest{
 		Text:         prompt,
 		Images:       images,
 		Files:        files,
@@ -179,7 +179,7 @@ func (m *Manager) CreateTask(ctx context.Context, prompt string, images, files [
 // cancelExistingTaskIfNeeded checks if there's an active task and cancels it
 func (m *Manager) cancelExistingTaskIfNeeded(ctx context.Context) error {
 	// Try to get the current state to check if there's an active task
-	state, err := m.client.State.GetLatestState(ctx, &clino.EmptyRequest{})
+	state, err := m.client.State.GetLatestState(ctx, &clica.EmptyRequest{})
 	if err != nil {
 		// If we can't get state, assume no active task and continue
 		if global.Config.Verbose {
@@ -206,7 +206,7 @@ func (m *Manager) cancelExistingTaskIfNeeded(ctx context.Context) error {
 			}
 
 			// Cancel the existing task
-			_, err := m.client.Task.CancelTask(ctx, &clino.EmptyRequest{})
+			_, err := m.client.Task.CancelTask(ctx, &clica.EmptyRequest{})
 			if err != nil {
 				if global.Config.Verbose {
 					m.renderer.RenderDebug("Cancel task returned error: %v", err)
@@ -223,7 +223,7 @@ func (m *Manager) cancelExistingTaskIfNeeded(ctx context.Context) error {
 // ValidateCheckpointExists checks if a checkpoint ID is valid
 func (m *Manager) ValidateCheckpointExists(ctx context.Context, checkpointID int64) error {
 	// Get current state
-	state, err := m.client.State.GetLatestState(ctx, &clino.EmptyRequest{})
+	state, err := m.client.State.GetLatestState(ctx, &clica.EmptyRequest{})
 	if err != nil {
 		return fmt.Errorf("failed to get state: %w", err)
 	}
@@ -251,7 +251,7 @@ func (m *Manager) ValidateCheckpointExists(ctx context.Context, checkpointID int
 // Returns nil if sending is allowed, or an error indicating why it's not allowed
 // We duplicate the logic from buttonConfig::getButtonConfig
 func (m *Manager) CheckSendEnabled(ctx context.Context) error {
-	state, err := m.client.State.GetLatestState(ctx, &clino.EmptyRequest{})
+	state, err := m.client.State.GetLatestState(ctx, &clica.EmptyRequest{})
 	if err != nil {
 		return fmt.Errorf("failed to get latest state: %w", err)
 	}
@@ -340,8 +340,8 @@ func (m *Manager) CheckSendEnabled(ctx context.Context) error {
 
 // CheckNeedsApproval determines if the current task is waiting for approval
 // Returns (needsApproval, lastMessage, error)
-func (m *Manager) CheckNeedsApproval(ctx context.Context) (bool, *types.ClinoMessage, error) {
-	state, err := m.client.State.GetLatestState(ctx, &clino.EmptyRequest{})
+func (m *Manager) CheckNeedsApproval(ctx context.Context) (bool, *types.ClicaMessage, error) {
+	state, err := m.client.State.GetLatestState(ctx, &clica.EmptyRequest{})
 	if err != nil {
 		return false, nil, fmt.Errorf("failed to get latest state: %w", err)
 	}
@@ -405,7 +405,7 @@ func (m *Manager) SendMessage(ctx context.Context, message string, images, files
 	}
 
 	// Send the followup message using AskResponse
-	req := &clino.AskResponseRequest{
+	req := &clica.AskResponseRequest{
 		ResponseType: responseType,
 		Text:         message,
 		Images:       images,
@@ -420,26 +420,26 @@ func (m *Manager) SendMessage(ctx context.Context, message string, images, files
 	return nil
 }
 
-// SetMode sets the Plan/Act mode for the current Clino instance and optionally sends message
+// SetMode sets the Plan/Act mode for the current Clica instance and optionally sends message
 func (m *Manager) SetMode(ctx context.Context, mode string, message *string, images, files []string) error {
 	if mode != "act" && mode != "plan" {
 		return fmt.Errorf("invalid mode '%s': must be 'act' or 'plan'", mode)
 	}
 
-	var protoMode clino.PlanActMode
+	var protoMode clica.PlanActMode
 	if mode == "plan" {
-		protoMode = clino.PlanActMode_PLAN
+		protoMode = clica.PlanActMode_PLAN
 	} else {
-		protoMode = clino.PlanActMode_ACT
+		protoMode = clica.PlanActMode_ACT
 	}
 
-	req := &clino.TogglePlanActModeRequest{
-		Metadata: &clino.Metadata{},
+	req := &clica.TogglePlanActModeRequest{
+		Metadata: &clica.Metadata{},
 		Mode:     protoMode,
 	}
 
 	if message != nil {
-		req.ChatContent = &clino.ChatContent{
+		req.ChatContent = &clica.ChatContent{
 			Message: message,
 			Images:  images,
 			Files:   files,
@@ -467,17 +467,17 @@ func (m *Manager) SetModeAndSendMessage(ctx context.Context, mode, message strin
 	}
 	fmt.Printf("Current task ID: %s\n", taskId)
 
-	var protoMode clino.PlanActMode
+	var protoMode clica.PlanActMode
 	if mode == "plan" {
-		protoMode = clino.PlanActMode_PLAN
+		protoMode = clica.PlanActMode_PLAN
 	} else {
-		protoMode = clino.PlanActMode_ACT
+		protoMode = clica.PlanActMode_ACT
 	}
 
-	req := &clino.TogglePlanActModeRequest{
-		Metadata: &clino.Metadata{},
+	req := &clica.TogglePlanActModeRequest{
+		Metadata: &clica.Metadata{},
 		Mode:     protoMode,
-		ChatContent: &clino.ChatContent{
+		ChatContent: &clica.ChatContent{
 			Message: &message,
 			Images:  images,
 			Files:   files,
@@ -521,7 +521,7 @@ func (m *Manager) SetModeAndSendMessage(ctx context.Context, mode, message strin
 // getCurrentTaskId extracts the current task ID from the server state
 func (m *Manager) getCurrentTaskId(ctx context.Context) (string, error) {
 	// Get the latest state
-	state, err := m.client.State.GetLatestState(ctx, &clino.EmptyRequest{})
+	state, err := m.client.State.GetLatestState(ctx, &clica.EmptyRequest{})
 	if err != nil {
 		return "", fmt.Errorf("failed to get state: %w", err)
 	}
@@ -542,7 +542,7 @@ func (m *Manager) getCurrentTaskId(ctx context.Context) (string, error) {
 
 // ReinitExistingTaskFromId reinitializes an existing task from the given task ID
 func (m *Manager) ReinitExistingTaskFromId(ctx context.Context, taskId string) error {
-	req := &clino.StringRequest{Value: taskId}
+	req := &clica.StringRequest{Value: taskId}
 	resp, err := m.client.Task.ShowTaskWithId(ctx, req)
 	if err != nil {
 		return fmt.Errorf("Failed to reinitialize task %s: %w", taskId, err)
@@ -579,8 +579,8 @@ func (m *Manager) RestoreCheckpoint(ctx context.Context, checkpointID int64, res
 	}
 
 	// Create the checkpoint restore request
-	req := &clino.CheckpointRestoreRequest{
-		Metadata:    &clino.Metadata{},
+	req := &clica.CheckpointRestoreRequest{
+		Metadata:    &clica.Metadata{},
 		Number:      checkpointID,
 		RestoreType: restoreType,
 	}
@@ -598,7 +598,7 @@ func (m *Manager) CancelTask(ctx context.Context) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	_, err := m.client.Task.CancelTask(ctx, &clino.EmptyRequest{})
+	_, err := m.client.Task.CancelTask(ctx, &clica.EmptyRequest{})
 	if err != nil {
 		return fmt.Errorf("failed to cancel task: %w", err)
 	}
@@ -613,7 +613,7 @@ func (m *Manager) ShowConversation(ctx context.Context) error {
 	if err != nil {
 		// Handle specific error cases
 		if errors.Is(err, ErrNoActiveTask) {
-			fmt.Println("No active task found. Use 'clino task new' to create a task first.")
+			fmt.Println("No active task found. Use 'clica task new' to create a task first.")
 			return nil
 		}
 		// For other errors (like task busy), we can still show the conversation
@@ -628,7 +628,7 @@ func (m *Manager) ShowConversation(ctx context.Context) error {
 	defer m.mu.RUnlock()
 
 	// Get the latest state which contains messages
-	state, err := m.client.State.GetLatestState(ctx, &clino.EmptyRequest{})
+	state, err := m.client.State.GetLatestState(ctx, &clica.EmptyRequest{})
 	if err != nil {
 		return fmt.Errorf("failed to get state: %w", err)
 	}
@@ -802,7 +802,7 @@ func (m *Manager) FollowConversationUntilCompletion(ctx context.Context) error {
 
 // handleStateStream handles the SubscribeToState stream
 func (m *Manager) handleStateStream(ctx context.Context, coordinator *StreamCoordinator, errChan chan error, completionChan chan bool) {
-	stateStream, err := m.client.State.SubscribeToState(ctx, &clino.EmptyRequest{})
+	stateStream, err := m.client.State.SubscribeToState(ctx, &clica.EmptyRequest{})
 	if err != nil {
 		errChan <- fmt.Errorf("failed to subscribe to state: %w", err)
 		return
@@ -835,7 +835,7 @@ func (m *Manager) handleStateStream(ctx context.Context, coordinator *StreamCoor
 	}
 }
 
-func (m *Manager) processStateUpdateJsonMode(stateUpdate *clino.State, coordinator *StreamCoordinator, completionChan chan bool) error {
+func (m *Manager) processStateUpdateJsonMode(stateUpdate *clica.State, coordinator *StreamCoordinator, completionChan chan bool) error {
 	messages, err := m.extractMessagesFromState(stateUpdate.StateJson)
 	if err != nil {
 		return err
@@ -900,7 +900,7 @@ func (m *Manager) processStateUpdateJsonMode(stateUpdate *clino.State, coordinat
 }
 
 // processStateUpdate processes state updates and supports logic for handling task competion markers
-func (m *Manager) processStateUpdate(stateUpdate *clino.State, coordinator *StreamCoordinator, completionChan chan bool) error {
+func (m *Manager) processStateUpdate(stateUpdate *clica.State, coordinator *StreamCoordinator, completionChan chan bool) error {
 	// Update current mode from state
 	m.updateMode(stateUpdate.StateJson)
 
@@ -985,7 +985,7 @@ func (m *Manager) processStateUpdate(stateUpdate *clino.State, coordinator *Stre
 			apiInfo := types.APIRequestInfo{Cost: -1}
 			if err := json.Unmarshal([]byte(msg.Text), &apiInfo); err == nil && apiInfo.Cost >= 0 {
 				if !coordinator.IsProcessedInCurrentTurn(msgKey) {
-					fmt.Println() // adds a separator between clino message and usage message
+					fmt.Println() // adds a separator between clica message and usage message
 					m.displayMessage(msg, false, false, i)
 
 					coordinator.MarkProcessedInCurrentTurn(msgKey)
@@ -1031,7 +1031,7 @@ func (m *Manager) processStateUpdate(stateUpdate *clino.State, coordinator *Stre
 
 // handlePartialMessageStream handles the SubscribeToPartialMessage stream for streaming assistant text
 func (m *Manager) handlePartialMessageStream(ctx context.Context, coordinator *StreamCoordinator, errChan chan error) {
-	partialStream, err := m.client.Ui.SubscribeToPartialMessage(ctx, &clino.EmptyRequest{})
+	partialStream, err := m.client.Ui.SubscribeToPartialMessage(ctx, &clica.EmptyRequest{})
 	if err != nil {
 		errChan <- fmt.Errorf("failed to subscribe to partial messages: %w", err)
 		return
@@ -1069,7 +1069,7 @@ func (m *Manager) handlePartialMessageStream(ctx context.Context, coordinator *S
 }
 
 // handleStreamingMessage handles a streaming message
-func (m *Manager) handleStreamingMessage(msg *types.ClinoMessage, coordinator *StreamCoordinator) error {
+func (m *Manager) handleStreamingMessage(msg *types.ClicaMessage, coordinator *StreamCoordinator) error {
 	// Debug: Always log what we're processing
 	m.renderer.RenderDebug("Processing message: timestamp=%d, partial=%v, type=%s, text_preview=%s",
 		msg.Timestamp, msg.Partial, msg.Type, m.truncateText(msg.Text, 50))
@@ -1093,7 +1093,7 @@ func (m *Manager) truncateText(text string, maxLen int) string {
 }
 
 // displayMessage displays a single message using the handler system
-func (m *Manager) displayMessage(msg *types.ClinoMessage, isLast, isPartial bool, messageIndex int) error {
+func (m *Manager) displayMessage(msg *types.ClicaMessage, isLast, isPartial bool, messageIndex int) error {
 	if global.Config.OutputFormat == "json" {
 		return m.outputMessageAsJSON(msg)
 	} else {
@@ -1118,8 +1118,8 @@ func (m *Manager) displayMessage(msg *types.ClinoMessage, isLast, isPartial bool
 	}
 }
 
-// outputMessageAsJSON prints a single clino message as json
-func (m *Manager) outputMessageAsJSON(msg *types.ClinoMessage) error {
+// outputMessageAsJSON prints a single clica message as json
+func (m *Manager) outputMessageAsJSON(msg *types.ClicaMessage) error {
 	jsonBytes, err := json.MarshalIndent(msg, "", "  ")
 	if err != nil {
 		return fmt.Errorf("failed to marshal message as JSON: %w", err)
@@ -1132,7 +1132,7 @@ func (m *Manager) outputMessageAsJSON(msg *types.ClinoMessage) error {
 // loadAndDisplayRecentHistory loads and displays recent conversation history and returns the total number of existing messages
 func (m *Manager) loadAndDisplayRecentHistory(ctx context.Context) (int, error) {
 	// Get the latest state which contains messages
-	state, err := m.client.State.GetLatestState(ctx, &clino.EmptyRequest{})
+	state, err := m.client.State.GetLatestState(ctx, &clica.EmptyRequest{})
 	if err != nil {
 		return 0, fmt.Errorf("failed to get state: %w", err)
 	}
@@ -1187,7 +1187,7 @@ func (m *Manager) loadAndDisplayRecentHistory(ctx context.Context) (int, error) 
 }
 
 // extractMessagesFromState parses the state JSON and extracts messages
-func (m *Manager) extractMessagesFromState(stateJson string) ([]*types.ClinoMessage, error) {
+func (m *Manager) extractMessagesFromState(stateJson string) ([]*types.ClicaMessage, error) {
 	return types.ExtractMessagesFromStateJSON(stateJson)
 }
 
@@ -1196,8 +1196,8 @@ func (m *Manager) GetState() *types.ConversationState {
 	return m.state
 }
 
-// GetClient returns the underlying ClinoClient for direct gRPC calls
-func (m *Manager) GetClient() *client.ClinoClient {
+// GetClient returns the underlying ClicaClient for direct gRPC calls
+func (m *Manager) GetClient() *client.ClicaClient {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
 	return m.client
@@ -1239,11 +1239,11 @@ func (m *Manager) updateMode(stateJson string) {
 
 // UpdateTaskAutoApprovalAction enables a specific auto-approval action for the current task
 func (m *Manager) UpdateTaskAutoApprovalAction(ctx context.Context, actionKey string) error {
-	settings := &clino.Settings{
-		AutoApprovalSettings: &clino.AutoApprovalSettings{
+	settings := &clica.Settings{
+		AutoApprovalSettings: &clica.AutoApprovalSettings{
 			Enabled:     true,
 			MaxRequests: 20, // Important: avoid maxRequests=0 bug
-			Actions:     &clino.AutoApprovalActions{},
+			Actions:     &clica.AutoApprovalActions{},
 		},
 	}
 
@@ -1265,7 +1265,7 @@ func (m *Manager) UpdateTaskAutoApprovalAction(ctx context.Context, actionKey st
 		return fmt.Errorf("unknown auto-approval action: %s", actionKey)
 	}
 
-	_, err := m.client.State.UpdateTaskSettings(ctx, &clino.UpdateTaskSettingsRequest{
+	_, err := m.client.State.UpdateTaskSettings(ctx, &clica.UpdateTaskSettingsRequest{
 		Settings: settings,
 	})
 	if err != nil {

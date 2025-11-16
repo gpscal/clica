@@ -13,26 +13,26 @@ import (
 	"testing"
 	"time"
 
-	"github.com/clino/cli/pkg/cli/global"
-	"github.com/clino/cli/pkg/common"
-	"github.com/clino/grpc-go/clino"
+	"github.com/clica/cli/pkg/cli/global"
+	"github.com/clica/cli/pkg/common"
+	"github.com/clica/grpc-go/clica"
 )
 
 const (
 	defaultTimeout  = 30 * time.Second
 	longTimeout     = 60 * time.Second
 	pollInterval    = 250 * time.Millisecond
-	instancesBinRel = "../bin/clino"
+	instancesBinRel = "../bin/clica"
 )
 
 func repoAwareBinPath(t *testing.T) string {
-	// Tests live in repoRoot/cli/e2e. Binary is at repoRoot/cli/bin/clino
+	// Tests live in repoRoot/cli/e2e. Binary is at repoRoot/cli/bin/clica
 	t.Helper()
 	wd, err := os.Getwd()
 	if err != nil {
 		t.Fatalf("Getwd error: %v", err)
 	}
-	// cli/e2e -> cli/bin/clino
+	// cli/e2e -> cli/bin/clica
 	p := filepath.Clean(filepath.Join(wd, instancesBinRel))
 	if _, err := os.Stat(p); err != nil {
 		t.Fatalf("CLI binary not found at %s; run `npm run compile-cli` first: %v", p, err)
@@ -43,7 +43,7 @@ func repoAwareBinPath(t *testing.T) string {
 func setTempClineDir(t *testing.T) string {
 	t.Helper()
 	dir := t.TempDir()
-	clineDir := filepath.Join(dir, ".clino")
+	clineDir := filepath.Join(dir, ".clica")
 	if err := os.MkdirAll(clineDir, 0o755); err != nil {
 		t.Fatalf("mkdir clineDir: %v", err)
 	}
@@ -90,7 +90,7 @@ func mustRunCLI(ctx context.Context, t *testing.T, args ...string) string {
 	t.Helper()
 	out, errOut, exit := runCLI(ctx, t, args...)
 	if exit != 0 {
-		t.Fatalf("clino %v failed (exit=%d)\nstdout:\n%s\nstderr:\n%s", args, exit, out, errOut)
+		t.Fatalf("clica %v failed (exit=%d)\nstdout:\n%s\nstderr:\n%s", args, exit, out, errOut)
 	}
 	return out
 }
@@ -289,7 +289,7 @@ func getPIDByPort(t *testing.T, port int) int {
 	return pid
 }
 
-// getCorePIDViaRPC returns the PID of the clino-core process using RPC (preferred method)
+// getCorePIDViaRPC returns the PID of the clica-core process using RPC (preferred method)
 func getCorePIDViaRPC(t *testing.T, address string) int {
 	t.Helper()
 
@@ -320,7 +320,7 @@ func getCorePIDViaRPC(t *testing.T, address string) int {
 	}
 
 	// Call GetProcessInfo RPC
-	processInfo, err := client.State.GetProcessInfo(ctx, &clino.EmptyRequest{})
+	processInfo, err := client.State.GetProcessInfo(ctx, &clica.EmptyRequest{})
 	if err != nil {
 		t.Logf("Warning: GetProcessInfo RPC failed for %s, falling back to lsof: %v", address, err)
 		return getCorePIDViaLsof(t, address)
@@ -347,7 +347,7 @@ func getCorePIDViaLsof(t *testing.T, address string) int {
 	return getPIDByPort(t, port)
 }
 
-// getCorePID returns the PID of the clino-core process for the given address
+// getCorePID returns the PID of the clica-core process for the given address
 // Uses RPC first, falls back to lsof if RPC fails
 func getCorePID(t *testing.T, address string) int {
 	t.Helper()
@@ -361,7 +361,7 @@ func getCorePID(t *testing.T, address string) int {
 	return getCorePIDViaLsof(t, address)
 }
 
-// getHostPID returns the PID of the clino-host process for the given host port
+// getHostPID returns the PID of the clica-host process for the given host port
 func getHostPID(t *testing.T, hostPort int) int {
 	t.Helper()
 	return getPIDByPort(t, hostPort)

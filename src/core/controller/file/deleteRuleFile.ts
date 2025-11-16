@@ -1,6 +1,6 @@
 import { deleteRuleFile as deleteRuleFileImpl } from "@core/context/instructions/user-instructions/rule-helpers"
 import { getWorkspaceBasename } from "@core/workspace"
-import { RuleFile, RuleFileRequest } from "@shared/proto/clino/file"
+import { RuleFile, RuleFileRequest } from "@shared/proto/clica/file"
 import { HostProvider } from "@/hosts/host-provider"
 import { ShowMessageType } from "@/shared/proto/host/window"
 import { Controller } from ".."
@@ -35,7 +35,7 @@ export async function deleteRuleFile(controller: Controller, request: RuleFileRe
 	}
 
 	// we refresh inside of the deleteRuleFileImpl(..) call
-	//await refreshClinoRulesToggles(controller.context, cwd)
+	//await refreshClicaRulesToggles(controller.context, cwd)
 	//await refreshExternalRulesToggles(controller.context, cwd)
 	//await refreshWorkflowToggles(controller.context, cwd)
 	await controller.postStateToWebview()

@@ -6,14 +6,14 @@ import (
 	"io"
 	"time"
 
-	"github.com/clino/cli/pkg/cli/global"
-	"github.com/clino/grpc-go/clino"
+	"github.com/clica/cli/pkg/cli/global"
+	"github.com/clica/grpc-go/clica"
 )
 
 // AuthStatusListener manages subscription to auth status updates
 type AuthStatusListener struct {
-	stream    clino.AccountService_SubscribeToAuthStatusUpdateClient
-	updatesCh chan *clino.AuthState
+	stream    clica.AccountService_SubscribeToAuthStatusUpdateClient
+	updatesCh chan *clica.AuthState
 	errCh     chan error
 	ctx       context.Context
 	cancel    context.CancelFunc
@@ -30,7 +30,7 @@ func NewAuthStatusListener(parentCtx context.Context) (*AuthStatusListener, erro
 	ctx, cancel := context.WithCancel(parentCtx)
 
 	// Subscribe to auth status updates
-	stream, err := client.Account.SubscribeToAuthStatusUpdate(ctx, &clino.EmptyRequest{})
+	stream, err := client.Account.SubscribeToAuthStatusUpdate(ctx, &clica.EmptyRequest{})
 	if err != nil {
 		cancel()
 		return nil, fmt.Errorf("failed to subscribe to auth updates: %w", err)
@@ -38,7 +38,7 @@ func NewAuthStatusListener(parentCtx context.Context) (*AuthStatusListener, erro
 
 	return &AuthStatusListener{
 		stream:    stream,
-		updatesCh: make(chan *clino.AuthState, 10),
+		updatesCh: make(chan *clica.AuthState, 10),
 		errCh:     make(chan error, 1),
 		ctx:       ctx,
 		cancel:    cancel,
@@ -125,6 +125,6 @@ func (l *AuthStatusListener) Stop() {
 }
 
 // isAuthenticated checks if AuthState indicates successful authentication
-func isAuthenticated(state *clino.AuthState) bool {
+func isAuthenticated(state *clica.AuthState) bool {
 	return state != nil && state.User != nil
 }

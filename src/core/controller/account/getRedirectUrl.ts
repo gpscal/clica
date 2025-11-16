@@ -1,4 +1,4 @@
-import { EmptyRequest, String } from "@shared/proto/clino/common"
+import { EmptyRequest, String } from "@shared/proto/clica/common"
 import { HostProvider } from "@/hosts/host-provider"
 import { Controller } from "../index"
 

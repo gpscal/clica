@@ -15,11 +15,11 @@ DATE=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
 BUILT_BY="${USER:-unknown}"
 
 # Build ldflags to inject version info
-LDFLAGS="-X 'github.com/clino/cli/pkg/cli/global.Version=${CORE_VERSION}' \
-         -X 'github.com/clino/cli/pkg/cli/global.CliVersion=${CLI_VERSION}' \
-         -X 'github.com/clino/cli/pkg/cli/global.Commit=${COMMIT}' \
-         -X 'github.com/clino/cli/pkg/cli/global.Date=${DATE}' \
-         -X 'github.com/clino/cli/pkg/cli/global.BuiltBy=${BUILT_BY}'"
+LDFLAGS="-X 'github.com/clica/cli/pkg/cli/global.Version=${CORE_VERSION}' \
+         -X 'github.com/clica/cli/pkg/cli/global.CliVersion=${CLI_VERSION}' \
+         -X 'github.com/clica/cli/pkg/cli/global.Commit=${COMMIT}' \
+         -X 'github.com/clica/cli/pkg/cli/global.Date=${DATE}' \
+         -X 'github.com/clica/cli/pkg/cli/global.BuiltBy=${BUILT_BY}'"
 
 cd cli
 
@@ -43,11 +43,11 @@ esac
 # Build for current platform only
 echo "Building for current platform ($OS-$ARCH)..."
 
-GO111MODULE=on go build -ldflags "$LDFLAGS" -o bin/clino ./cmd/clino
-echo "  ✓ bin/clino built"
+GO111MODULE=on go build -ldflags "$LDFLAGS" -o bin/clica ./cmd/clica
+echo "  ✓ bin/clica built"
 
-GO111MODULE=on go build -ldflags "$LDFLAGS" -o bin/clino-host ./cmd/clino-host
-echo "  ✓ bin/clino-host built"
+GO111MODULE=on go build -ldflags "$LDFLAGS" -o bin/clica-host ./cmd/clica-host
+echo "  ✓ bin/clica-host built"
 
 echo ""
 echo "Build complete for current platform!"
@@ -55,8 +55,8 @@ echo "Build complete for current platform!"
 # Copy binaries to dist-standalone/bin with platform-specific names AND generic names
 cd ..
 mkdir -p dist-standalone/bin
-cp cli/bin/clino dist-standalone/bin/clino
-cp cli/bin/clino dist-standalone/bin/clino-${OS}-${ARCH}
-cp cli/bin/clino-host dist-standalone/bin/clino-host
-cp cli/bin/clino-host dist-standalone/bin/clino-host-${OS}-${ARCH}
+cp cli/bin/clica dist-standalone/bin/clica
+cp cli/bin/clica dist-standalone/bin/clica-${OS}-${ARCH}
+cp cli/bin/clica-host dist-standalone/bin/clica-host
+cp cli/bin/clica-host dist-standalone/bin/clica-host-${OS}-${ARCH}
 echo "Copied binaries to dist-standalone/bin/ (both generic and platform-specific names)"

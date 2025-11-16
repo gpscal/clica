@@ -1,5 +1,5 @@
-import { CheckpointRestoreRequest } from "@shared/proto/clino/checkpoints"
-import { Empty } from "@shared/proto/clino/common"
+import { CheckpointRestoreRequest } from "@shared/proto/clica/checkpoints"
+import { Empty } from "@shared/proto/clica/common"
 import pWaitFor from "p-wait-for"
 import { HostProvider } from "@/hosts/host-provider"
 import { ShowMessageType } from "@/shared/proto/index.host"
@@ -14,7 +14,7 @@ export async function checkpointRestore(controller: Controller, request: Checkpo
 		await pWaitFor(() => controller.task?.taskState.isInitialized === true, {
 			timeout: 3_000,
 		}).catch((error) => {
-			console.log("Failed to init new Clino instance to restore checkpoint", error)
+			console.log("Failed to init new Clica instance to restore checkpoint", error)
 			HostProvider.window.showMessage({
 				type: ShowMessageType.ERROR,
 				message: "Failed to restore checkpoint",

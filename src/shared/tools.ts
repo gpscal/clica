@@ -1,5 +1,5 @@
 // Define available tool ids
-export enum ClinoDefaultTool {
+export enum ClicaDefaultTool {
 	ASK = "ask_followup_question",
 	ATTEMPT = "attempt_completion",
 	BASH = "execute_command",
@@ -25,4 +25,4 @@ export enum ClinoDefaultTool {
 
 // Array of all tool names for compatibility
 // Automatically generated from the enum values
-export const toolUseNames = Object.values(ClinoDefaultTool) as ClinoDefaultTool[]
+export const toolUseNames = Object.values(ClicaDefaultTool) as ClicaDefaultTool[]

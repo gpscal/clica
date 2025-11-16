@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/clino/cli/pkg/cli/global"
-	"github.com/clino/cli/pkg/cli/task"
-	"github.com/clino/grpc-go/clino"
+	"github.com/clica/cli/pkg/cli/global"
+	"github.com/clica/cli/pkg/cli/task"
+	"github.com/clica/grpc-go/clica"
 )
 
 // Package-level variables for command-line flags
@@ -42,7 +42,7 @@ func QuickSetupFromFlags(ctx context.Context, provider, apiKey, modelID, baseURL
 	// For Ollama, baseURL is stored in the API key field
 	finalAPIKey := apiKey
 	finalBaseURL := baseURL
-	if providerEnum == clino.ApiProvider_OLLAMA {
+	if providerEnum == clica.ApiProvider_OLLAMA {
 		if baseURL != "" {
 			finalAPIKey = baseURL
 			finalBaseURL = ""
@@ -78,7 +78,7 @@ func QuickSetupFromFlags(ctx context.Context, provider, apiKey, modelID, baseURL
 	// Success message
 	fmt.Printf("\n✓ Successfully configured %s provider\n", GetProviderDisplayName(providerEnum))
 	fmt.Printf("  Model: %s\n", finalModelID)
-	if providerEnum == clino.ApiProvider_OLLAMA {
+	if providerEnum == clica.ApiProvider_OLLAMA {
 		fmt.Printf("  Base URL: %s\n", finalAPIKey)
 	} else {
 		fmt.Println("  API Key: Configured")
@@ -86,37 +86,37 @@ func QuickSetupFromFlags(ctx context.Context, provider, apiKey, modelID, baseURL
 	if finalBaseURL != "" {
 		fmt.Printf("  Custom Base URL: %s\n", finalBaseURL)
 	}
-	fmt.Println("\nYou can now use Clino with this provider.")
-	fmt.Println("Run 'clino start' to begin a new task.")
+	fmt.Println("\nYou can now use Clica with this provider.")
+	fmt.Println("Run 'clica start' to begin a new task.")
 
 	return nil
 }
 
 // validateQuickSetupInputs validates all input parameters for quick setup
 // Returns the validated provider enum or an error if validation fails
-func validateQuickSetupInputs(provider, apiKey, modelID, baseURL string) (clino.ApiProvider, error) {
+func validateQuickSetupInputs(provider, apiKey, modelID, baseURL string) (clica.ApiProvider, error) {
 	// Validate required parameters
 	if provider == "" {
-		return clino.ApiProvider_ANTHROPIC, fmt.Errorf("provider is required. Use --provider or -p flag")
+		return clica.ApiProvider_ANTHROPIC, fmt.Errorf("provider is required. Use --provider or -p flag")
 	}
 
 	if strings.TrimSpace(apiKey) == "" && provider != "ollama" {
-		return clino.ApiProvider_ANTHROPIC, fmt.Errorf("API key is required for %s provider. Use --apikey or -k flag", provider)
+		return clica.ApiProvider_ANTHROPIC, fmt.Errorf("API key is required for %s provider. Use --apikey or -k flag", provider)
 	}
 
 	if strings.TrimSpace(modelID) == "" {
-		return clino.ApiProvider_ANTHROPIC, fmt.Errorf("model ID is required. Use --modelid or -m flag")
+		return clica.ApiProvider_ANTHROPIC, fmt.Errorf("model ID is required. Use --modelid or -m flag")
 	}
 
 	// Validate and map provider string to enum
 	providerEnum, err := validateQuickSetupProvider(provider)
 	if err != nil {
-		return clino.ApiProvider_ANTHROPIC, err
+		return clica.ApiProvider_ANTHROPIC, err
 	}
 
 	// Validate that baseURL is only provided for OpenAI-compatible providers
 	if err := validateBaseURL(baseURL, providerEnum); err != nil {
-		return clino.ApiProvider_ANTHROPIC, err
+		return clica.ApiProvider_ANTHROPIC, err
 	}
 
 	return providerEnum, nil
@@ -124,8 +124,8 @@ func validateQuickSetupInputs(provider, apiKey, modelID, baseURL string) (clino.
 
 // validateBaseURL checks if the user's input includes a baseURL for a provider other than OpenAI (compatible)
 // Returns error if baseURL is provided for unsupported providers
-func validateBaseURL(baseURL string, providerEnum clino.ApiProvider) error {
-	if providerEnum != clino.ApiProvider_OPENAI {
+func validateBaseURL(baseURL string, providerEnum clica.ApiProvider) error {
+	if providerEnum != clica.ApiProvider_OPENAI {
 		if baseURL != "" {
 			return fmt.Errorf("base URL is only supported for OpenAI and OpenAI-compatible providers")
 		}
@@ -136,13 +136,13 @@ func validateBaseURL(baseURL string, providerEnum clino.ApiProvider) error {
 
 // validateQuickSetupProvider validates the provider ID and returns the enum value
 // Returns error if provider is invalid or not supported for quick setup
-func validateQuickSetupProvider(providerID string) (clino.ApiProvider, error) {
+func validateQuickSetupProvider(providerID string) (clica.ApiProvider, error) {
 	// Normalize provider ID (trim whitespace, lowercase)
 	normalizedID := strings.TrimSpace(strings.ToLower(providerID))
 
 	// Explicitly block Bedrock
 	if normalizedID == "bedrock" {
-		return clino.ApiProvider_BEDROCK, fmt.Errorf("bedrock provider is not supported for quick setup due to complex authentication requirements. Please use interactive setup: clino auth")
+		return clica.ApiProvider_BEDROCK, fmt.Errorf("bedrock provider is not supported for quick setup due to complex authentication requirements. Please use interactive setup: clica auth")
 	}
 
 	// Map provider string to enum using existing function
@@ -153,7 +153,7 @@ func validateQuickSetupProvider(providerID string) (clino.ApiProvider, error) {
 			"openai-native", "openai", "anthropic", "gemini",
 			"openrouter", "xai", "cerebras", "ollama",
 		}
-		return clino.ApiProvider_ANTHROPIC, fmt.Errorf(
+		return clica.ApiProvider_ANTHROPIC, fmt.Errorf(
 			"invalid provider '%s'. Supported providers: %s",
 			providerID,
 			strings.Join(supportedProviders, ", "),
@@ -161,20 +161,20 @@ func validateQuickSetupProvider(providerID string) (clino.ApiProvider, error) {
 	}
 
 	// Validate against supported quick setup providers
-	supportedProviders := map[clino.ApiProvider]bool{
-		clino.ApiProvider_OPENAI_NATIVE: true,
-		clino.ApiProvider_OPENAI:        true,
-		clino.ApiProvider_ANTHROPIC:     true,
-		clino.ApiProvider_GEMINI:        true,
-		clino.ApiProvider_OPENROUTER:    true,
-		clino.ApiProvider_XAI:           true,
-		clino.ApiProvider_CEREBRAS:      true,
-		clino.ApiProvider_OLLAMA:        true,
+	supportedProviders := map[clica.ApiProvider]bool{
+		clica.ApiProvider_OPENAI_NATIVE: true,
+		clica.ApiProvider_OPENAI:        true,
+		clica.ApiProvider_ANTHROPIC:     true,
+		clica.ApiProvider_GEMINI:        true,
+		clica.ApiProvider_OPENROUTER:    true,
+		clica.ApiProvider_XAI:           true,
+		clica.ApiProvider_CEREBRAS:      true,
+		clica.ApiProvider_OLLAMA:        true,
 	}
 
 	if !supportedProviders[provider] {
 		return provider, fmt.Errorf(
-			"provider '%s' is not supported for quick setup. Please use interactive setup: clino auth",
+			"provider '%s' is not supported for quick setup. Please use interactive setup: clica auth",
 			providerID,
 		)
 	}
@@ -186,7 +186,7 @@ func validateQuickSetupProvider(providerID string) (clino.ApiProvider, error) {
 // Returns the final model ID and optional model info
 // For providers with static models, validates against the list
 // For providers with dynamic models, fetches the list if possible
-func validateAndFetchModel(ctx context.Context, manager *task.Manager, provider clino.ApiProvider, modelID, apiKey string) (string, interface{}, error) {
+func validateAndFetchModel(ctx context.Context, manager *task.Manager, provider clica.ApiProvider, modelID, apiKey string) (string, interface{}, error) {
 	// Normalize model ID
 	modelID = strings.TrimSpace(modelID)
 	if modelID == "" {
@@ -196,7 +196,7 @@ func validateAndFetchModel(ctx context.Context, manager *task.Manager, provider 
 	// For most providers, we trust the user's input since we can't easily validate without making API calls
 	// The actual validation will happen when the model is used
 	switch provider {
-	case clino.ApiProvider_OPENROUTER:
+	case clica.ApiProvider_OPENROUTER:
 		// OpenRouter supports model info fetching, but it requires an API call
 		// For quick setup, we'll trust the user's input and return nil for model info
 		// The actual model info will be fetched when needed
@@ -205,7 +205,7 @@ func validateAndFetchModel(ctx context.Context, manager *task.Manager, provider 
 		}
 		return modelID, nil, nil
 
-	case clino.ApiProvider_OLLAMA:
+	case clica.ApiProvider_OLLAMA:
 		// Ollama models can be validated by fetching the list, but this requires the server to be running
 		// For quick setup, we'll trust the user's input
 		if global.Config.Verbose {
@@ -227,7 +227,7 @@ func validateAndFetchModel(ctx context.Context, manager *task.Manager, provider 
 // This prevents the welcome view from showing up after quick setup
 func markWelcomeViewCompleted(ctx context.Context, manager *task.Manager) error {
 	// Use the State service to update the welcome view flag
-	_, err := manager.GetClient().State.SetWelcomeViewCompleted(ctx, &clino.BooleanRequest{Value: true})
+	_, err := manager.GetClient().State.SetWelcomeViewCompleted(ctx, &clica.BooleanRequest{Value: true})
 	if err != nil {
 		return fmt.Errorf("failed to mark welcome view as completed: %w", err)
 	}

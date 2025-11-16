@@ -8,17 +8,17 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/clino/cli/pkg/cli/sqlite"
-	"github.com/clino/cli/pkg/common"
-	"github.com/clino/grpc-go/client"
-	"github.com/clino/grpc-go/clino"
-	"github.com/clino/grpc-go/host"
+	"github.com/clica/cli/pkg/cli/sqlite"
+	"github.com/clica/cli/pkg/common"
+	"github.com/clica/grpc-go/client"
+	"github.com/clica/grpc-go/clica"
+	"github.com/clica/grpc-go/host"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/health/grpc_health_v1"
 )
 
-// ClientRegistry manages Clino client connections using direct SQLite operations
+// ClientRegistry manages Clica client connections using direct SQLite operations
 type ClientRegistry struct {
 	lockManager *sqlite.LockManager
 	configPath  string
@@ -73,7 +73,7 @@ func (r *ClientRegistry) GetInstance(address string) (*common.CoreInstanceInfo, 
 }
 
 // GetClient returns a connected client for the given address (created on-demand)
-func (r *ClientRegistry) GetClient(ctx context.Context, address string) (*client.ClinoClient, error) {
+func (r *ClientRegistry) GetClient(ctx context.Context, address string) (*client.ClicaClient, error) {
 	// Verify instance exists in SQLite
 	if r.lockManager != nil {
 		exists, err := r.lockManager.HasInstanceAtAddress(address)
@@ -91,7 +91,7 @@ func (r *ClientRegistry) GetClient(ctx context.Context, address string) (*client
 		return nil, fmt.Errorf("invalid address %s: %w", address, err)
 	}
 
-	cl, err := client.NewClinoClient(target)
+	cl, err := client.NewClicaClient(target)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create client for %s: %w", target, err)
 	}
@@ -104,7 +104,7 @@ func (r *ClientRegistry) GetClient(ctx context.Context, address string) (*client
 }
 
 // GetDefaultClient returns a client for the default instance
-func (r *ClientRegistry) GetDefaultClient(ctx context.Context) (*client.ClinoClient, error) {
+func (r *ClientRegistry) GetDefaultClient(ctx context.Context) (*client.ClicaClient, error) {
 	defaultAddr := r.GetDefaultInstance()
 	if defaultAddr == "" {
 		return nil, fmt.Errorf("no default instance configured")
@@ -201,7 +201,7 @@ func (r *ClientRegistry) CleanupStaleInstances(ctx context.Context) error {
 		if instance.Status != grpc_health_v1.HealthCheckResponse_SERVING {
 			// Try to gracefully shutdown the paired host process before cleanup
 
-			fmt.Printf("Attempting to shutdown dangling host service %s for stale clino core instance %s\n",
+			fmt.Printf("Attempting to shutdown dangling host service %s for stale clica core instance %s\n",
 				instance.HostServiceAddress, instance.Address)
 			r.tryShutdownHostProcess(instance.HostServiceAddress)
 
@@ -236,7 +236,7 @@ func (r *ClientRegistry) tryShutdownHostProcess(hostServiceAddress string) {
 
 		// Create env service client and call shutdown
 		envClient := host.NewEnvServiceClient(conn)
-		_, err = envClient.Shutdown(ctx, &clino.EmptyRequest{})
+		_, err = envClient.Shutdown(ctx, &clica.EmptyRequest{})
 		if err != nil {
 			return fmt.Errorf("RPC failed: %w", err)
 		}

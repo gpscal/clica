@@ -11,7 +11,7 @@
  * 4. Run validation to ensure correctness
  */
 import { ModelFamily } from "@/shared/prompts"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaDefaultTool } from "@/shared/tools"
 import { PromptVariant } from ".."
 import { SystemPromptSection } from "../templates/placeholders"
 import { baseTemplate } from "./generic/template"
@@ -46,22 +46,22 @@ export const config: Omit<PromptVariant, "id"> = createVariant(ModelFamily.GENER
 	.tools(
 		// Define tool order - this is type-safe and will show available options.
 		// If a tool is listed here but no variant was registered, it will fall back to the generic variant.
-		ClinoDefaultTool.BASH,
-		ClinoDefaultTool.FILE_READ,
-		ClinoDefaultTool.FILE_NEW,
-		ClinoDefaultTool.FILE_EDIT,
-		ClinoDefaultTool.SEARCH,
-		ClinoDefaultTool.LIST_FILES,
-		ClinoDefaultTool.LIST_CODE_DEF,
-		ClinoDefaultTool.BROWSER,
-		ClinoDefaultTool.MCP_USE,
-		ClinoDefaultTool.MCP_ACCESS,
-		ClinoDefaultTool.ASK,
-		ClinoDefaultTool.ATTEMPT,
-		ClinoDefaultTool.NEW_TASK,
-		ClinoDefaultTool.PLAN_MODE,
-		ClinoDefaultTool.MCP_DOCS,
-		ClinoDefaultTool.TODO,
+		ClicaDefaultTool.BASH,
+		ClicaDefaultTool.FILE_READ,
+		ClicaDefaultTool.FILE_NEW,
+		ClicaDefaultTool.FILE_EDIT,
+		ClicaDefaultTool.SEARCH,
+		ClicaDefaultTool.LIST_FILES,
+		ClicaDefaultTool.LIST_CODE_DEF,
+		ClicaDefaultTool.BROWSER,
+		ClicaDefaultTool.MCP_USE,
+		ClicaDefaultTool.MCP_ACCESS,
+		ClicaDefaultTool.ASK,
+		ClicaDefaultTool.ATTEMPT,
+		ClicaDefaultTool.NEW_TASK,
+		ClicaDefaultTool.PLAN_MODE,
+		ClicaDefaultTool.MCP_DOCS,
+		ClicaDefaultTool.TODO,
 	)
 	.placeholders({
 		MODEL_FAMILY: "your-model-family", // Replace with appropriate model family
@@ -77,7 +77,7 @@ export const config: Omit<PromptVariant, "id"> = createVariant(ModelFamily.GENER
 	//     template: customRulesTemplate,
 	// })
 	// Optional: Override specific tools
-	// .overrideTool(ClinoDefaultTool.BASH, {
+	// .overrideTool(ClicaDefaultTool.BASH, {
 	//     enabled: false,
 	// })
 	.build()
@@ -110,7 +110,7 @@ export const createMinimalVariant = (family: ModelFamily) =>
 			SystemPromptSection.RULES,
 			SystemPromptSection.SYSTEM_INFO,
 		)
-		.tools(ClinoDefaultTool.FILE_READ, ClinoDefaultTool.FILE_NEW, ClinoDefaultTool.ATTEMPT)
+		.tools(ClicaDefaultTool.FILE_READ, ClicaDefaultTool.FILE_NEW, ClicaDefaultTool.ATTEMPT)
 
 // Full-featured variant for advanced models
 export const createAdvancedVariant = (family: ModelFamily) =>
@@ -132,21 +132,21 @@ export const createAdvancedVariant = (family: ModelFamily) =>
 			SystemPromptSection.USER_INSTRUCTIONS,
 		)
 		.tools(
-			ClinoDefaultTool.BASH,
-			ClinoDefaultTool.FILE_READ,
-			ClinoDefaultTool.FILE_NEW,
-			ClinoDefaultTool.FILE_EDIT,
-			ClinoDefaultTool.SEARCH,
-			ClinoDefaultTool.LIST_FILES,
-			ClinoDefaultTool.LIST_CODE_DEF,
-			ClinoDefaultTool.BROWSER,
-			ClinoDefaultTool.WEB_FETCH,
-			ClinoDefaultTool.MCP_USE,
-			ClinoDefaultTool.MCP_ACCESS,
-			ClinoDefaultTool.ASK,
-			ClinoDefaultTool.ATTEMPT,
-			ClinoDefaultTool.NEW_TASK,
-			ClinoDefaultTool.PLAN_MODE,
-			ClinoDefaultTool.MCP_DOCS,
-			ClinoDefaultTool.TODO,
+			ClicaDefaultTool.BASH,
+			ClicaDefaultTool.FILE_READ,
+			ClicaDefaultTool.FILE_NEW,
+			ClicaDefaultTool.FILE_EDIT,
+			ClicaDefaultTool.SEARCH,
+			ClicaDefaultTool.LIST_FILES,
+			ClicaDefaultTool.LIST_CODE_DEF,
+			ClicaDefaultTool.BROWSER,
+			ClicaDefaultTool.WEB_FETCH,
+			ClicaDefaultTool.MCP_USE,
+			ClicaDefaultTool.MCP_ACCESS,
+			ClicaDefaultTool.ASK,
+			ClicaDefaultTool.ATTEMPT,
+			ClicaDefaultTool.NEW_TASK,
+			ClicaDefaultTool.PLAN_MODE,
+			ClicaDefaultTool.MCP_DOCS,
+			ClicaDefaultTool.TODO,
 		)

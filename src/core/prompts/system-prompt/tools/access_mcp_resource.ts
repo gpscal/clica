@@ -1,5 +1,5 @@
 import { ModelFamily } from "@/shared/prompts"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaDefaultTool } from "@/shared/tools"
 import type { ClineToolSpec } from "../spec"
 import { TASK_PROGRESS_PARAMETER } from "../types"
 
@@ -22,7 +22,7 @@ Checklist here (optional)
 
 const generic: ClineToolSpec = {
 	variant: ModelFamily.GENERIC,
-	id: ClinoDefaultTool.MCP_ACCESS,
+	id: ClicaDefaultTool.MCP_ACCESS,
 	name: "access_mcp_resource",
 	description:
 		"Request to access a resource provided by a connected MCP server. Resources represent data sources that can be used as context, such as files, API responses, or system information.",

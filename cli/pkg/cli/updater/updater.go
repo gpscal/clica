@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/clino/cli/pkg/cli/global"
-	"github.com/clino/cli/pkg/cli/output"
+	"github.com/clica/cli/pkg/cli/global"
+	"github.com/clica/cli/pkg/cli/output"
 )
 
 type cacheData struct {
@@ -192,7 +192,7 @@ func checkAndUpdateInternal(bypassCache bool) error {
 
 	// Attempt update
 	if verbose {
-		output.Printf("[updater] Running: npm install -g clino%s\n",
+		output.Printf("[updater] Running: npm install -g clica%s\n",
 			map[bool]string{true: "@"+channel, false: ""}[channel == "nightly"])
 	}
 
@@ -222,7 +222,7 @@ func fetchLatestVersion() (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), requestTimeout)
 	defer cancel()
 
-	req, err := http.NewRequestWithContext(ctx, "GET", "https://registry.npmjs.org/clino", nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", "https://registry.npmjs.org/clica", nil)
 	if err != nil {
 		return "", err
 	}
@@ -249,9 +249,9 @@ func fetchLatestVersion() (string, error) {
 }
 
 func attemptUpdate(channel string) error {
-	packageName := "clino"
+	packageName := "clica"
 	if channel == "nightly" {
-		packageName = "clino@nightly"
+		packageName = "clica@nightly"
 	}
 
 	cmd := exec.Command("npm", "install", "-g", packageName)
@@ -361,9 +361,9 @@ func showSuccessMessage(version string) {
 }
 
 func showFailureMessage(channel string) {
-	packageName := "clino"
+	packageName := "clica"
 	if channel == "nightly" {
-		packageName = "clino@nightly"
+		packageName = "clica@nightly"
 	}
 
 	output.Printf("\n%s Auto-update failed %s Try: %s\n\n",
@@ -374,7 +374,7 @@ func showFailureMessage(channel string) {
 }
 
 func getCacheFilePath() string {
-	configDir := filepath.Join(os.Getenv("HOME"), ".clino", "data")
+	configDir := filepath.Join(os.Getenv("HOME"), ".clica", "data")
 	return filepath.Join(configDir, ".update-cache")
 }
 

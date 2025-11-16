@@ -1,5 +1,5 @@
-import { Empty, EmptyRequest } from "@shared/proto/clino/common"
-import { OpenRouterCompatibleModelInfo } from "@shared/proto/clino/models"
+import { Empty, EmptyRequest } from "@shared/proto/clica/common"
+import { OpenRouterCompatibleModelInfo } from "@shared/proto/clica/models"
 import { readMcpMarketplaceCatalogFromCache } from "@/core/storage/disk"
 import { telemetryService } from "@/services/telemetry"
 import { GlobalStateAndSettings } from "@/shared/storage/state-keys"

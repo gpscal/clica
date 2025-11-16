@@ -1,5 +1,5 @@
-import type { ToggleCursorRuleRequest } from "@shared/proto/clino/file"
-import { ClinoRulesToggles } from "@shared/proto/clino/file"
+import type { ToggleCursorRuleRequest } from "@shared/proto/clica/file"
+import { ClicaRulesToggles } from "@shared/proto/clica/file"
 import type { Controller } from "../index"
 
 /**
@@ -8,7 +8,7 @@ import type { Controller } from "../index"
  * @param request The toggle request
  * @returns The updated Cursor rule toggles
  */
-export async function toggleCursorRule(controller: Controller, request: ToggleCursorRuleRequest): Promise<ClinoRulesToggles> {
+export async function toggleCursorRule(controller: Controller, request: ToggleCursorRuleRequest): Promise<ClicaRulesToggles> {
 	const { rulePath, enabled } = request
 
 	if (!rulePath || typeof enabled !== "boolean") {
@@ -27,7 +27,7 @@ export async function toggleCursorRule(controller: Controller, request: ToggleCu
 	// Get the current state to return in the response
 	const cursorToggles = controller.stateManager.getWorkspaceStateKey("localCursorRulesToggles")
 
-	return ClinoRulesToggles.create({
+	return ClicaRulesToggles.create({
 		toggles: cursorToggles,
 	})
 }

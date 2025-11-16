@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/clino/cli/pkg/generated"
-	"github.com/clino/grpc-go/clino"
+	"github.com/clica/cli/pkg/generated"
+	"github.com/clica/grpc-go/clica"
 )
 
 // SupportsStaticModelList returns true if the provider has a predefined static model list
-func SupportsStaticModelList(provider clino.ApiProvider) bool {
+func SupportsStaticModelList(provider clica.ApiProvider) bool {
 	providerID := GetProviderIDForEnum(provider)
 	if providerID == "" {
 		return false
@@ -28,7 +28,7 @@ func SupportsStaticModelList(provider clino.ApiProvider) bool {
 
 // FetchStaticModels retrieves the static model list for a provider from generated definitions
 // Returns a sorted list of model IDs and a map of model IDs to their info
-func FetchStaticModels(provider clino.ApiProvider) ([]string, map[string]generated.ModelInfo, error) {
+func FetchStaticModels(provider clica.ApiProvider) ([]string, map[string]generated.ModelInfo, error) {
 	providerID := GetProviderIDForEnum(provider)
 	if providerID == "" {
 		return nil, nil, fmt.Errorf("unknown provider enum: %v", provider)
@@ -54,7 +54,7 @@ func FetchStaticModels(provider clino.ApiProvider) ([]string, map[string]generat
 }
 
 // GetDefaultModelForProvider returns the default model ID for a provider if one is defined
-func GetDefaultModelForProvider(provider clino.ApiProvider) string {
+func GetDefaultModelForProvider(provider clica.ApiProvider) string {
 	providerID := GetProviderIDForEnum(provider)
 	if providerID == "" {
 		return ""

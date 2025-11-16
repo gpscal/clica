@@ -7,7 +7,7 @@ import type { McpHub } from "@/services/mcp/McpHub"
 import type { BrowserSettings } from "@/shared/BrowserSettings"
 import type { FocusChainSettings } from "@/shared/FocusChainSettings"
 import { ModelFamily } from "@/shared/prompts"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaDefaultTool } from "@/shared/tools"
 import type { ClineToolSpec } from "./spec"
 import { SystemPromptSection } from "./templates/placeholders"
 
@@ -39,8 +39,8 @@ export interface PromptVariant {
 	readonly placeholders: Readonly<Record<string, string>> // Default placeholder values
 
 	// Tool configuration
-	readonly tools?: readonly ClinoDefaultTool[] // Ordered list of tools to include
-	readonly toolOverrides?: Readonly<Partial<Record<ClinoDefaultTool, ConfigOverride>>> // Tool customizations
+	readonly tools?: readonly ClicaDefaultTool[] // Ordered list of tools to include
+	readonly toolOverrides?: Readonly<Partial<Record<ClicaDefaultTool, ConfigOverride>>> // Tool customizations
 }
 
 /**
@@ -58,8 +58,8 @@ export interface MutablePromptVariant {
 	componentOrder: SystemPromptSection[]
 	componentOverrides: Partial<Record<SystemPromptSection, ConfigOverride>>
 	placeholders: Record<string, string>
-	tools?: ClinoDefaultTool[]
-	toolOverrides?: Partial<Record<ClinoDefaultTool, ConfigOverride>>
+	tools?: ClicaDefaultTool[]
+	toolOverrides?: Partial<Record<ClicaDefaultTool, ConfigOverride>>
 }
 
 /**
@@ -95,8 +95,8 @@ export interface SystemPromptContext {
 	readonly supportsBrowserUse?: boolean
 	readonly mcpHub?: McpHub
 	readonly focusChainSettings?: FocusChainSettings
-	readonly globalClinoRulesFileInstructions?: string
-	readonly localClinoRulesFileInstructions?: string
+	readonly globalClicaRulesFileInstructions?: string
+	readonly localClicaRulesFileInstructions?: string
 	readonly localCursorRulesFileInstructions?: string
 	readonly localCursorRulesDirInstructions?: string
 	readonly localWindsurfRulesFileInstructions?: string
@@ -138,8 +138,8 @@ export type ComponentKey = keyof typeof SystemPromptSection
 export type ComponentValue = (typeof SystemPromptSection)[ComponentKey]
 
 // Extract tool keys as literal types
-export type ToolKey = keyof typeof ClinoDefaultTool
-export type ToolValue = (typeof ClinoDefaultTool)[ToolKey]
+export type ToolKey = keyof typeof ClicaDefaultTool
+export type ToolValue = (typeof ClicaDefaultTool)[ToolKey]
 
 // Type for variant builder methods
 export type VariantBuilderMethod<T> = (this: T, ...args: any[]) => T
@@ -153,8 +153,8 @@ export function isValidSystemPromptSection(section: string): section is SystemPr
 	return Object.values(SystemPromptSection).includes(section as SystemPromptSection)
 }
 
-export function isValidClinoDefaultTool(tool: string): tool is ClinoDefaultTool {
-	return Object.values(ClinoDefaultTool).includes(tool as ClinoDefaultTool)
+export function isValidClicaDefaultTool(tool: string): tool is ClicaDefaultTool {
+	return Object.values(ClicaDefaultTool).includes(tool as ClicaDefaultTool)
 }
 
 /**
@@ -185,8 +185,8 @@ export interface VariantBuilder {
 	template(baseTemplate: string): this
 	components(...sections: SystemPromptSection[]): this
 	overrideComponent(section: SystemPromptSection, override: ConfigOverride): this
-	tools(...tools: ClinoDefaultTool[]): this
-	overrideTool(tool: ClinoDefaultTool, override: ConfigOverride): this
+	tools(...tools: ClicaDefaultTool[]): this
+	overrideTool(tool: ClicaDefaultTool, override: ConfigOverride): this
 	placeholders(placeholders: Record<string, string>): this
 	config(config: Record<string, any>): this
 	build(): VariantConfig
@@ -254,5 +254,5 @@ export const TASK_PROGRESS_PARAMETER = {
 	required: false,
 	instruction: `A checklist showing task progress after this tool use is completed. (See 'Updating Task Progress' section for more details)`,
 	usage: "Checklist here (optional)",
-	dependencies: [ClinoDefaultTool.TODO],
+	dependencies: [ClicaDefaultTool.TODO],
 }

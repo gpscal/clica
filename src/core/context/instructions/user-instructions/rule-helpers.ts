@@ -1,5 +1,5 @@
 import { ensureRulesDirectoryExists, ensureWorkflowsDirectoryExists, GlobalFileNames } from "@core/storage/disk"
-import { ClinoRulesToggles } from "@shared/clino-rules"
+import { ClicaRulesToggles } from "@shared/clica-rules"
 import { fileExistsAtPath, isDirectory, readDirectory } from "@utils/fs"
 import fs from "fs/promises"
 import * as path from "path"
@@ -37,10 +37,10 @@ export async function readDirectoryRecursive(
  */
 export async function synchronizeRuleToggles(
 	rulesDirectoryPath: string,
-	currentToggles: ClinoRulesToggles,
+	currentToggles: ClicaRulesToggles,
 	allowedFileExtension: string = "",
 	excludedPaths: string[][] = [],
-): Promise<ClinoRulesToggles> {
+): Promise<ClicaRulesToggles> {
 	// Create a copy of toggles to modify
 	const updatedToggles = { ...currentToggles }
 
@@ -104,14 +104,14 @@ export async function synchronizeRuleToggles(
 /**
  * Certain project rules have more than a single location where rules are allowed to be stored
  */
-export function combineRuleToggles(toggles1: ClinoRulesToggles, toggles2: ClinoRulesToggles): ClinoRulesToggles {
+export function combineRuleToggles(toggles1: ClicaRulesToggles, toggles2: ClicaRulesToggles): ClicaRulesToggles {
 	return { ...toggles1, ...toggles2 }
 }
 
 /**
  * Read the content of rules files
  */
-export const getRuleFilesTotalContent = async (rulesFilePaths: string[], basePath: string, toggles: ClinoRulesToggles) => {
+export const getRuleFilesTotalContent = async (rulesFilePaths: string[], basePath: string, toggles: ClicaRulesToggles) => {
 	const ruleFilesTotalContent = await Promise.all(
 		rulesFilePaths.map(async (filePath) => {
 			const ruleFilePath = path.resolve(basePath, filePath)
@@ -175,18 +175,18 @@ export const createRuleFile = async (isGlobal: boolean, filename: string, cwd: s
 				const globalClineWorkflowFilePath = await ensureWorkflowsDirectoryExists()
 				filePath = path.join(globalClineWorkflowFilePath, filename)
 			} else {
-				const globalClinoRulesFilePath = await ensureRulesDirectoryExists()
-				filePath = path.join(globalClinoRulesFilePath, filename)
+				const globalClicaRulesFilePath = await ensureRulesDirectoryExists()
+				filePath = path.join(globalClicaRulesFilePath, filename)
 			}
 		} else {
-			const localClinoRulesFilePath = path.resolve(cwd, GlobalFileNames.clinoRules)
+			const localClicaRulesFilePath = path.resolve(cwd, GlobalFileNames.clicaRules)
 
-			const hasError = await ensureLocalClineDirExists(localClinoRulesFilePath, "default-rules.md")
+			const hasError = await ensureLocalClineDirExists(localClicaRulesFilePath, "default-rules.md")
 			if (hasError === true) {
 				return { filePath: null, fileExists: false }
 			}
 
-			await fs.mkdir(localClinoRulesFilePath, { recursive: true })
+			await fs.mkdir(localClicaRulesFilePath, { recursive: true })
 
 			if (type === "workflow") {
 				const localWorkflowsFilePath = path.resolve(cwd, GlobalFileNames.workflows)
@@ -201,7 +201,7 @@ export const createRuleFile = async (isGlobal: boolean, filename: string, cwd: s
 				filePath = path.join(localWorkflowsFilePath, filename)
 			} else {
 				// clinerules file creation
-				filePath = path.join(localClinoRulesFilePath, filename)
+				filePath = path.join(localClicaRulesFilePath, filename)
 			}
 		}
 
@@ -251,9 +251,9 @@ export async function deleteRuleFile(
 				delete toggles[rulePath]
 				controller.stateManager.setGlobalState("globalWorkflowToggles", toggles)
 			} else {
-				const toggles = controller.stateManager.getGlobalSettingsKey("globalClinoRulesToggles")
+				const toggles = controller.stateManager.getGlobalSettingsKey("globalClicaRulesToggles")
 				delete toggles[rulePath]
-				controller.stateManager.setGlobalState("globalClinoRulesToggles", toggles)
+				controller.stateManager.setGlobalState("globalClicaRulesToggles", toggles)
 			}
 		} else {
 			if (type === "workflow") {
@@ -269,9 +269,9 @@ export async function deleteRuleFile(
 				delete toggles[rulePath]
 				controller.stateManager.setWorkspaceState("localWindsurfRulesToggles", toggles)
 			} else {
-				const toggles = controller.stateManager.getWorkspaceStateKey("localClinoRulesToggles")
+				const toggles = controller.stateManager.getWorkspaceStateKey("localClicaRulesToggles")
 				delete toggles[rulePath]
-				controller.stateManager.setWorkspaceState("localClinoRulesToggles", toggles)
+				controller.stateManager.setWorkspaceState("localClicaRulesToggles", toggles)
 			}
 		}
 

@@ -5,7 +5,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/clino/cli/pkg/cli/types"
+	"github.com/clica/cli/pkg/cli/types"
 )
 
 // StreamingDisplay manages streaming message display with deduplication
@@ -34,7 +34,7 @@ func NewStreamingDisplay(state *types.ConversationState, renderer *Renderer) *St
 }
 
 // HandlePartialMessage processes partial messages with streaming support
-func (s *StreamingDisplay) HandlePartialMessage(msg *types.ClinoMessage) error {
+func (s *StreamingDisplay) HandlePartialMessage(msg *types.ClicaMessage) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 

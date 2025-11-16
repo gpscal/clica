@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package host;
 
-import "clino/common.proto";
+import "clica/common.proto";
 
-option go_package = "github.com/clino/grpc-go/host";
+option go_package = "github.com/clica/grpc-go/host";
 option java_multiple_files = true;
-option java_package = "bot.clino.host.proto";
+option java_package = "bot.clica.host.proto";
 
 // Provides methods for diff views.
 service DiffService {
@@ -37,7 +37,7 @@ service DiffService {
 }
 
 message OpenDiffRequest {
-  optional clino.Metadata metadata = 1;
+  optional clica.Metadata metadata = 1;
   // The absolute path of the document being edited.
   optional string path = 2;
   // The new content for the file.
@@ -50,7 +50,7 @@ message OpenDiffResponse {
 }
 
 message GetDocumentTextRequest {
-  optional clino.Metadata metadata = 1;
+  optional clica.Metadata metadata = 1;
   optional string diff_id = 2;
 }
 
@@ -59,7 +59,7 @@ message GetDocumentTextResponse {
 }
 
 message ReplaceTextRequest {
-  optional clino.Metadata metadata = 1;
+  optional clica.Metadata metadata = 1;
   optional string diff_id = 2;
   optional string content = 3;
   optional int32 start_line = 4;
@@ -76,7 +76,7 @@ message ScrollDiffRequest {
 message ScrollDiffResponse {}
 
 message TruncateDocumentRequest {
-  optional clino.Metadata metadata = 1;
+  optional clica.Metadata metadata = 1;
   optional string diff_id = 2;
   optional int32 end_line = 3;
 }
@@ -88,7 +88,7 @@ message CloseAllDiffsRequest {}
 message CloseAllDiffsResponse {}
 
 message SaveDocumentRequest {
-  optional clino.Metadata metadata = 1;
+  optional clica.Metadata metadata = 1;
   optional string diff_id = 2;
 }
 

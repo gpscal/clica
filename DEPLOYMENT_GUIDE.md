@@ -1,6 +1,6 @@
-# Clino Deployment Guide
+# Clica Deployment Guide
 
-This guide covers setting up and deploying Clino CLI in a new environment.
+This guide covers setting up and deploying Clica CLI in a new environment.
 
 ## Table of Contents
 
@@ -39,10 +39,10 @@ This guide covers setting up and deploying Clino CLI in a new environment.
 
 ```bash
 # Install globally
-npm install -g clino
+npm install -g clica
 
 # Verify installation
-clino --version
+clica --version
 ```
 
 ### Method 2: Build from Source
@@ -53,23 +53,23 @@ See [Building from Source](#building-from-source) section below.
 
 ```bash
 # Run without installing
-npx clino
+npx clica
 
 # Or with specific version
-npx clino@latest
+npx clica@latest
 ```
 
 ## Configuration
 
 ### Initial Setup
 
-1. **Run Clino for the first time**:
+1. **Run Clica for the first time**:
    ```bash
-   clino
+   clica
    ```
 
 2. **Configure API Keys**:
-   Clino will prompt you to configure your API keys. You can set them via:
+   Clica will prompt you to configure your API keys. You can set them via:
    
    - **Environment Variables** (recommended):
      ```bash
@@ -79,17 +79,17 @@ npx clino@latest
      export OPENROUTER_API_KEY="your-key-here"
      ```
    
-   - **Configuration File**: Clino stores configuration in `~/.clino/data/settings.json`
+   - **Configuration File**: Clica stores configuration in `~/.clica/data/settings.json`
 
 3. **Verify Configuration**:
    ```bash
-   clino --config
+   clica --config
    ```
 
 ### Configuration File Location
 
-- **macOS/Linux**: `~/.clino/data/`
-- **Windows**: `%APPDATA%\clino\data\`
+- **macOS/Linux**: `~/.clica/data/`
+- **Windows**: `%APPDATA%\clica\data\`
 
 Configuration files:
 - `settings.json` - User settings and preferences
@@ -102,8 +102,8 @@ Configuration files:
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/clino/clino.git
-cd clino
+git clone https://github.com/clica/clica.git
+cd clica
 ```
 
 ### Step 2: Install Dependencies
@@ -134,7 +134,7 @@ npm run protos-go
 # Build standalone core (Node.js)
 npm run compile-standalone
 
-# This creates: dist-standalone/clino-core.js
+# This creates: dist-standalone/clica-core.js
 ```
 
 ### Step 5: Build the CLI Binary
@@ -215,7 +215,7 @@ npm install -g typescript ts-node
 ### Project Structure
 
 ```
-clino/
+clica/
 ├── cli/                    # Go CLI frontend
 │   ├── bin/                # Compiled binaries
 │   ├── cmd/                # CLI commands
@@ -253,14 +253,14 @@ export AWS_SECRET_ACCESS_KEY="..."
 export AWS_REGION="us-east-1"
 ```
 
-### Clino Configuration
+### Clica Configuration
 
 ```bash
-# Clino directory (default: ~/.clino)
-export CLINE_DIR="$HOME/.clino"
+# Clica directory (default: ~/.clica)
+export CLINE_DIR="$HOME/.clica"
 
 # Installation directory
-export INSTALL_DIR="/path/to/clino"
+export INSTALL_DIR="/path/to/clica"
 
 # Workspace storage directory
 export WORKSPACE_STORAGE_DIR="/path/to/workspace-storage"
@@ -292,22 +292,22 @@ export OTEL_EXPORTER_OTLP_ENDPOINT="https://..."
 
 ```bash
 # Check version
-clino --version
+clica --version
 
 # Check help
-clino --help
+clica --help
 
 # Check configuration
-clino --config
+clica --config
 ```
 
 ### Test Basic Functionality
 
 ```bash
-# Start Clino
-clino
+# Start Clica
+clica
 
-# In the Clino prompt, try:
+# In the Clica prompt, try:
 # - "Hello, can you help me?"
 # - "List files in current directory"
 # - "Create a test file"
@@ -317,7 +317,7 @@ clino
 
 ```bash
 # Check if core service is running
-ps aux | grep clino-core
+ps aux | grep clica-core
 
 # Check gRPC port (default: 50051)
 lsof -i :50051
@@ -327,7 +327,7 @@ lsof -i :50051
 
 ### Common Issues
 
-#### 1. "Command not found: clino"
+#### 1. "Command not found: clica"
 
 **Solution**:
 ```bash
@@ -338,7 +338,7 @@ echo $PATH | grep npm
 export PATH="$PATH:$(npm config get prefix)/bin"
 
 # Reinstall
-npm install -g clino
+npm install -g clica
 ```
 
 #### 2. "Cannot connect to core service"
@@ -346,13 +346,13 @@ npm install -g clino
 **Solution**:
 ```bash
 # Check if core service is running
-ps aux | grep clino-core
+ps aux | grep clica-core
 
 # Check port availability
 lsof -i :50051
 
-# Restart Clino
-clino
+# Restart Clica
+clica
 ```
 
 #### 3. "API key not found"
@@ -362,8 +362,8 @@ clino
 # Set API key via environment variable
 export ANTHROPIC_API_KEY="your-key"
 
-# Or configure via Clino
-clino
+# Or configure via Clica
+clica
 # Then use: /config set api_key your-key
 ```
 
@@ -372,10 +372,10 @@ clino
 **Solution**:
 ```bash
 # Make CLI binary executable
-chmod +x cli/bin/clino
+chmod +x cli/bin/clica
 
 # Check file permissions
-ls -la cli/bin/clino
+ls -la cli/bin/clica
 ```
 
 #### 5. Build Failures
@@ -400,22 +400,22 @@ Enable debug logging:
 
 ```bash
 # Set debug environment variable
-export DEBUG="clino:*"
+export DEBUG="clica:*"
 
-# Run Clino
-clino
+# Run Clica
+clica
 ```
 
 ### Logs Location
 
-- **macOS/Linux**: `~/.clino/data/logs/`
-- **Windows**: `%APPDATA%\clino\data\logs\`
+- **macOS/Linux**: `~/.clica/data/logs/`
+- **Windows**: `%APPDATA%\clica\data\logs\`
 
 ### Getting Help
 
-- **GitHub Issues**: [https://github.com/clino/clino/issues](https://github.com/clino/clino/issues)
-- **Discord**: [https://discord.gg/clino](https://discord.gg/clino)
-- **Documentation**: [https://docs.clino.bot](https://docs.clino.bot)
+- **GitHub Issues**: [https://github.com/clica/clica/issues](https://github.com/clica/clica/issues)
+- **Discord**: [https://discord.gg/clica](https://discord.gg/clica)
+- **Documentation**: [https://docs.clica.bot](https://docs.clica.bot)
 
 ## Production Deployment
 
@@ -423,29 +423,29 @@ clino
 
 ```bash
 # Build Docker image
-docker build -t clino:latest .
+docker build -t clica:latest .
 
 # Run container
 docker run -it --rm \
   -e ANTHROPIC_API_KEY="your-key" \
   -v $(pwd):/workspace \
-  clino:latest
+  clica:latest
 ```
 
 ### Systemd Service (Linux)
 
-Create `/etc/systemd/system/clino.service`:
+Create `/etc/systemd/system/clica.service`:
 
 ```ini
 [Unit]
-Description=Clino CLI Service
+Description=Clica CLI Service
 After=network.target
 
 [Service]
 Type=simple
 User=your-user
 Environment="ANTHROPIC_API_KEY=your-key"
-ExecStart=/usr/local/bin/clino
+ExecStart=/usr/local/bin/clica
 Restart=on-failure
 
 [Install]
@@ -454,8 +454,8 @@ WantedBy=multi-user.target
 
 Enable and start:
 ```bash
-sudo systemctl enable clino
-sudo systemctl start clino
+sudo systemctl enable clica
+sudo systemctl start clica
 ```
 
 ## Security Considerations
@@ -464,10 +464,10 @@ sudo systemctl start clino
 2. **Secrets Storage**: Use environment variables or secure secret management
 3. **File Permissions**: Ensure proper file permissions on configuration files
 4. **Network Security**: Use HTTPS for all API communications
-5. **Sandboxing**: Consider running Clino in a sandboxed environment for production
+5. **Sandboxing**: Consider running Clica in a sandboxed environment for production
 
 ## Next Steps
 
 - Read the [User Guide](./USER_GUIDE.md) for usage instructions
 - Check [Contributing Guidelines](./CONTRIBUTING.md) for development
-- Explore [Documentation](https://docs.clino.bot) for advanced features
+- Explore [Documentation](https://docs.clica.bot) for advanced features

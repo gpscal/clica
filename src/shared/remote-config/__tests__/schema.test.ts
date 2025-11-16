@@ -80,7 +80,7 @@ describe("Remote Config Schema", () => {
 	})
 
 	describe("ClineSettingsSchema", () => {
-		it("should accept valid Clino provider settings", () => {
+		it("should accept valid Clica provider settings", () => {
 			const validSettings = {
 				models: [{ id: "claude-3-5-sonnet-20241022" }, { id: "claude-3-5-haiku-20241022" }],
 			}
@@ -360,7 +360,7 @@ describe("Remote Config Schema", () => {
 						awsBedrockUsePromptCache: true,
 						awsBedrockEndpoint: "https://custom-bedrock.endpoint",
 					},
-					Clino: {
+					Clica: {
 						models: [{ id: "claude-3-5-sonnet-20241022" }, { id: "claude-3-5-haiku-20241022" }],
 					},
 				},
@@ -387,10 +387,10 @@ describe("Remote Config Schema", () => {
 			expect(result.providerSettings?.AwsBedrock?.awsBedrockUsePromptCache).to.equal(true)
 			expect(result.providerSettings?.AwsBedrock?.awsBedrockEndpoint).to.equal("https://custom-bedrock.endpoint")
 
-			// Verify Clino settings
-			expect(result.providerSettings?.Clino?.models).to.have.lengthOf(2)
-			expect(result.providerSettings?.Clino?.models?.[0].id).to.equal("claude-3-5-sonnet-20241022")
-			expect(result.providerSettings?.Clino?.models?.[1].id).to.equal("claude-3-5-haiku-20241022")
+			// Verify Clica settings
+			expect(result.providerSettings?.Clica?.models).to.have.lengthOf(2)
+			expect(result.providerSettings?.Clica?.models?.[0].id).to.equal("claude-3-5-sonnet-20241022")
+			expect(result.providerSettings?.Clica?.models?.[1].id).to.equal("claude-3-5-haiku-20241022")
 
 			// Verify OpenTelemetry settings
 			expect(result.openTelemetryEnabled).to.equal(true)

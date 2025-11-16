@@ -4,9 +4,9 @@ import { formatResponse } from "@core/prompts/responses"
 import { ensureTaskDirectoryExists } from "@core/storage/disk"
 import { resolveWorkspacePath } from "@core/workspace"
 import { extractFileContent } from "@integrations/misc/extract-file-content"
-import { ClinoSayTool } from "@shared/ExtensionMessage"
+import { ClicaSayTool } from "@shared/ExtensionMessage"
 import { telemetryService } from "@/services/telemetry"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaDefaultTool } from "@/shared/tools"
 import type { ToolResponse } from "../../index"
 import type { IPartialBlockHandler, IToolHandler } from "../ToolExecutorCoordinator"
 import type { ToolValidator } from "../ToolValidator"
@@ -14,7 +14,7 @@ import type { TaskConfig } from "../types/TaskConfig"
 import type { StronglyTypedUIHelpers } from "../types/UIHelpers"
 
 export class SummarizeTaskHandler implements IToolHandler, IPartialBlockHandler {
-	readonly name = ClinoDefaultTool.SUMMARIZE_TASK
+	readonly name = ClicaDefaultTool.SUMMARIZE_TASK
 
 	constructor(private validator: ToolValidator) {}
 
@@ -38,7 +38,7 @@ export class SummarizeTaskHandler implements IToolHandler, IPartialBlockHandler 
 			const completeMessage = JSON.stringify({
 				tool: "summarizeTask",
 				content: context,
-			} satisfies ClinoSayTool)
+			} satisfies ClicaSayTool)
 
 			await config.callbacks.say("tool", completeMessage, undefined, undefined, false)
 
@@ -89,13 +89,13 @@ export class SummarizeTaskHandler implements IToolHandler, IPartialBlockHandler 
 					}
 
 					// Check .clineignore first and skip ignored files
-					const accessValidation = this.validator.checkClinoIgnorePath(relPath)
+					const accessValidation = this.validator.checkClicaIgnorePath(relPath)
 					if (!accessValidation.ok) {
 						continue
 					}
 
 					// Only process if auto-approved (respects workspace/outside-workspace settings)
-					if (await config.callbacks.shouldAutoApproveToolWithPath(ClinoDefaultTool.FILE_READ, relPath)) {
+					if (await config.callbacks.shouldAutoApproveToolWithPath(ClicaDefaultTool.FILE_READ, relPath)) {
 						try {
 							// Resolve path (handles multi-root workspaces)
 							const pathResult = resolveWorkspacePath(config, relPath, "SummarizeTaskHandler")
@@ -156,7 +156,7 @@ export class SummarizeTaskHandler implements IToolHandler, IPartialBlockHandler 
 				config.taskState.conversationHistoryDeletedRange,
 				keepStrategy,
 			)
-			await config.messageState.saveClinoMessagesAndUpdateHistory()
+			await config.messageState.saveClicaMessagesAndUpdateHistory()
 			await config.services.contextManager.triggerApplyStandardContextTruncationNoticeChange(
 				Date.now(),
 				await ensureTaskDirectoryExists(config.taskId),
@@ -168,7 +168,7 @@ export class SummarizeTaskHandler implements IToolHandler, IPartialBlockHandler 
 
 			// Capture telemetry after main business logic is complete
 			const telemetryData = config.services.contextManager.getContextTelemetryData(
-				config.messageState.getClinoMessages(),
+				config.messageState.getClicaMessages(),
 				config.api,
 				config.taskState.lastAutoCompactTriggerIndex,
 			)
@@ -195,7 +195,7 @@ export class SummarizeTaskHandler implements IToolHandler, IPartialBlockHandler 
 		const partialMessage = JSON.stringify({
 			tool: "summarizeTask",
 			content: uiHelpers.removeClosingTag(block, "context", context),
-		} satisfies ClinoSayTool)
+		} satisfies ClicaSayTool)
 
 		await uiHelpers.say("tool", partialMessage, undefined, undefined, block.partial)
 	}

@@ -1,6 +1,6 @@
-import type { ClinoAsk, ClinoSay } from "@shared/ExtensionMessage"
-import type { ClinoDefaultTool } from "@shared/tools"
-import type { ClinoAskResponse } from "@shared/WebviewMessage"
+import type { ClicaAsk, ClicaSay } from "@shared/ExtensionMessage"
+import type { ClicaDefaultTool } from "@shared/tools"
+import type { ClicaAskResponse } from "@shared/WebviewMessage"
 import { telemetryService } from "@/services/telemetry"
 import type { ToolParamName, ToolUse } from "../../../assistant-message"
 import { showNotificationForApprovalIfAutoApprovalEnabled } from "../../utils"
@@ -12,14 +12,14 @@ import type { TaskConfig } from "./TaskConfig"
  */
 export interface StronglyTypedUIHelpers {
 	// Core UI methods
-	say: (type: ClinoSay, text?: string, images?: string[], files?: string[], partial?: boolean) => Promise<number | undefined>
+	say: (type: ClicaSay, text?: string, images?: string[], files?: string[], partial?: boolean) => Promise<number | undefined>
 
 	ask: (
-		type: ClinoAsk,
+		type: ClicaAsk,
 		text?: string,
 		partial?: boolean,
 	) => Promise<{
-		response: ClinoAskResponse
+		response: ClicaAskResponse
 		text?: string
 		images?: string[]
 		files?: string[]
@@ -27,15 +27,15 @@ export interface StronglyTypedUIHelpers {
 
 	// Utility methods
 	removeClosingTag: (block: ToolUse, tag: ToolParamName, text?: string) => string
-	removeLastPartialMessageIfExistsWithType: (type: "ask" | "say", askOrSay: ClinoAsk | ClinoSay) => Promise<void>
+	removeLastPartialMessageIfExistsWithType: (type: "ask" | "say", askOrSay: ClicaAsk | ClicaSay) => Promise<void>
 
 	// Approval methods
-	shouldAutoApproveTool: (toolName: ClinoDefaultTool) => boolean | [boolean, boolean]
-	shouldAutoApproveToolWithPath: (toolName: ClinoDefaultTool, path?: string) => Promise<boolean>
-	askApproval: (messageType: ClinoAsk, message: string) => Promise<boolean>
+	shouldAutoApproveTool: (toolName: ClicaDefaultTool) => boolean | [boolean, boolean]
+	shouldAutoApproveToolWithPath: (toolName: ClicaDefaultTool, path?: string) => Promise<boolean>
+	askApproval: (messageType: ClicaAsk, message: string) => Promise<boolean>
 
 	// Telemetry and notifications
-	captureTelemetry: (toolName: ClinoDefaultTool, autoApproved: boolean, approved: boolean) => void
+	captureTelemetry: (toolName: ClicaDefaultTool, autoApproved: boolean, approved: boolean) => void
 	showNotificationIfEnabled: (message: string) => void
 
 	// Config access - returns the proper typed config
@@ -51,13 +51,13 @@ export function createUIHelpers(config: TaskConfig): StronglyTypedUIHelpers {
 		ask: config.callbacks.ask,
 		removeClosingTag: (block: ToolUse, tag: ToolParamName, text?: string) => removeClosingTag(block, tag, text),
 		removeLastPartialMessageIfExistsWithType: config.callbacks.removeLastPartialMessageIfExistsWithType,
-		shouldAutoApproveTool: (toolName: ClinoDefaultTool) => config.autoApprover.shouldAutoApproveTool(toolName),
+		shouldAutoApproveTool: (toolName: ClicaDefaultTool) => config.autoApprover.shouldAutoApproveTool(toolName),
 		shouldAutoApproveToolWithPath: config.callbacks.shouldAutoApproveToolWithPath,
-		askApproval: async (messageType: ClinoAsk, message: string): Promise<boolean> => {
+		askApproval: async (messageType: ClicaAsk, message: string): Promise<boolean> => {
 			const { response } = await config.callbacks.ask(messageType, message, false)
 			return response === "yesButtonClicked"
 		},
-		captureTelemetry: (toolName: ClinoDefaultTool, autoApproved: boolean, approved: boolean) => {
+		captureTelemetry: (toolName: ClicaDefaultTool, autoApproved: boolean, approved: boolean) => {
 			telemetryService.captureToolUsage(config.ulid, toolName, config.api.getModel().id, autoApproved, approved)
 		},
 		showNotificationIfEnabled: (message: string) => {

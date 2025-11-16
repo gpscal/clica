@@ -1,16 +1,16 @@
-# Clino Hooks Documentation
+# Clica Hooks Documentation
 
 ## Overview
 
-Clino hooks allow you to execute custom scripts at specific points in the agentic workflow. Hooks can be placed in either:
-- **Global hooks directory**: `~/Documents/Clino/Rules/Hooks/` (applies to all workspaces)
+Clica hooks allow you to execute custom scripts at specific points in the agentic workflow. Hooks can be placed in either:
+- **Global hooks directory**: `~/Documents/Clica/Rules/Hooks/` (applies to all workspaces)
 - **Workspace hooks directory**: `.clinerules/hooks/` (applies to specific workspace)
 
 Hooks run automatically when enabled.
 
 ## Enabling Hooks
 
-1. Open Clino settings in VSCode
+1. Open Clica settings in VSCode
 2. Navigate to the Feature Settings section
 3. Check the "Enable Hooks" checkbox
 4. Hooks must be executable files (on Unix/Linux/macOS use `chmod +x hookname`)
@@ -20,18 +20,18 @@ Hooks run automatically when enabled.
 ### PreToolUse Hook
 - **When**: Runs BEFORE a tool is executed
 - **Purpose**: Validate parameters, block execution, or add context
-- **Global Location**: `~/Documents/Clino/Rules/Hooks/PreToolUse` (all platforms)
+- **Global Location**: `~/Documents/Clica/Rules/Hooks/PreToolUse` (all platforms)
 - **Workspace Location**: `.clinerules/hooks/PreToolUse` (all platforms)
 
 ### PostToolUse Hook
 - **When**: Runs AFTER a tool completes
 - **Purpose**: Observe results, track patterns, or add context
-- **Global Location**: `~/Documents/Clino/Rules/Hooks/PostToolUse` (all platforms)
+- **Global Location**: `~/Documents/Clica/Rules/Hooks/PostToolUse` (all platforms)
 - **Workspace Location**: `.clinerules/hooks/PostToolUse` (all platforms)
 
 ## Cross-Platform Hook Format
 
-Clino uses a git-style approach for hooks that works consistently across all platforms:
+Clica uses a git-style approach for hooks that works consistently across all platforms:
 
 ### Hook Files (All Platforms)
 - **No file extensions**: Hooks are named exactly `PreToolUse` or `PostToolUse` (no `.bat`, `.cmd`, `.sh` etc.)
@@ -41,7 +41,7 @@ Clino uses a git-style approach for hooks that works consistently across all pla
 
 ### How It Works
 
-Like git hooks, Clino executes hook files through a shell that interprets the shebang line:
+Like git hooks, Clica executes hook files through a shell that interprets the shebang line:
 - On Unix/Linux/macOS: Native shell execution with shebang support
 - On Windows: Shell execution handles shebang interpretation
 
@@ -55,16 +55,16 @@ This means:
 **On Unix/Linux/macOS:**
 ```bash
 # Create hook file
-nano ~/Documents/Clino/Rules/Hooks/PreToolUse
+nano ~/Documents/Clica/Rules/Hooks/PreToolUse
 
 # Make executable
-chmod +x ~/Documents/Clino/Rules/Hooks/PreToolUse
+chmod +x ~/Documents/Clica/Rules/Hooks/PreToolUse
 ```
 
 **On Windows:**
 ```batch
 REM Create hook file (note: no file extension)
-notepad %USERPROFILE%\Documents\Clino\Rules\Hooks\PreToolUse
+notepad %USERPROFILE%\Documents\Clica\Rules\Hooks\PreToolUse
 ```
 
 ## Context Injection Timing
@@ -236,7 +236,7 @@ fi
 input=$(cat)
 
 # Log to file
-echo "$input" >> ~/.clino/hook-logs/tool-usage.jsonl
+echo "$input" >> ~/.clica/hook-logs/tool-usage.jsonl
 
 # Allow execution
 echo '{"shouldContinue": true}'
@@ -244,10 +244,10 @@ echo '{"shouldContinue": true}'
 
 ## Global vs Workspace Hooks
 
-Clino supports two levels of hooks:
+Clica supports two levels of hooks:
 
 ### Global Hooks
-- **Location**: `~/Documents/Clino/Rules/Hooks/` (macOS/Linux) or `%USERPROFILE%\Documents\Clino\Rules\Hooks\` (Windows)
+- **Location**: `~/Documents/Clica/Rules/Hooks/` (macOS/Linux) or `%USERPROFILE%\Documents\Clica\Rules\Hooks\` (Windows)
 - **Scope**: Apply to ALL workspaces and projects
 - **Use Case**: Organization-wide policies, personal preferences, universal validations
 - **Priority**: Execute FIRST, before workspace hooks
@@ -274,27 +274,27 @@ When multiple hooks exist (global and/or workspace):
 ### Setting Up Global Hooks
 
 1. The global hooks directory is automatically created at:
-   - macOS/Linux: `~/Documents/Clino/Rules/Hooks/`
-   - Windows: `%USERPROFILE%\Documents\Clino\Rules\Hooks\`
+   - macOS/Linux: `~/Documents/Clica/Rules/Hooks/`
+   - Windows: `%USERPROFILE%\Documents\Clica\Rules\Hooks\`
 
 2. Add your hook script:
    ```bash
    # Unix/Linux/macOS
-   nano ~/Documents/Clino/Rules/Hooks/PreToolUse
-   chmod +x ~/Documents/Clino/Rules/Hooks/PreToolUse
+   nano ~/Documents/Clica/Rules/Hooks/PreToolUse
+   chmod +x ~/Documents/Clica/Rules/Hooks/PreToolUse
    
    # Windows
-   notepad %USERPROFILE%\Documents\Clino\Rules\Hooks\PreToolUse
+   notepad %USERPROFILE%\Documents\Clica\Rules\Hooks\PreToolUse
    ```
 
-3. Enable hooks in Clino settings
+3. Enable hooks in Clica settings
 
 ### Example: Global + Workspace Hooks
 
 **Global Hook** (applies to all projects):
 ```bash
 #!/usr/bin/env bash
-# ~/Documents/Clino/Rules/Hooks/PreToolUse
+# ~/Documents/Clica/Rules/Hooks/PreToolUse
 # Universal rule: Never delete package.json
 input=$(cat)
 tool_name=$(echo "$input" | jq -r '.preToolUse.toolName')
@@ -343,7 +343,7 @@ If you have multiple workspace roots, you can place hooks in each root's `.cline
 - Ensure the "Enable Hooks" setting is checked
 - Verify the hook file is executable (`chmod +x hookname`)
 - Check the hook file has no syntax errors
-- Look for errors in VSCode's Output panel (Clino channel)
+- Look for errors in VSCode's Output panel (Clica channel)
 
 ### Hook Timing Out
 - Reduce complexity of the hook script

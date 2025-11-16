@@ -1,5 +1,5 @@
-import { PathHashMap } from "@shared/proto/clino/checkpoints"
-import { StringArrayRequest } from "@shared/proto/clino/common"
+import { PathHashMap } from "@shared/proto/clica/checkpoints"
+import { StringArrayRequest } from "@shared/proto/clica/common"
 import { hashWorkingDir } from "@/integrations/checkpoints/CheckpointUtils"
 import { Controller } from ".."
 

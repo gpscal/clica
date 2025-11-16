@@ -6,7 +6,7 @@ import (
 )
 
 // sensitiveKeywords defines field name patterns that should be censored
-var sensitiveKeywords = []string{"key", "secret", "password", "clino-account-id"}
+var sensitiveKeywords = []string{"key", "secret", "password", "clica-account-id"}
 
 // camelToKebab converts camelCase to kebab-case
 // e.g., "autoApprovalSettings" -> "auto-approval-settings"

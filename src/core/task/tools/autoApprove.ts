@@ -1,6 +1,6 @@
 import { resolveWorkspacePath } from "@core/workspace"
 import { isMultiRootEnabled } from "@core/workspace/multi-root-utils"
-import { ClinoDefaultTool } from "@shared/tools"
+import { ClicaDefaultTool } from "@shared/tools"
 import { StateManager } from "@/core/storage/StateManager"
 import { HostProvider } from "@/hosts/host-provider"
 import { getCwd, getDesktopDir, isLocatedInPath, isLocatedInWorkspace } from "@/utils/path"
@@ -39,23 +39,23 @@ export class AutoApprove {
 
 	// Check if the tool should be auto-approved based on the settings
 	// Returns bool for most tools, and tuple for tools with nested settings
-	shouldAutoApproveTool(toolName: ClinoDefaultTool): boolean | [boolean, boolean] {
+	shouldAutoApproveTool(toolName: ClicaDefaultTool): boolean | [boolean, boolean] {
 		if (this.stateManager.getGlobalSettingsKey("yoloModeToggled")) {
 			switch (toolName) {
-				case ClinoDefaultTool.FILE_READ:
-				case ClinoDefaultTool.LIST_FILES:
-				case ClinoDefaultTool.LIST_CODE_DEF:
-				case ClinoDefaultTool.SEARCH:
-				case ClinoDefaultTool.NEW_RULE:
-				case ClinoDefaultTool.FILE_NEW:
-				case ClinoDefaultTool.FILE_EDIT:
-				case ClinoDefaultTool.BASH:
+				case ClicaDefaultTool.FILE_READ:
+				case ClicaDefaultTool.LIST_FILES:
+				case ClicaDefaultTool.LIST_CODE_DEF:
+				case ClicaDefaultTool.SEARCH:
+				case ClicaDefaultTool.NEW_RULE:
+				case ClicaDefaultTool.FILE_NEW:
+				case ClicaDefaultTool.FILE_EDIT:
+				case ClicaDefaultTool.BASH:
 					return [true, true]
 
-				case ClinoDefaultTool.BROWSER:
-				case ClinoDefaultTool.WEB_FETCH:
-				case ClinoDefaultTool.MCP_ACCESS:
-				case ClinoDefaultTool.MCP_USE:
+				case ClicaDefaultTool.BROWSER:
+				case ClicaDefaultTool.WEB_FETCH:
+				case ClicaDefaultTool.MCP_ACCESS:
+				case ClicaDefaultTool.MCP_USE:
 					return true
 			}
 		}
@@ -64,26 +64,26 @@ export class AutoApprove {
 
 		if (autoApprovalSettings.enabled) {
 			switch (toolName) {
-				case ClinoDefaultTool.FILE_READ:
-				case ClinoDefaultTool.LIST_FILES:
-				case ClinoDefaultTool.LIST_CODE_DEF:
-				case ClinoDefaultTool.SEARCH:
+				case ClicaDefaultTool.FILE_READ:
+				case ClicaDefaultTool.LIST_FILES:
+				case ClicaDefaultTool.LIST_CODE_DEF:
+				case ClicaDefaultTool.SEARCH:
 					return [autoApprovalSettings.actions.readFiles, autoApprovalSettings.actions.readFilesExternally ?? false]
-				case ClinoDefaultTool.NEW_RULE:
-				case ClinoDefaultTool.FILE_NEW:
-				case ClinoDefaultTool.FILE_EDIT:
+				case ClicaDefaultTool.NEW_RULE:
+				case ClicaDefaultTool.FILE_NEW:
+				case ClicaDefaultTool.FILE_EDIT:
 					return [autoApprovalSettings.actions.editFiles, autoApprovalSettings.actions.editFilesExternally ?? false]
-				case ClinoDefaultTool.BASH:
+				case ClicaDefaultTool.BASH:
 					return [
 						autoApprovalSettings.actions.executeSafeCommands ?? false,
 						autoApprovalSettings.actions.executeAllCommands ?? false,
 					]
-				case ClinoDefaultTool.BROWSER:
+				case ClicaDefaultTool.BROWSER:
 					return autoApprovalSettings.actions.useBrowser
-				case ClinoDefaultTool.WEB_FETCH:
+				case ClicaDefaultTool.WEB_FETCH:
 					return autoApprovalSettings.actions.useBrowser
-				case ClinoDefaultTool.MCP_ACCESS:
-				case ClinoDefaultTool.MCP_USE:
+				case ClicaDefaultTool.MCP_ACCESS:
+				case ClicaDefaultTool.MCP_USE:
 					return autoApprovalSettings.actions.useMcp
 			}
 		}
@@ -94,7 +94,7 @@ export class AutoApprove {
 	// and the path of the action. Returns true if the tool should be auto-approved
 	// based on the user's settings and the path of the action.
 	async shouldAutoApproveToolWithPath(
-		blockname: ClinoDefaultTool,
+		blockname: ClicaDefaultTool,
 		autoApproveActionpath: string | undefined,
 	): Promise<boolean> {
 		if (this.stateManager.getGlobalSettingsKey("yoloModeToggled")) {

@@ -15,7 +15,7 @@ const log = (...args: unknown[]) => {
 
 	const timestamp = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}`
 
-	console.log(`[${timestamp}]`, "#bot.clino.server.ts", ...args)
+	console.log(`[${timestamp}]`, "#bot.clica.server.ts", ...args)
 }
 
 function getPackageDefinition() {

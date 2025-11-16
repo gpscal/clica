@@ -1,5 +1,5 @@
-import { EmptyRequest } from "@shared/proto/clino/common"
-import { McpMarketplaceCatalog } from "@shared/proto/clino/mcp"
+import { EmptyRequest } from "@shared/proto/clica/common"
+import { McpMarketplaceCatalog } from "@shared/proto/clica/mcp"
 import { getRequestRegistry, StreamingResponseHandler } from "../grpc-handler"
 import { Controller } from "../index"
 

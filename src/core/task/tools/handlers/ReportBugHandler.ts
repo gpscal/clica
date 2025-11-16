@@ -6,14 +6,14 @@ import { createAndOpenGitHubIssue } from "@utils/github-url-utils"
 import * as os from "os"
 import { HostProvider } from "@/hosts/host-provider"
 import { ExtensionRegistryInfo } from "@/registry"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaDefaultTool } from "@/shared/tools"
 import type { ToolResponse } from "../../index"
 import type { IPartialBlockHandler, IToolHandler } from "../ToolExecutorCoordinator"
 import type { TaskConfig } from "../types/TaskConfig"
 import type { StronglyTypedUIHelpers } from "../types/UIHelpers"
 
 export class ReportBugHandler implements IToolHandler, IPartialBlockHandler {
-	readonly name = ClinoDefaultTool.REPORT_BUG
+	readonly name = ClicaDefaultTool.REPORT_BUG
 
 	constructor() {}
 
@@ -67,8 +67,8 @@ export class ReportBugHandler implements IToolHandler, IPartialBlockHandler {
 		// Show notification if auto-approval is enabled
 		if (config.autoApprovalSettings.enabled && config.autoApprovalSettings.enableNotifications) {
 			showSystemNotification({
-				subtitle: "Clino wants to create a github issue...",
-				message: `Clino is suggesting to create a github issue with the title: ${title}`,
+				subtitle: "Clica wants to create a github issue...",
+				message: `Clica is suggesting to create a github issue with the title: ${title}`,
 			})
 		}
 
@@ -118,7 +118,7 @@ export class ReportBugHandler implements IToolHandler, IPartialBlockHandler {
 				const params = new Map<string, string>()
 				params.set("title", title)
 				params.set("operating-system", operatingSystem)
-				params.set("clino-version", clineVersion)
+				params.set("clica-version", clineVersion)
 				params.set("system-info", systemInfo)
 				params.set("additional-context", additional_context)
 				params.set("what-happened", what_happened)
@@ -128,7 +128,7 @@ export class ReportBugHandler implements IToolHandler, IPartialBlockHandler {
 
 				// Use our utility function to create and open the GitHub issue URL
 				// This bypasses VS Code's URI handling issues with special characters
-				await createAndOpenGitHubIssue("clino", "clino", "bug_report.yml", params)
+				await createAndOpenGitHubIssue("clica", "clica", "bug_report.yml", params)
 			} catch (error) {
 				console.error(`An error occurred while attempting to report the bug: ${error}`)
 			}

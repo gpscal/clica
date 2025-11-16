@@ -3,10 +3,10 @@ package cli
 import (
 	"fmt"
 
-	"github.com/clino/cli/pkg/cli/display"
-	"github.com/clino/cli/pkg/cli/global"
-	"github.com/clino/cli/pkg/cli/terminal"
-	"github.com/clino/cli/pkg/cli/updater"
+	"github.com/clica/cli/pkg/cli/display"
+	"github.com/clica/cli/pkg/cli/global"
+	"github.com/clica/cli/pkg/cli/terminal"
+	"github.com/clica/cli/pkg/cli/updater"
 	"github.com/spf13/cobra"
 )
 
@@ -16,7 +16,7 @@ func NewDoctorCommand() *cobra.Command {
 		Use:     "doctor",
 		Aliases: []string{"d"},
 		Short:   "Check system health and diagnose problems",
-		Long: `Check the health of your Clino CLI installation and diagnose problems.
+		Long: `Check the health of your Clica CLI installation and diagnose problems.
 
 Currently this command performs the following checks and fixes:
 
@@ -34,7 +34,7 @@ CLI Updates:
   - Skipped in CI environments
 
 Note: Future versions will include additional health checks for Node.js version,
-npm availability, Clino Core connectivity, database integrity, and more.`,
+npm availability, Clica Core connectivity, database integrity, and more.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return runDoctorChecks()
 		},
@@ -47,7 +47,7 @@ npm availability, Clino Core connectivity, database integrity, and more.`,
 func runDoctorChecks() error {
 	renderer := display.NewRenderer(global.Config.OutputFormat)
 
-	fmt.Printf("\n%s\n\n", renderer.Bold("Clino Doctor - System Health Check"))
+	fmt.Printf("\n%s\n\n", renderer.Bold("Clica Doctor - System Health Check"))
 
 	// Configure terminal keybindings (terminal.go prints its own status)
 	fmt.Printf("%s\n\n", renderer.Dim("━━━ Terminal Configuration ━━━"))

@@ -1,4 +1,4 @@
-import { Empty, StringArrayRequest } from "@shared/proto/clino/common"
+import { Empty, StringArrayRequest } from "@shared/proto/clica/common"
 import fs from "fs/promises"
 import path from "path"
 import { HostProvider } from "@/hosts/host-provider"

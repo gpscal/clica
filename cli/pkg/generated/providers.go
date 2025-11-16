@@ -1207,7 +1207,7 @@ var rawModelDefinitions = `	{
 	      "outputPrice": 0,
 	      "supportsImages": false,
 	      "supportsPromptCache": false,
-	      "description": "SOTA coding model with ~2000 tokens/s ($0 free tier)\\n\\n• Use this if you don't have a Cerebras subscription\\n• 64K context window\\n• Rate limits: 150K TPM, 1M TPH/TPD, 10 RPM, 100 RPH/RPD\\n\\nUpgrade for higher limits: [https://cloud.cerebras.ai/?utm=clino](https://cloud.cerebras.ai/?utm=clino)"
+	      "description": "SOTA coding model with ~2000 tokens/s ($0 free tier)\\n\\n• Use this if you don't have a Cerebras subscription\\n• 64K context window\\n• Rate limits: 150K TPM, 1M TPH/TPD, 10 RPM, 100 RPH/RPD\\n\\nUpgrade for higher limits: [https://cloud.cerebras.ai/?utm=clica](https://cloud.cerebras.ai/?utm=clica)"
 	    },
 	    "qwen-3-coder-480b": {
 	      "maxTokens": 40000,

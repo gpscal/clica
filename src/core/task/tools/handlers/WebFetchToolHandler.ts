@@ -1,6 +1,6 @@
 import { UrlContentFetcher } from "@services/browser/UrlContentFetcher"
-import { ClinoAsk, ClinoSayTool } from "@shared/ExtensionMessage"
-import { ClinoDefaultTool } from "@shared/tools"
+import { ClicaAsk, ClicaSayTool } from "@shared/ExtensionMessage"
+import { ClicaDefaultTool } from "@shared/tools"
 import { telemetryService } from "@/services/telemetry"
 import { ToolUse } from "../../../assistant-message"
 import { formatResponse } from "../../../prompts/responses"
@@ -12,7 +12,7 @@ import type { StronglyTypedUIHelpers } from "../types/UIHelpers"
 import { ToolResultUtils } from "../utils/ToolResultUtils"
 
 export class WebFetchToolHandler implements IFullyManagedTool {
-	readonly name = ClinoDefaultTool.WEB_FETCH
+	readonly name = ClicaDefaultTool.WEB_FETCH
 
 	getDescription(block: ToolUse): string {
 		return `[${block.name} for '${block.params.url}']`
@@ -20,19 +20,19 @@ export class WebFetchToolHandler implements IFullyManagedTool {
 
 	async handlePartialBlock(block: ToolUse, uiHelpers: StronglyTypedUIHelpers): Promise<void> {
 		const url = block.params.url || ""
-		const sharedMessageProps: ClinoSayTool = {
+		const sharedMessageProps: ClicaSayTool = {
 			tool: "webFetch",
 			path: uiHelpers.removeClosingTag(block, "url", url),
 			content: `Fetching URL: ${uiHelpers.removeClosingTag(block, "url", url)}`,
 			operationIsLocatedInWorkspace: false, // web_fetch is always external
-		} satisfies ClinoSayTool
+		} satisfies ClicaSayTool
 
 		const partialMessage = JSON.stringify(sharedMessageProps)
 
 		// For partial blocks, we'll let the ToolExecutor handle auto-approval logic
 		// Just stream the UI update for now
 		await uiHelpers.removeLastPartialMessageIfExistsWithType("say", "tool")
-		await uiHelpers.ask("tool" as ClinoAsk, partialMessage, block.partial).catch(() => {})
+		await uiHelpers.ask("tool" as ClicaAsk, partialMessage, block.partial).catch(() => {})
 	}
 
 	async execute(config: TaskConfig, block: ToolUse): Promise<ToolResponse> {
@@ -47,7 +47,7 @@ export class WebFetchToolHandler implements IFullyManagedTool {
 			config.taskState.consecutiveMistakeCount = 0
 
 			// Create message for approval
-			const sharedMessageProps: ClinoSayTool = {
+			const sharedMessageProps: ClicaSayTool = {
 				tool: "webFetch",
 				path: url,
 				content: `Fetching URL: ${url}`,
@@ -66,7 +66,7 @@ export class WebFetchToolHandler implements IFullyManagedTool {
 			} else {
 				// Manual approval flow
 				showNotificationForApprovalIfAutoApprovalEnabled(
-					`Clino wants to fetch content from ${url}`,
+					`Clica wants to fetch content from ${url}`,
 					config.autoApprovalSettings.enabled,
 					config.autoApprovalSettings.enableNotifications,
 				)

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	proto "github.com/clino/grpc-go/host"
+	proto "github.com/clica/grpc-go/host"
 )
 
 // WindowService implements the proto.WindowServiceServer interface
@@ -28,7 +28,7 @@ func (s *WindowService) ShowTextDocument(ctx context.Context, req *proto.ShowTex
 	}
 
 	// For console implementation, we'll just log that we would open the document
-	fmt.Printf("[Clino] Would open document: %s\n", req.GetPath())
+	fmt.Printf("[Clica] Would open document: %s\n", req.GetPath())
 
 	return &proto.TextEditorInfo{
 		DocumentPath: req.GetPath(),
@@ -55,7 +55,7 @@ func (s *WindowService) ShowMessage(ctx context.Context, req *proto.ShowMessageR
 	}
 
 	// Display message to console
-	fmt.Printf("[Clino] %s\n", req.GetMessage())
+	fmt.Printf("[Clica] %s\n", req.GetMessage())
 
 	return &proto.SelectedResponse{}, nil
 }
@@ -87,7 +87,7 @@ func (s *WindowService) OpenFile(ctx context.Context, req *proto.OpenFileRequest
 	}
 
 	// For console implementation, just log that we would open the file
-	fmt.Printf("[Clino] Would open file: %s\n", req.GetFilePath())
+	fmt.Printf("[Clica] Would open file: %s\n", req.GetFilePath())
 
 	return &proto.OpenFileResponse{}, nil
 }

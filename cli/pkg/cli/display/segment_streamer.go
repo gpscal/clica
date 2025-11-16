@@ -6,8 +6,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/clino/cli/pkg/cli/output"
-	"github.com/clino/cli/pkg/cli/types"
+	"github.com/clica/cli/pkg/cli/output"
+	"github.com/clica/cli/pkg/cli/types"
 )
 
 type StreamingSegment struct {
@@ -20,11 +20,11 @@ type StreamingSegment struct {
 	toolRenderer   *ToolRenderer
 	shouldMarkdown bool
 	outputFormat   string
-	msg            *types.ClinoMessage
+	msg            *types.ClicaMessage
 	toolParser     *ToolResultParser
 }
 
-func NewStreamingSegment(sayType, prefix string, mdRenderer *MarkdownRenderer, shouldMarkdown bool, msg *types.ClinoMessage, outputFormat string) *StreamingSegment {
+func NewStreamingSegment(sayType, prefix string, mdRenderer *MarkdownRenderer, shouldMarkdown bool, msg *types.ClicaMessage, outputFormat string) *StreamingSegment {
 	ss := &StreamingSegment{
 		sayType:        sayType,
 		prefix:         prefix,
@@ -150,10 +150,10 @@ func (ss *StreamingSegment) renderFinal(currentBuffer string) {
 func (ss *StreamingSegment) generateRichHeader() string {
 	switch ss.sayType {
 	case string(types.SayTypeReasoning):
-		return "### Clino is thinking\n"
+		return "### Clica is thinking\n"
 		
 	case string(types.SayTypeText):
-		return "### Clino responds\n"
+		return "### Clica responds\n"
 		
 	case string(types.SayTypeCompletionResult):
 		return "### Task completed\n"
@@ -183,7 +183,7 @@ func (ss *StreamingSegment) generateRichHeader() string {
 				command = strings.TrimSuffix(command, "REQ_APP")
 				command = strings.TrimSpace(command)
 			}
-			return fmt.Sprintf("### Clino wants to run `%s`\n", command)
+			return fmt.Sprintf("### Clica wants to run `%s`\n", command)
 		}
 
 		// For followup questions, show question header
@@ -192,7 +192,7 @@ func (ss *StreamingSegment) generateRichHeader() string {
 		}
 
 		// For other ask types, show generic message
-		return fmt.Sprintf("### Clino is asking (%s)\n", ss.msg.Ask)
+		return fmt.Sprintf("### Clica is asking (%s)\n", ss.msg.Ask)
 		
 	default:
 		return fmt.Sprintf("### %s\n", ss.prefix)

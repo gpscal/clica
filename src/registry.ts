@@ -1,12 +1,12 @@
 import { name, publisher, version } from "../package.json"
 
-const prefix = name === "claude-dev" ? "clino" : name
+const prefix = name === "claude-dev" ? "clica" : name
 
 /**
  * List of commands with the name of the extension they are registered under.
  * These should match the command IDs defined in package.json.
  * For Nightly build, the publish script has updated all the commands to use the extension name as prefix.
- * In production, all commands are registered under "clino" for consistency.
+ * In production, all commands are registered under "clica" for consistency.
  */
 const ClineCommands = {
 	PlusButton: prefix + ".plusButtonClicked",

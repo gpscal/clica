@@ -1,5 +1,5 @@
-import { Empty } from "@shared/proto/clino/common"
-import { TaskFavoriteRequest } from "@shared/proto/clino/task"
+import { Empty } from "@shared/proto/clica/common"
+import { TaskFavoriteRequest } from "@shared/proto/clica/task"
 import { Controller } from "../"
 
 export async function toggleTaskFavorite(controller: Controller, request: TaskFavoriteRequest): Promise<Empty> {

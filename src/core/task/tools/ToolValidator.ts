@@ -1,5 +1,5 @@
 import type { ToolParamName, ToolUse } from "@core/assistant-message"
-import type { ClinoIgnoreController } from "@core/ignore/ClinoIgnoreController"
+import type { ClicaIgnoreController } from "@core/ignore/ClicaIgnoreController"
 
 export type ValidationResult = { ok: true } | { ok: false; error: string }
 
@@ -8,7 +8,7 @@ export type ValidationResult = { ok: true } | { ok: false; error: string }
  * The legacy ToolExecutor switch remains unchanged and does not depend on this.
  */
 export class ToolValidator {
-	constructor(private readonly clineIgnoreController: ClinoIgnoreController) {}
+	constructor(private readonly clineIgnoreController: ClicaIgnoreController) {}
 
 	/**
 	 * Verifies required parameters exist on the tool block.
@@ -29,7 +29,7 @@ export class ToolValidator {
 	 * Verifies access is allowed to a given path via .clineignore rules.
 	 * Callers should pass a repo-relative (workspace-relative) path.
 	 */
-	checkClinoIgnorePath(relPath: string): ValidationResult {
+	checkClicaIgnorePath(relPath: string): ValidationResult {
 		const accessAllowed = this.clineIgnoreController.validateAccess(relPath)
 		if (!accessAllowed) {
 			return {

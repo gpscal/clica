@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/clino/cli/pkg/common"
-	"github.com/clino/grpc-go/client"
+	"github.com/clica/cli/pkg/common"
+	"github.com/clica/grpc-go/client"
 	"github.com/muesli/termenv"
 )
 
@@ -23,10 +23,10 @@ type GlobalConfig struct {
 
 var (
 	Config  *GlobalConfig
-	Clients *ClinoClients
+	Clients *ClicaClients
 
 	// Version info - set at build time via ldflags
-	// Version is the Clino Core version (from root package.json)
+	// Version is the Clica Core version (from root package.json)
 	Version = "dev"
 	// CliVersion is the CLI package version (from cli/package.json)
 	CliVersion = "dev"
@@ -41,10 +41,10 @@ func InitializeGlobalConfig(cfg *GlobalConfig) error {
 		if err != nil {
 			return fmt.Errorf("failed to get home directory: %w", err)
 		}
-		cfg.ConfigPath = filepath.Join(homeDir, ".clino")
+		cfg.ConfigPath = filepath.Join(homeDir, ".clica")
 	}
 
-	// Ensure .clino directory exists
+	// Ensure .clica directory exists
 	if err := os.MkdirAll(cfg.ConfigPath, 0755); err != nil {
 		return fmt.Errorf("failed to create config directory: %w", err)
 	}
@@ -56,7 +56,7 @@ func InitializeGlobalConfig(cfg *GlobalConfig) error {
 	// Otherwise lipgloss auto-detects terminal capabilities (default behavior)
 
 	Config = cfg
-	Clients = NewClinoClients(cfg.ConfigPath)
+	Clients = NewClicaClients(cfg.ConfigPath)
 
 	// Initialize the clients registry
 	ctx := context.Background()
@@ -68,8 +68,8 @@ func InitializeGlobalConfig(cfg *GlobalConfig) error {
 }
 
 // GetDefaultClient returns a client for the default instance or the address override
-func GetDefaultClient(ctx context.Context) (*client.ClinoClient, error) {
-	if Config.CoreAddress != "" && Config.CoreAddress != fmt.Sprintf("localhost:%d", common.DEFAULT_CLINO_CORE_PORT) {
+func GetDefaultClient(ctx context.Context) (*client.ClicaClient, error) {
+	if Config.CoreAddress != "" && Config.CoreAddress != fmt.Sprintf("localhost:%d", common.DEFAULT_CLICA_CORE_PORT) {
 		// User specified a specific address, use that
 		return Clients.GetRegistry().GetClient(ctx, Config.CoreAddress)
 	}
@@ -79,7 +79,7 @@ func GetDefaultClient(ctx context.Context) (*client.ClinoClient, error) {
 }
 
 // GetClientForAddress returns a client for a specific address
-func GetClientForAddress(ctx context.Context, address string) (*client.ClinoClient, error) {
+func GetClientForAddress(ctx context.Context, address string) (*client.ClicaClient, error) {
 	return Clients.GetRegistry().GetClient(ctx, address)
 }
 

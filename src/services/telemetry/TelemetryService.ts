@@ -46,7 +46,7 @@ export enum TerminalHangStage {
 }
 
 export type TelemetryMetadata = {
-	/** The extension or clino-core version. */
+	/** The extension or clica-core version. */
 	extension_version: string
 	/** The name of the host IDE or environment e.g. VSCode */
 	platform: string
@@ -67,7 +67,7 @@ export type TelemetryMetadata = {
 const MAX_ERROR_MESSAGE_LENGTH = 500
 
 /**
- * TelemetryService handles telemetry event tracking for the Clino extension
+ * TelemetryService handles telemetry event tracking for the Clica extension
  * Uses an abstracted telemetry provider to support multiple analytics backends
  * Respects user privacy settings and VSCode's global telemetry configuration
  */
@@ -179,7 +179,7 @@ export class TelemetryService {
 			AUTO_COMPACT: "task.summarize_task",
 			// Tracks when slash commands or workflows are activated
 			SLASH_COMMAND_USED: "task.slash_command_used",
-			// Tracks when individual Clino rules are toggled on/off
+			// Tracks when individual Clica rules are toggled on/off
 			RULE_TOGGLED: "task.rule_toggled",
 			// Tracks when auto condense setting is toggled on/off
 			AUTO_CONDENSE_TOGGLED: "task.auto_condense_toggled",
@@ -254,13 +254,13 @@ export class TelemetryService {
 		// We only enable telemetry if global host telemetry is enabled
 		const hostSetting = await HostProvider.env.getTelemetrySettings({})
 		if (hostSetting.isEnabled === Setting.DISABLED) {
-			// Only show warning if user has opted in to Clino telemetry but host telemetry is disabled
+			// Only show warning if user has opted in to Clica telemetry but host telemetry is disabled
 			if (didUserOptIn) {
 				void HostProvider.window
 					.showMessage({
 						type: ShowMessageType.WARNING,
 						message:
-							"Anonymous Clino error and usage reporting is enabled, but IDE telemetry is disabled. To enable error and usage reporting for this extension, enable telemetry in IDE settings.",
+							"Anonymous Clica error and usage reporting is enabled, but IDE telemetry is disabled. To enable error and usage reporting for this extension, enable telemetry in IDE settings.",
 						options: {
 							items: ["Open Settings"],
 						},
@@ -554,7 +554,7 @@ export class TelemetryService {
 	}
 
 	/**
-	 * Records when clino calls the task completion_result tool signifying that clino is done with the task
+	 * Records when clica calls the task completion_result tool signifying that clica is done with the task
 	 * @param ulid Unique identifier for the task
 	 */
 	public captureTaskCompleted(ulid: string) {
@@ -1153,7 +1153,7 @@ export class TelemetryService {
 	}
 
 	/**
-	 * Records when individual Clino rules are toggled on/off
+	 * Records when individual Clica rules are toggled on/off
 	 * @param ulid Unique identifier for the task (to track rule changes within task context)
 	 * @param ruleFileName The filename of the rule (sanitized to exclude full path)
 	 * @param enabled Whether the rule is being enabled (true) or disabled (false)

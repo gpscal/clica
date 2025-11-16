@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"github.com/charmbracelet/huh"
-	"github.com/clino/cli/pkg/cli/global"
-	"github.com/clino/cli/pkg/cli/task"
-	"github.com/clino/grpc-go/clino"
+	"github.com/clica/cli/pkg/cli/global"
+	"github.com/clica/cli/pkg/cli/task"
+	"github.com/clica/grpc-go/clica"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/fieldmaskpb"
 )
@@ -37,7 +37,7 @@ func PromptForOcaConfig(ctx context.Context, manager *task.Manager) (*OcaConfig,
 
 			huh.NewSelect[string]().
 				Title("Choose OCA mode (used for authentication)").
-				Description("Select 'Internal' to use Clino's internal OCA, or 'External' for your own OCA instance").
+				Description("Select 'Internal' to use Clica's internal OCA, or 'External' for your own OCA instance").
 				Options(
 					huh.NewOption("Internal", "internal"),
 					huh.NewOption("External", "external"),
@@ -60,7 +60,7 @@ func PromptForOcaConfig(ctx context.Context, manager *task.Manager) (*OcaConfig,
 // ApplyOcaConfig applies OCA configuration using partial updates
 func ApplyOcaConfig(ctx context.Context, manager *task.Manager, config *OcaConfig) error {
 	// Build the API configuration with all OCA fields
-	apiConfig := &clino.ModelsApiConfiguration{}
+	apiConfig := &clica.ModelsApiConfiguration{}
 
 	// Set profile authentication fields (always required)
 	optionalFields := &OcaOptionalFields{}
@@ -85,7 +85,7 @@ func ApplyOcaConfig(ctx context.Context, manager *task.Manager, config *OcaConfi
 	fieldMask := &fieldmaskpb.FieldMask{Paths: optionalPaths}
 
 	// Apply the partial update
-	request := &clino.UpdateApiConfigurationPartialRequest{
+	request := &clica.UpdateApiConfigurationPartialRequest{
 		ApiConfiguration: apiConfig,
 		UpdateMask:       fieldMask,
 	}
@@ -102,18 +102,18 @@ func ApplyOcaConfig(ctx context.Context, manager *task.Manager, config *OcaConfi
 // ===========================
 
 type ocaAuthStream interface {
-	Recv() (*clino.OcaAuthState, error)
+	Recv() (*clica.OcaAuthState, error)
 }
 
 // OcaAuthStatusListener manages subscription to OCA auth status updates
 type OcaAuthStatusListener struct {
 	stream        ocaAuthStream
-	updatesCh     chan *clino.OcaAuthState
+	updatesCh     chan *clica.OcaAuthState
 	errCh         chan error
 	ctx           context.Context
 	cancel        context.CancelFunc
 	mu            sync.RWMutex
-	lastState     *clino.OcaAuthState
+	lastState     *clica.OcaAuthState
 	firstEventCh  chan struct{}
 	firstEventOnce sync.Once
 }
@@ -129,7 +129,7 @@ func NewOcaAuthStatusListener(parentCtx context.Context) (*OcaAuthStatusListener
 	ctx, cancel := context.WithCancel(context.Background())
 
 	// Subscribe to OCA auth status updates
-	stream, err := client.Ocaaccount.OcaSubscribeToAuthStatusUpdate(ctx, &clino.EmptyRequest{})
+	stream, err := client.Ocaaccount.OcaSubscribeToAuthStatusUpdate(ctx, &clica.EmptyRequest{})
 	if err != nil {
 		cancel()
 		return nil, fmt.Errorf("failed to subscribe to OCA auth updates: %w", err)
@@ -137,7 +137,7 @@ func NewOcaAuthStatusListener(parentCtx context.Context) (*OcaAuthStatusListener
 
 	return &OcaAuthStatusListener{
 		stream:       stream,
-		updatesCh:    make(chan *clino.OcaAuthState, 10),
+		updatesCh:    make(chan *clica.OcaAuthState, 10),
 		errCh:        make(chan error, 1),
 		ctx:          ctx,
 		cancel:       cancel,
@@ -251,7 +251,7 @@ func (l *OcaAuthStatusListener) Stop() {
 	l.cancel()
 }
 
-func isOCAStateAuthenticated(state *clino.OcaAuthState) bool {
+func isOCAStateAuthenticated(state *clica.OcaAuthState) bool {
 	return state != nil && state.User != nil
 }
 
@@ -296,14 +296,14 @@ func IsOCAAuthenticated(ctx context.Context) bool {
 }
 
  // LatestState returns the last received OCA auth state (may be nil)
-func (l *OcaAuthStatusListener) LatestState() *clino.OcaAuthState {
+func (l *OcaAuthStatusListener) LatestState() *clica.OcaAuthState {
 	l.mu.RLock()
 	defer l.mu.RUnlock()
 	return l.lastState
 }
 
 // GetLatestOCAState returns the latest known OCA auth state, optionally waiting for the first event
-func GetLatestOCAState(ctx context.Context, timeout time.Duration) (*clino.OcaAuthState, error) {
+func GetLatestOCAState(ctx context.Context, timeout time.Duration) (*clica.OcaAuthState, error) {
 	l, err := GetOcaAuthListener(ctx)
 	if err != nil {
 		return nil, err
@@ -343,8 +343,8 @@ func ensureOcaAuthenticated(ctx context.Context) error {
 	waitCtx, cancel := context.WithTimeout(ctx, 5*time.Minute)
 	defer cancel()
 
-	// Initiate login (opens the browser with a callback URL from Clino Core)
-	response, err := client.Ocaaccount.OcaAccountLoginClicked(waitCtx, &clino.EmptyRequest{})
+	// Initiate login (opens the browser with a callback URL from Clica Core)
+	response, err := client.Ocaaccount.OcaAccountLoginClicked(waitCtx, &clica.EmptyRequest{})
 	if err != nil {
 		return fmt.Errorf("failed to initiate OCA login: %w", err)
 	}

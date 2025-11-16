@@ -1,5 +1,5 @@
 /**
- * List of email domains that are considered trusted testers for Clino.
+ * List of email domains that are considered trusted testers for Clica.
  */
 const CLINE_TRUSTED_TESTER_DOMAINS = ["fibilabs.tech"]
 

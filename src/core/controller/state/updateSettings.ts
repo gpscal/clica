@@ -1,12 +1,12 @@
 import { buildApiHandler } from "@core/api"
 
-import { Empty } from "@shared/proto/clino/common"
+import { Empty } from "@shared/proto/clica/common"
 import {
 	PlanActMode,
 	McpDisplayMode as ProtoMcpDisplayMode,
 	OpenaiReasoningEffort as ProtoOpenaiReasoningEffort,
 	UpdateSettingsRequest,
-} from "@shared/proto/clino/state"
+} from "@shared/proto/clica/state"
 import { convertProtoToApiProvider } from "@shared/proto-conversions/models/api-configuration-conversion"
 import { OpenaiReasoningEffort } from "@shared/storage/types"
 import { TelemetrySetting } from "@shared/TelemetrySetting"

@@ -1,4 +1,4 @@
-import { ClinoRulesToggles, ToggleWorkflowRequest } from "@shared/proto/clino/file"
+import { ClicaRulesToggles, ToggleWorkflowRequest } from "@shared/proto/clica/file"
 import { Controller } from ".."
 
 /**
@@ -7,7 +7,7 @@ import { Controller } from ".."
  * @param request The request containing the workflow path and enabled state
  * @returns The updated workflow toggles
  */
-export async function toggleWorkflow(controller: Controller, request: ToggleWorkflowRequest): Promise<ClinoRulesToggles> {
+export async function toggleWorkflow(controller: Controller, request: ToggleWorkflowRequest): Promise<ClicaRulesToggles> {
 	const { workflowPath, enabled, isGlobal } = request
 
 	if (!workflowPath || typeof enabled !== "boolean") {
@@ -27,7 +27,7 @@ export async function toggleWorkflow(controller: Controller, request: ToggleWork
 		await controller.postStateToWebview()
 
 		// Return the global toggles
-		return ClinoRulesToggles.create({ toggles: toggles })
+		return ClicaRulesToggles.create({ toggles: toggles })
 	} else {
 		// Workspace workflows
 		const toggles = controller.stateManager.getWorkspaceStateKey("workflowToggles")
@@ -36,6 +36,6 @@ export async function toggleWorkflow(controller: Controller, request: ToggleWork
 		await controller.postStateToWebview()
 
 		// Return the workspace toggles
-		return ClinoRulesToggles.create({ toggles: toggles })
+		return ClicaRulesToggles.create({ toggles: toggles })
 	}
 }

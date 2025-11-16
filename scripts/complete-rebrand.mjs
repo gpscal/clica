@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Complete Cline to Clino rebranding script
- * This script replaces all remaining instances of "Cline" with "Clino"
+ * Complete Cline to Clica rebranding script
+ * This script replaces all remaining instances of "Cline" with "Clica"
  */
 
 import { readdirSync, readFileSync, statSync, writeFileSync } from "fs"
@@ -27,46 +27,46 @@ const skipPatterns = [
 // Patterns to replace (order matters - more specific first)
 const replacements = [
 	// URLs
-	{ from: /docs\.cline\.bot/g, to: "docs.clino.bot" },
-	{ from: /cline\.bot/g, to: "clino.bot" },
-	{ from: /cline\.ai/g, to: "clino.ai" },
+	{ from: /docs\.cline\.bot/g, to: "docs.clica.bot" },
+	{ from: /cline\.bot/g, to: "clica.bot" },
+	{ from: /cline\.ai/g, to: "clica.ai" },
 
 	// GitHub URLs (if applicable)
-	{ from: /github\.com\/cline\/cline/g, to: "github.com/clino/clino" },
+	{ from: /github\.com\/cline\/cline/g, to: "github.com/clica/clica" },
 
 	// Type/Interface/Class names
-	{ from: /ClineMessage/g, to: "ClinoMessage" },
-	{ from: /ClineApiReqInfo/g, to: "ClinoApiReqInfo" },
-	{ from: /ClineAsk/g, to: "ClinoAsk" },
-	{ from: /ClineSay/g, to: "ClinoSay" },
-	{ from: /ClineApi/g, to: "ClinoApi" },
-	{ from: /ClineFeature/g, to: "ClinoFeature" },
-	{ from: /ClineError/g, to: "ClinoError" },
-	{ from: /ClineRules/g, to: "ClinoRules" },
-	{ from: /ClineIgnore/g, to: "ClinoIgnore" },
-	{ from: /ClineDefaultTool/g, to: "ClinoDefaultTool" },
-	{ from: /ClineToolSet/g, to: "ClinoToolSet" },
-	{ from: /ClinePlanMode/g, to: "ClinoPlanMode" },
-	{ from: /OpenClineSidebarPanel/g, to: "OpenClinoSidebarPanel" },
-	{ from: /ToggleClineRule/g, to: "ToggleClinoRule" },
+	{ from: /ClineMessage/g, to: "ClicaMessage" },
+	{ from: /ClineApiReqInfo/g, to: "ClicaApiReqInfo" },
+	{ from: /ClineAsk/g, to: "ClicaAsk" },
+	{ from: /ClineSay/g, to: "ClicaSay" },
+	{ from: /ClineApi/g, to: "ClicaApi" },
+	{ from: /ClineFeature/g, to: "ClicaFeature" },
+	{ from: /ClineError/g, to: "ClicaError" },
+	{ from: /ClineRules/g, to: "ClicaRules" },
+	{ from: /ClineIgnore/g, to: "ClicaIgnore" },
+	{ from: /ClineDefaultTool/g, to: "ClicaDefaultTool" },
+	{ from: /ClineToolSet/g, to: "ClicaToolSet" },
+	{ from: /ClinePlanMode/g, to: "ClicaPlanMode" },
+	{ from: /OpenClineSidebarPanel/g, to: "OpenClicaSidebarPanel" },
+	{ from: /ToggleClineRule/g, to: "ToggleClicaRule" },
 
 	// Variable/function names
-	{ from: /clineMessages/g, to: "clinoMessages" },
-	{ from: /clineRules/g, to: "clinoRules" },
-	{ from: /globalClineRules/g, to: "globalClinoRules" },
-	{ from: /localClineRules/g, to: "localClinoRules" },
+	{ from: /clineMessages/g, to: "clicaMessages" },
+	{ from: /clineRules/g, to: "clicaRules" },
+	{ from: /globalClineRules/g, to: "globalClicaRules" },
+	{ from: /localClineRules/g, to: "localClicaRules" },
 
 	// Command tokens
-	{ from: /__cline_command/g, to: "__clino_command" },
+	{ from: /__cline_command/g, to: "__clica_command" },
 
 	// Proto package references
-	{ from: /proto\/cline/g, to: "proto/clino" },
-	{ from: /@clino\/cline/g, to: "@clino/clino" },
+	{ from: /proto\/cline/g, to: "proto/clica" },
+	{ from: /@clica\/cline/g, to: "@clica/clica" },
 
 	// User-facing strings (case-sensitive, whole word)
-	{ from: /\bCline\b/g, to: "Clino" },
-	{ from: /\bCline's\b/g, to: "Clino's" },
-	{ from: /\bcline\b/g, to: "clino" },
+	{ from: /\bCline\b/g, to: "Clica" },
+	{ from: /\bCline's\b/g, to: "Clica's" },
+	{ from: /\bcline\b/g, to: "clica" },
 ]
 
 // Binary file extensions to skip
@@ -169,7 +169,7 @@ function walkDirectory(dir) {
 	return updatedCount
 }
 
-console.log("🔄 Starting Cline → Clino rebranding...\n")
+console.log("🔄 Starting Cline → Clica rebranding...\n")
 
 const updatedFiles = walkDirectory(rootDir)
 

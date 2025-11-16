@@ -5,7 +5,7 @@ import {
 	OcaModelInfo as ProtoOcaModelInfo,
 	OpenAiCompatibleModelInfo as ProtoOpenAiCompatibleModelInfo,
 	ThinkingConfig,
-} from "@shared/proto/clino/models"
+} from "@shared/proto/clica/models"
 
 /**
  * Convert protobuf ThinkingConfig to application ThinkingConfig

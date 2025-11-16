@@ -1,4 +1,4 @@
-import { ClinoDefaultTool, toolUseNames } from "@shared/tools"
+import { ClicaDefaultTool, toolUseNames } from "@shared/tools"
 import { AssistantMessageContent, TextContent, ToolParamName, ToolUse, toolParamNames } from "." // Assuming types are defined in index.ts or a similar file
 
 // parseAssistantmessageV1 removed
@@ -34,7 +34,7 @@ export function parseAssistantMessageV2(assistantMessage: string): AssistantMess
 	let currentParamName: ToolParamName | undefined
 
 	// Precompute tags for faster lookups
-	const toolUseOpenTags = new Map<string, ClinoDefaultTool>()
+	const toolUseOpenTags = new Map<string, ClicaDefaultTool>()
 	const toolParamOpenTags = new Map<string, ToolParamName>()
 	for (const name of toolUseNames) {
 		toolUseOpenTags.set(`<${name}>`, name)

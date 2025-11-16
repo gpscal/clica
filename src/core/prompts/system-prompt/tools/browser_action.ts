@@ -1,8 +1,8 @@
 import { ModelFamily } from "@/shared/prompts"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaDefaultTool } from "@/shared/tools"
 import type { ClineToolSpec } from "../spec"
 
-const id = ClinoDefaultTool.BROWSER
+const id = ClicaDefaultTool.BROWSER
 
 const generic: ClineToolSpec = {
 	variant: ModelFamily.GENERIC,

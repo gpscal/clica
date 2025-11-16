@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/clino/cli/pkg/cli/global"
+	"github.com/clica/cli/pkg/cli/global"
 	"github.com/spf13/cobra"
 )
 
@@ -16,7 +16,7 @@ func NewVersionCommand() *cobra.Command {
 		Use:     "version",
 		Aliases: []string{"v"},
 		Short:   "Show version information",
-		Long:    `Display version information for the Clino CLI.`,
+		Long:    `Display version information for the Clica CLI.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// Versions are injected at build time via ldflags
 			if short {
@@ -24,9 +24,9 @@ func NewVersionCommand() *cobra.Command {
 				return nil
 			}
 
-			fmt.Printf("Clino CLI\n")
-			fmt.Printf("Clino CLI Version:  %s\n", global.CliVersion)
-			fmt.Printf("Clino Core Version: %s\n", global.Version)
+			fmt.Printf("Clica CLI\n")
+			fmt.Printf("Clica CLI Version:  %s\n", global.CliVersion)
+			fmt.Printf("Clica Core Version: %s\n", global.Version)
 			fmt.Printf("Commit:             %s\n", global.Commit)
 			fmt.Printf("Built:              %s\n", global.Date)
 			fmt.Printf("Built by:           %s\n", global.BuiltBy)

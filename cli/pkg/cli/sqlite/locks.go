@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/clino/cli/pkg/common"
+	"github.com/clica/cli/pkg/common"
 	_ "github.com/glebarez/go-sqlite"
 	"google.golang.org/grpc/health/grpc_health_v1"
 )
@@ -46,7 +46,7 @@ type LockManager struct {
 func NewLockManager(clineDir string) (*LockManager, error) {
 	dbPath := filepath.Join(clineDir, common.SETTINGS_SUBFOLDER, "locks.db")
 
-	// Ensure the directory exists (for future DB creation by clino-core)
+	// Ensure the directory exists (for future DB creation by clica-core)
 	dbDir := filepath.Dir(dbPath)
 	if err := os.MkdirAll(dbDir, 0755); err != nil {
 		return nil, fmt.Errorf("failed to create database directory: %w", err)
@@ -86,7 +86,7 @@ func (lm *LockManager) ensureConnection() error {
 		return nil
 	}
 
-	// Check if database exists now (created by clino-core)
+	// Check if database exists now (created by clica-core)
 	if _, err := os.Stat(lm.dbPath); os.IsNotExist(err) {
 		return fmt.Errorf("database not available")
 	}
@@ -177,6 +177,11 @@ func (lm *LockManager) HasInstanceAtAddress(address string) (bool, error) {
 // Handles localhost/127.0.0.1 equivalence by trying both variants.
 func (lm *LockManager) GetInstanceInfo(address string) (*common.CoreInstanceInfo, error) {
 	if err := lm.ensureConnection(); err != nil {
+		// If database is not available yet (e.g., during startup), return "not found"
+		// instead of "database not available" to allow retry logic to work properly
+		if err.Error() == "database not available" {
+			return nil, fmt.Errorf("instance %s not found", address)
+		}
 		return nil, err
 	}
 

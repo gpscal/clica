@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/huh"
-	"github.com/clino/cli/pkg/cli/task"
-	"github.com/clino/grpc-go/clino"
+	"github.com/clica/cli/pkg/cli/task"
+	"github.com/clica/grpc-go/clica"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/fieldmaskpb"
 )
@@ -128,7 +128,7 @@ func PromptForBedrockConfig(ctx context.Context, manager *task.Manager) (*Bedroc
 // ApplyBedrockConfig applies Bedrock configuration using partial updates (profile-only)
 func ApplyBedrockConfig(ctx context.Context, manager *task.Manager, config *BedrockConfig, modelID string, modelInfo interface{}) error {
 	// Build the API configuration with all Bedrock fields
-	apiConfig := &clino.ModelsApiConfiguration{}
+	apiConfig := &clica.ModelsApiConfiguration{}
 
 	// Set model ID fields
 	apiConfig.PlanModeApiModelId = proto.String(modelID)
@@ -180,7 +180,7 @@ func ApplyBedrockConfig(ctx context.Context, manager *task.Manager, config *Bedr
 	fieldMask := &fieldmaskpb.FieldMask{Paths: fieldPaths}
 
 	// Apply the partial update
-	request := &clino.UpdateApiConfigurationPartialRequest{
+	request := &clica.UpdateApiConfigurationPartialRequest{
 		ApiConfiguration: apiConfig,
 		UpdateMask:       fieldMask,
 	}

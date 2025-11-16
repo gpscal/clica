@@ -1,7 +1,7 @@
 import * as fs from "fs/promises"
 import * as path from "path"
 import should from "should"
-import { HookOutput } from "../../../shared/proto/clino/hooks"
+import { HookOutput } from "../../../shared/proto/clica/hooks"
 import { Hooks, NamedHookInput } from "../hook-factory"
 
 // Define HookName locally since it's not exported from hook-factory

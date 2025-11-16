@@ -49,7 +49,7 @@ export async function refreshGroqModels(controller: Controller): Promise<Record<
 				headers: {
 					Authorization: `Bearer ${cleanApiKey}`,
 					"Content-Type": "application/json",
-					"User-Agent": "Clino-VSCode-Extension",
+					"User-Agent": "Clica-VSCode-Extension",
 				},
 				timeout: 10000, // 10 second timeout
 			})

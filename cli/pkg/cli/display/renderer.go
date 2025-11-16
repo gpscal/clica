@@ -5,10 +5,10 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/clino/cli/pkg/cli/global"
-	"github.com/clino/cli/pkg/cli/output"
-	"github.com/clino/cli/pkg/cli/types"
-	"github.com/clino/grpc-go/clino"
+	"github.com/clica/cli/pkg/cli/global"
+	"github.com/clica/cli/pkg/cli/output"
+	"github.com/clica/cli/pkg/cli/types"
+	"github.com/clica/grpc-go/clica"
 )
 
 type Renderer struct {
@@ -138,7 +138,7 @@ func (r *Renderer) RenderTaskCancelled() error {
 }
 
 // RenderTaskList displays task history with improved formatting
-func (r *Renderer) RenderTaskList(tasks []*clino.TaskItem) error {
+func (r *Renderer) RenderTaskList(tasks []*clica.TaskItem) error {
 	const maxTasks = 20
 
 	startIndex := 0

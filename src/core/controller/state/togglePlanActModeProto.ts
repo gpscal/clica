@@ -1,5 +1,5 @@
-import { Boolean } from "@shared/proto/clino/common"
-import { PlanActMode, TogglePlanActModeRequest } from "@shared/proto/clino/state"
+import { Boolean } from "@shared/proto/clica/common"
+import { PlanActMode, TogglePlanActModeRequest } from "@shared/proto/clica/state"
 import { Mode } from "@shared/storage/types"
 import { Controller } from ".."
 

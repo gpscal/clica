@@ -1,17 +1,17 @@
-import { Empty, EmptyRequest } from "@shared/proto/clino/common"
+import { Empty, EmptyRequest } from "@shared/proto/clica/common"
 import { ShowMessageType } from "@shared/proto/host/window"
 import { ExecuteCommandInTerminalRequest } from "@shared/proto/host/workspace"
 import { HostProvider } from "@/hosts/host-provider"
 import { Controller } from ".."
 
 /**
- * Handles the installation of the Clino CLI tool
+ * Handles the installation of the Clica CLI tool
  * @param controller The controller instance
  * @param _request The empty request
  * @returns Empty response
  */
 export async function installClineCli(_controller: Controller, _request: EmptyRequest): Promise<Empty> {
-	const installCommand = "npm install -g clino"
+	const installCommand = "npm install -g clica"
 
 	try {
 		// Use the HostProvider to execute the command in a terminal

@@ -23,7 +23,7 @@ import { PostHogClientProvider } from "./services/telemetry/providers/posthog/Po
 import { ShowMessageType } from "./shared/proto/host/window"
 import { getLatestAnnouncementId } from "./utils/announcements"
 /**
- * Performs intialization for Clino that is common to all platforms.
+ * Performs intialization for Clica that is common to all platforms.
  *
  * @param context
  * @returns The webview provider
@@ -35,7 +35,7 @@ export async function initialize(context: vscode.ExtensionContext): Promise<Webv
 		console.error("[Controller] CRITICAL: Failed to initialize StateManager - extension may not function properly:", error)
 		HostProvider.window.showMessage({
 			type: ShowMessageType.ERROR,
-			message: "Failed to initialize Clino's application state. Please restart the extension.",
+			message: "Failed to initialize Clica's application state. Please restart the extension.",
 		})
 	}
 
@@ -49,7 +49,7 @@ export async function initialize(context: vscode.ExtensionContext): Promise<Webv
 	await ErrorService.initialize()
 	await featureFlagsService.poll()
 
-	// Migrate custom instructions to global Clino rules (one-time cleanup)
+	// Migrate custom instructions to global Clica rules (one-time cleanup)
 	await migrateCustomInstructionsToGlobalRules(context)
 
 	// Migrate welcomeViewCompleted setting based on existing API keys (one-time cleanup)
@@ -68,7 +68,7 @@ export async function initialize(context: vscode.ExtensionContext): Promise<Webv
 	await FileContextTracker.cleanupOrphanedWarnings(context)
 
 	const webview = HostProvider.get().createWebviewProvider()
-	
+
 	// Create controller and attach to webview (CLI-only mode - webview is no-op)
 	const { Controller } = await import("./core/controller")
 	const controller = new Controller(context as any)
@@ -81,14 +81,14 @@ export async function initialize(context: vscode.ExtensionContext): Promise<Webv
 	return webview
 }
 
-async function showVersionUpdateAnnouncement(context: ClinoContext) {
+async function showVersionUpdateAnnouncement(context: ClicaContext) {
 	// Version checking for autoupdate notification (CLI-only mode)
 	const currentVersion = ExtensionRegistryInfo.version
 	const previousVersion = context.globalState.get<string>("clineVersion")
 	// Perform post-update actions if necessary
 	try {
 		if (!previousVersion || currentVersion !== previousVersion) {
-			Logger.log(`Clino version changed: ${previousVersion} -> ${currentVersion}. First run or update detected.`)
+			Logger.log(`Clica version changed: ${previousVersion} -> ${currentVersion}. First run or update detected.`)
 
 			// Check for announcements (CLI mode - no UI, just log)
 			const lastShownAnnouncementId = context.globalState.get<string>("lastShownAnnouncementId")
@@ -96,8 +96,8 @@ async function showVersionUpdateAnnouncement(context: ClinoContext) {
 
 			if (lastShownAnnouncementId !== latestAnnouncementId) {
 				const message = previousVersion
-					? `Clino has been updated to v${currentVersion}`
-					: `Welcome to Clino v${currentVersion}`
+					? `Clica has been updated to v${currentVersion}`
+					: `Welcome to Clica v${currentVersion}`
 				// In CLI mode, just log the message instead of showing UI
 				Logger.log(message)
 			}
@@ -111,7 +111,7 @@ async function showVersionUpdateAnnouncement(context: ClinoContext) {
 }
 
 /**
- * Performs cleanup when Clino is deactivated that is common to all platforms.
+ * Performs cleanup when Clica is deactivated that is common to all platforms.
  */
 export async function tearDown(): Promise<void> {
 	// Clean up audio recording service to ensure no orphaned processes

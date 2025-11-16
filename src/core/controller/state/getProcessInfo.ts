@@ -1,5 +1,5 @@
-import { EmptyRequest } from "@shared/proto/clino/common"
-import { ProcessInfo } from "@shared/proto/clino/state"
+import { EmptyRequest } from "@shared/proto/clica/common"
+import { ProcessInfo } from "@shared/proto/clica/state"
 import { Controller } from ".."
 
 /**

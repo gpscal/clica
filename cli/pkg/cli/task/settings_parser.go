@@ -5,17 +5,17 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/clino/grpc-go/clino"
+	"github.com/clica/grpc-go/clica"
 )
 
 
-func ParseTaskSettings(settingsFlags []string) (*clino.Settings, *clino.Secrets, error) {
+func ParseTaskSettings(settingsFlags []string) (*clica.Settings, *clica.Secrets, error) {
 	if len(settingsFlags) == 0 {
 		return nil, nil, nil
 	}
 
-	settings := &clino.Settings{}
-	secrets := &clino.Secrets{}
+	settings := &clica.Settings{}
+	secrets := &clica.Secrets{}
 	nestedSettings := make(map[string]map[string]string)
 
 	for _, flag := range settingsFlags {
@@ -77,7 +77,7 @@ func int64Ptr(i int64) *int64       { return &i }
 func float64Ptr(f float64) *float64 { return &f }
 
 // setSimpleField sets a simple (non-nested) field on Settings
-func setSimpleField(settings *clino.Settings, key, value string) error {
+func setSimpleField(settings *clica.Settings, key, value string) error {
 	switch key {
 	// String fields
 	case "aws_region":
@@ -393,17 +393,17 @@ func setSimpleField(settings *clino.Settings, key, value string) error {
 
 // setNestedField sets a nested field on Settings
 // Currently supports: auto_approval_settings, browser_settings
-func setNestedField(settings *clino.Settings, parentField string, childFields map[string]string) error {
+func setNestedField(settings *clica.Settings, parentField string, childFields map[string]string) error {
 	switch parentField {
 	case "auto_approval_settings":
 		if settings.AutoApprovalSettings == nil {
-			settings.AutoApprovalSettings = &clino.AutoApprovalSettings{}
+			settings.AutoApprovalSettings = &clica.AutoApprovalSettings{}
 		}
 		return setAutoApprovalSettings(settings.AutoApprovalSettings, childFields)
 
 	case "browser_settings":
 		if settings.BrowserSettings == nil {
-			settings.BrowserSettings = &clino.BrowserSettings{}
+			settings.BrowserSettings = &clica.BrowserSettings{}
 		}
 		return setBrowserSettings(settings.BrowserSettings, childFields)
 
@@ -413,7 +413,7 @@ func setNestedField(settings *clino.Settings, parentField string, childFields ma
 }
 
 // setAutoApprovalSettings sets fields on AutoApprovalSettings
-func setAutoApprovalSettings(settings *clino.AutoApprovalSettings, fields map[string]string) error {
+func setAutoApprovalSettings(settings *clica.AutoApprovalSettings, fields map[string]string) error {
 	for key, value := range fields {
 		switch key {
 		case "enabled":
@@ -441,7 +441,7 @@ func setAutoApprovalSettings(settings *clino.AutoApprovalSettings, fields map[st
 			if strings.HasPrefix(key, "actions.") {
 				actionField := strings.TrimPrefix(key, "actions.")
 				if settings.Actions == nil {
-					settings.Actions = &clino.AutoApprovalActions{}
+					settings.Actions = &clica.AutoApprovalActions{}
 				}
 				if err := setAutoApprovalAction(settings.Actions, actionField, value); err != nil {
 					return err
@@ -456,7 +456,7 @@ func setAutoApprovalSettings(settings *clino.AutoApprovalSettings, fields map[st
 }
 
 // setAutoApprovalAction sets fields on AutoApprovalActions
-func setAutoApprovalAction(actions *clino.AutoApprovalActions, key, value string) error {
+func setAutoApprovalAction(actions *clica.AutoApprovalActions, key, value string) error {
 	val, err := parseBool(value)
 	if err != nil {
 		return err
@@ -487,7 +487,7 @@ func setAutoApprovalAction(actions *clino.AutoApprovalActions, key, value string
 }
 
 // setBrowserSettings sets fields on BrowserSettings
-func setBrowserSettings(settings *clino.BrowserSettings, fields map[string]string) error {
+func setBrowserSettings(settings *clica.BrowserSettings, fields map[string]string) error {
 	for key, value := range fields {
 		switch key {
 		case "viewport_width":
@@ -496,7 +496,7 @@ func setBrowserSettings(settings *clino.BrowserSettings, fields map[string]strin
 				return err
 			}
 			if settings.Viewport == nil {
-				settings.Viewport = &clino.Viewport{}
+				settings.Viewport = &clica.Viewport{}
 			}
 			settings.Viewport.Width = val
 		case "viewport_height":
@@ -505,7 +505,7 @@ func setBrowserSettings(settings *clino.BrowserSettings, fields map[string]strin
 				return err
 			}
 			if settings.Viewport == nil {
-				settings.Viewport = &clino.Viewport{}
+				settings.Viewport = &clica.Viewport{}
 			}
 			settings.Viewport.Height = val
 		case "remote_browser_host":
@@ -571,116 +571,116 @@ func parseFloat64(value string) (float64, error) {
 }
 
 // Enum parsing helpers
-func parseOpenaiReasoningEffort(value string) (clino.OpenaiReasoningEffort, error) {
+func parseOpenaiReasoningEffort(value string) (clica.OpenaiReasoningEffort, error) {
 	lower := strings.ToLower(value)
 	switch lower {
 	case "low":
-		return clino.OpenaiReasoningEffort_LOW, nil
+		return clica.OpenaiReasoningEffort_LOW, nil
 	case "medium":
-		return clino.OpenaiReasoningEffort_MEDIUM, nil
+		return clica.OpenaiReasoningEffort_MEDIUM, nil
 	case "high":
-		return clino.OpenaiReasoningEffort_HIGH, nil
+		return clica.OpenaiReasoningEffort_HIGH, nil
 	default:
-		return clino.OpenaiReasoningEffort_LOW, fmt.Errorf("invalid openai_reasoning_effort '%s': expected low/medium/high", value)
+		return clica.OpenaiReasoningEffort_LOW, fmt.Errorf("invalid openai_reasoning_effort '%s': expected low/medium/high", value)
 	}
 }
 
-func parsePlanActMode(value string) (clino.PlanActMode, error) {
+func parsePlanActMode(value string) (clica.PlanActMode, error) {
 	lower := strings.ToLower(value)
 	switch lower {
 	case "plan":
-		return clino.PlanActMode_PLAN, nil
+		return clica.PlanActMode_PLAN, nil
 	case "act":
-		return clino.PlanActMode_ACT, nil
+		return clica.PlanActMode_ACT, nil
 	default:
-		return clino.PlanActMode_ACT, fmt.Errorf("invalid mode '%s': expected plan/act", value)
+		return clica.PlanActMode_ACT, fmt.Errorf("invalid mode '%s': expected plan/act", value)
 	}
 }
 
-func parseApiProvider(value string) (clino.ApiProvider, error) {
+func parseApiProvider(value string) (clica.ApiProvider, error) {
 	lower := strings.ToLower(value)
 	switch lower {
 	case "anthropic":
-		return clino.ApiProvider_ANTHROPIC, nil
+		return clica.ApiProvider_ANTHROPIC, nil
 	case "openrouter":
-		return clino.ApiProvider_OPENROUTER, nil
+		return clica.ApiProvider_OPENROUTER, nil
 	case "bedrock":
-		return clino.ApiProvider_BEDROCK, nil
+		return clica.ApiProvider_BEDROCK, nil
 	case "vertex":
-		return clino.ApiProvider_VERTEX, nil
+		return clica.ApiProvider_VERTEX, nil
 	case "openai":
-		return clino.ApiProvider_OPENAI, nil
+		return clica.ApiProvider_OPENAI, nil
 	case "ollama":
-		return clino.ApiProvider_OLLAMA, nil
+		return clica.ApiProvider_OLLAMA, nil
 	case "lmstudio":
-		return clino.ApiProvider_LMSTUDIO, nil
+		return clica.ApiProvider_LMSTUDIO, nil
 	case "gemini":
-		return clino.ApiProvider_GEMINI, nil
+		return clica.ApiProvider_GEMINI, nil
 	case "openai_native":
-		return clino.ApiProvider_OPENAI_NATIVE, nil
+		return clica.ApiProvider_OPENAI_NATIVE, nil
 	case "requesty":
-		return clino.ApiProvider_REQUESTY, nil
+		return clica.ApiProvider_REQUESTY, nil
 	case "together":
-		return clino.ApiProvider_TOGETHER, nil
+		return clica.ApiProvider_TOGETHER, nil
 	case "deepseek":
-		return clino.ApiProvider_DEEPSEEK, nil
+		return clica.ApiProvider_DEEPSEEK, nil
 	case "qwen":
-		return clino.ApiProvider_QWEN, nil
+		return clica.ApiProvider_QWEN, nil
 	case "doubao":
-		return clino.ApiProvider_DOUBAO, nil
+		return clica.ApiProvider_DOUBAO, nil
 	case "mistral":
-		return clino.ApiProvider_MISTRAL, nil
+		return clica.ApiProvider_MISTRAL, nil
 	case "vscode_lm":
-		return clino.ApiProvider_VSCODE_LM, nil
-	case "clino":
-		return clino.ApiProvider_CLINO, nil
+		return clica.ApiProvider_VSCODE_LM, nil
+	case "clica":
+		return clica.ApiProvider_CLICA, nil
 	case "litellm":
-		return clino.ApiProvider_LITELLM, nil
+		return clica.ApiProvider_LITELLM, nil
 	case "nebius":
-		return clino.ApiProvider_NEBIUS, nil
+		return clica.ApiProvider_NEBIUS, nil
 	case "fireworks":
-		return clino.ApiProvider_FIREWORKS, nil
+		return clica.ApiProvider_FIREWORKS, nil
 	case "asksage":
-		return clino.ApiProvider_ASKSAGE, nil
+		return clica.ApiProvider_ASKSAGE, nil
 	case "xai", "grok":
-		return clino.ApiProvider_XAI, nil
+		return clica.ApiProvider_XAI, nil
 	case "sambanova":
-		return clino.ApiProvider_SAMBANOVA, nil
+		return clica.ApiProvider_SAMBANOVA, nil
 	case "cerebras":
-		return clino.ApiProvider_CEREBRAS, nil
+		return clica.ApiProvider_CEREBRAS, nil
 	case "groq":
-		return clino.ApiProvider_GROQ, nil
+		return clica.ApiProvider_GROQ, nil
 	case "sapaicore", "sap_ai_core":
-		return clino.ApiProvider_SAPAICORE, nil
+		return clica.ApiProvider_SAPAICORE, nil
 	case "claude_code":
-		return clino.ApiProvider_CLAUDE_CODE, nil
+		return clica.ApiProvider_CLAUDE_CODE, nil
 	case "moonshot":
-		return clino.ApiProvider_MOONSHOT, nil
+		return clica.ApiProvider_MOONSHOT, nil
 	case "huggingface":
-		return clino.ApiProvider_HUGGINGFACE, nil
+		return clica.ApiProvider_HUGGINGFACE, nil
 	case "huawei_cloud_maas":
-		return clino.ApiProvider_HUAWEI_CLOUD_MAAS, nil
+		return clica.ApiProvider_HUAWEI_CLOUD_MAAS, nil
 	case "baseten":
-		return clino.ApiProvider_BASETEN, nil
+		return clica.ApiProvider_BASETEN, nil
 	case "zai":
-		return clino.ApiProvider_ZAI, nil
+		return clica.ApiProvider_ZAI, nil
 	case "vercel_ai_gateway":
-		return clino.ApiProvider_VERCEL_AI_GATEWAY, nil
+		return clica.ApiProvider_VERCEL_AI_GATEWAY, nil
 	case "qwen_code":
-		return clino.ApiProvider_QWEN_CODE, nil
+		return clica.ApiProvider_QWEN_CODE, nil
 	case "dify":
-		return clino.ApiProvider_DIFY, nil
+		return clica.ApiProvider_DIFY, nil
 	case "oca":
-		return clino.ApiProvider_OCA, nil
+		return clica.ApiProvider_OCA, nil
 	default:
-		return clino.ApiProvider_ANTHROPIC, fmt.Errorf("invalid api_provider '%s'", value)
+		return clica.ApiProvider_ANTHROPIC, fmt.Errorf("invalid api_provider '%s'", value)
 	}
 }
 
 // setSecretField sets a secret field on Secrets
 // All secret fields are optional strings
 // Returns nil if field was successfully set, error otherwise
-func setSecretField(secrets *clino.Secrets, key, value string) error {
+func setSecretField(secrets *clica.Secrets, key, value string) error {
 	switch key {
 	case "api_key":
 		secrets.ApiKey = strPtr(value)

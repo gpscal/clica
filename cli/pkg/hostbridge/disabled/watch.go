@@ -3,7 +3,7 @@ package hostbridge
 import (
 	"log"
 
-	"github.com/clino/grpc-go/host"
+	"github.com/clica/grpc-go/host"
 )
 
 // WatchService implements the host.WatchServiceServer interface
@@ -29,7 +29,7 @@ func (s *WatchService) SubscribeToFile(req *host.SubscribeToFileRequest, stream 
 
 	// For console implementation, we'll just log that we would watch the file
 	// In a real implementation, we'd use fsnotify or similar to watch file changes
-	log.Printf("[Clino] Would watch file: %s", req.GetPath())
+	log.Printf("[Clica] Would watch file: %s", req.GetPath())
 
 	// Keep the stream open but don't send any events for now
 	// In a real implementation, we'd send FileChangeEvent messages when files change

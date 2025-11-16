@@ -1,5 +1,5 @@
-import type { Empty } from "@shared/proto/clino/common"
-import { McpServers } from "@shared/proto/clino/mcp"
+import type { Empty } from "@shared/proto/clica/common"
+import { McpServers } from "@shared/proto/clica/mcp"
 import { convertMcpServersToProtoMcpServers } from "@/shared/proto-conversions/mcp/mcp-server-conversion"
 import type { Controller } from "../index"
 

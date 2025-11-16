@@ -1,17 +1,17 @@
 package handlers
 
 import (
-	"github.com/clino/cli/pkg/cli/display"
-	"github.com/clino/cli/pkg/cli/types"
+	"github.com/clica/cli/pkg/cli/display"
+	"github.com/clica/cli/pkg/cli/types"
 )
 
 // MessageHandler defines the interface for handling different message types
 type MessageHandler interface {
 	// CanHandle returns true if this handler can process the given message
-	CanHandle(msg *types.ClinoMessage) bool
+	CanHandle(msg *types.ClicaMessage) bool
 
 	// Handle processes the message and renders it using the display context
-	Handle(msg *types.ClinoMessage, dc *DisplayContext) error
+	Handle(msg *types.ClicaMessage, dc *DisplayContext) error
 
 	// GetPriority returns the priority of this handler (higher = more priority)
 	GetPriority() int
@@ -85,7 +85,7 @@ func (r *HandlerRegistry) Register(handler MessageHandler) {
 }
 
 // Handle finds the appropriate handler and processes the message
-func (r *HandlerRegistry) Handle(msg *types.ClinoMessage, dc *DisplayContext) error {
+func (r *HandlerRegistry) Handle(msg *types.ClicaMessage, dc *DisplayContext) error {
 	for _, handler := range r.handlers {
 		if handler.CanHandle(msg) {
 			return handler.Handle(msg, dc)
@@ -97,7 +97,7 @@ func (r *HandlerRegistry) Handle(msg *types.ClinoMessage, dc *DisplayContext) er
 }
 
 // handleDefault provides default handling for unrecognized messages
-func (r *HandlerRegistry) handleDefault(msg *types.ClinoMessage, dc *DisplayContext) error {
+func (r *HandlerRegistry) handleDefault(msg *types.ClicaMessage, dc *DisplayContext) error {
 	if msg.Text == "" {
 		return nil
 	}

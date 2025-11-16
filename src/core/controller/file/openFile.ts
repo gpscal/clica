@@ -1,5 +1,5 @@
 import { openFile as openFileIntegration } from "@integrations/misc/open-file"
-import { Empty, StringRequest } from "@shared/proto/clino/common"
+import { Empty, StringRequest } from "@shared/proto/clica/common"
 import { Controller } from ".."
 
 /**

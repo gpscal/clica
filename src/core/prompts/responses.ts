@@ -2,7 +2,7 @@ import { Anthropic } from "@anthropic-ai/sdk"
 import * as diff from "diff"
 import * as path from "path"
 import { Mode } from "@/shared/storage/types"
-import { ClinoIgnoreController, LOCK_TEXT_SYMBOL } from "../ignore/ClinoIgnoreController"
+import { ClicaIgnoreController, LOCK_TEXT_SYMBOL } from "../ignore/ClicaIgnoreController"
 
 export const formatResponse = {
 	duplicateFileReadNotice: () =>
@@ -84,7 +84,7 @@ Otherwise, if you have not completed the task and do not need additional informa
 		absolutePath: string,
 		files: string[],
 		didHitLimit: boolean,
-		clineIgnoreController?: ClinoIgnoreController,
+		clineIgnoreController?: ClicaIgnoreController,
 	): string => {
 		const sorted = files
 			.map((file) => {
@@ -92,7 +92,7 @@ Otherwise, if you have not completed the task and do not need additional informa
 				const relativePath = path.relative(absolutePath, file).toPosix()
 				return file.endsWith("/") ? relativePath + "/" : relativePath
 			})
-			// Sort so files are listed under their respective directories to make it clear what files are children of what directories. Since we build file list top down, even if file list is truncated it will show directories that clino can then explore further.
+			// Sort so files are listed under their respective directories to make it clear what files are children of what directories. Since we build file list top down, even if file list is truncated it will show directories that clica can then explore further.
 			.sort((a, b) => {
 				const aParts = a.split("/") // only works if we use toPosix first
 				const bParts = b.split("/")
@@ -244,13 +244,13 @@ Otherwise, if you have not completed the task and do not need additional informa
 	clineIgnoreInstructions: (content: string) =>
 		`# .clineignore\n\n(The following is provided by a root-level .clineignore file where the user has specified files and directories that should not be accessed. When using list_files, you'll notice a ${LOCK_TEXT_SYMBOL} next to files that are blocked. Attempting to access the file's contents e.g. through read_file will result in an error.)\n\n${content}\n.clineignore`,
 
-	clinoRulesGlobalDirectoryInstructions: (globalClinoRulesFilePath: string, content: string) =>
-		`# .clinerules/\n\nThe following is provided by a global .clinerules/ directory, located at ${globalClinoRulesFilePath.toPosix()}, where the user has specified instructions for all working directories:\n\n${content}`,
+	clicaRulesGlobalDirectoryInstructions: (globalClicaRulesFilePath: string, content: string) =>
+		`# .clinerules/\n\nThe following is provided by a global .clinerules/ directory, located at ${globalClicaRulesFilePath.toPosix()}, where the user has specified instructions for all working directories:\n\n${content}`,
 
-	clinoRulesLocalDirectoryInstructions: (cwd: string, content: string) =>
+	clicaRulesLocalDirectoryInstructions: (cwd: string, content: string) =>
 		`# .clinerules/\n\nThe following is provided by a root-level .clinerules/ directory where the user has specified instructions for this working directory (${cwd.toPosix()})\n\n${content}`,
 
-	clinoRulesLocalFileInstructions: (cwd: string, content: string) =>
+	clicaRulesLocalFileInstructions: (cwd: string, content: string) =>
 		`# .clinerules\n\nThe following is provided by a root-level .clinerules file where the user has specified instructions for this working directory (${cwd.toPosix()})\n\n${content}`,
 
 	windsurfRulesLocalFileInstructions: (cwd: string, content: string) =>

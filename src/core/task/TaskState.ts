@@ -1,6 +1,6 @@
 import { Anthropic } from "@anthropic-ai/sdk"
 import { AssistantMessageContent } from "@core/assistant-message"
-import { ClinoAskResponse } from "@shared/WebviewMessage"
+import { ClicaAskResponse } from "@shared/WebviewMessage"
 
 export class TaskState {
 	// Streaming flags
@@ -19,7 +19,7 @@ export class TaskState {
 	presentAssistantMessageHasPendingUpdates = false
 
 	// Ask/Response handling
-	askResponse?: ClinoAskResponse
+	askResponse?: ClicaAskResponse
 	askResponseText?: string
 	askResponseImages?: string[]
 	askResponseFiles?: string[]

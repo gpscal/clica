@@ -1,7 +1,7 @@
 export class VoiceTranscriptionService {
 	async transcribeAudio(_audioBase64: string, _language?: string): Promise<{ text?: string; error?: string }> {
 		return {
-			error: "Voice transcription requires the legacy Clino account proxy, which has been removed. Please configure an alternative transcription provider if available.",
+			error: "Voice transcription requires the legacy Clica account proxy, which has been removed. Please configure an alternative transcription provider if available.",
 		}
 	}
 }

@@ -1,0 +1,44 @@
+### Clica is thinking
+The user has sent "this is a test" as a task. This is quite vague and doesn't specify what kind of test they want or what they want me to do.
+
+I'm currently in PLAN MODE, which means I should focus on gathering information and understanding what the user wants before presenting a plan.
+
+Since the task is extremely vague ("this is a test"), I should ask a clarifying question to understand what the user actually wants me to do. This could be:
+
+1. A test of my capabilities
+2. Testing if I'm working properly
+3. Creating some kind of test file or test suite
+4. Something else entirely
+
+I should use the ask_followup_question tool to clarify what they mean by "this is a test".
+
+### Clica responds
+I received "this is a test" as your task, which is quite open-ended. To help you effectively, I need to understand what you'd like me to do.
+
+### Clica has a question
+What would you like me to help you test? For example:
+
+• Are you testing if I'm working properly?
+• Do you want me to create a test file or test suite for a project?
+• Are you testing specific functionality or capabilities?
+• Something else?
+
+Options:
+1. Testing if you're working properly
+2. Create a test file/suite
+3. Test specific functionality
+4. Other (I'll explain)
+
+## API request completed  ↑ 10 ↓ 328 ← 15.2k $0.0619
+What would you like me to help you test? For example:
+
+• Are you testing if I'm working properly?
+• Do you want me to create a test file or test suite for a project?
+• Are you testing specific functionality or capabilities?
+• Something else?
+
+Options:
+1. Testing if you're working properly
+2. Create a test file/suite
+3. Test specific functionality
+4. Other (I'll explain)

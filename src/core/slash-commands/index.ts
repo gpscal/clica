@@ -1,4 +1,4 @@
-import { ClinoRulesToggles } from "@shared/clino-rules"
+import { ClicaRulesToggles } from "@shared/clica-rules"
 import fs from "fs/promises"
 import { telemetryService } from "@/services/telemetry"
 import {
@@ -16,8 +16,8 @@ import {
  */
 export async function parseSlashCommands(
 	text: string,
-	localWorkflowToggles: ClinoRulesToggles,
-	globalWorkflowToggles: ClinoRulesToggles,
+	localWorkflowToggles: ClicaRulesToggles,
+	globalWorkflowToggles: ClicaRulesToggles,
 	ulid: string,
 	focusChainSettings?: { enabled: boolean },
 ): Promise<{ processedText: string; needsClinerulesFileCheck: boolean }> {

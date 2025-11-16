@@ -54,7 +54,7 @@ function getCurrentPlatform() {
 
 async function main() {
 	const buildType = IS_NPM_BUILD ? "NPM Package" : "JetBrains"
-	console.log(`🚀 Building Clino ${buildType} Package\n`)
+	console.log(`🚀 Building Clica ${buildType} Package\n`)
 
 	await installNodeDependencies()
 
@@ -105,7 +105,7 @@ async function installNodeDependencies() {
 }
 
 /**
- * Copy CLI binaries (clino and clino-host) for all platforms
+ * Copy CLI binaries (clica and clica-host) for all platforms
  * The Go binaries are cross-compiled for darwin/linux arm64/amd64
  */
 async function copyCliBinaries() {
@@ -127,9 +127,9 @@ async function copyCliBinaries() {
 	for (const { os, arch } of platforms) {
 		const platformSuffix = `${os}-${arch}`
 
-		// Copy clino binary
-		const clineSource = path.join(CLI_BINARIES_DIR, `clino-${platformSuffix}`)
-		const clineDest = path.join(binDir, `clino-${platformSuffix}`)
+		// Copy clica binary
+		const clineSource = path.join(CLI_BINARIES_DIR, `clica-${platformSuffix}`)
+		const clineDest = path.join(binDir, `clica-${platformSuffix}`)
 
 		if (!fs.existsSync(clineSource)) {
 			console.error(`Error: CLI binary not found at ${clineSource}`)
@@ -139,11 +139,11 @@ async function copyCliBinaries() {
 
 		await cpr(clineSource, clineDest)
 		fs.chmodSync(clineDest, 0o755)
-		console.log(`✓ clino-${platformSuffix} copied`)
+		console.log(`✓ clica-${platformSuffix} copied`)
 
-		// Copy clino-host binary
-		const hostSource = path.join(CLI_BINARIES_DIR, `clino-host-${platformSuffix}`)
-		const hostDest = path.join(binDir, `clino-host-${platformSuffix}`)
+		// Copy clica-host binary
+		const hostSource = path.join(CLI_BINARIES_DIR, `clica-host-${platformSuffix}`)
+		const hostDest = path.join(binDir, `clica-host-${platformSuffix}`)
 
 		if (!fs.existsSync(hostSource)) {
 			console.error(`Error: CLI binary not found at ${hostSource}`)
@@ -153,7 +153,7 @@ async function copyCliBinaries() {
 
 		await cpr(hostSource, hostDest)
 		fs.chmodSync(hostDest, 0o755)
-		console.log(`✓ clino-host-${platformSuffix} copied`)
+		console.log(`✓ clica-host-${platformSuffix} copied`)
 	}
 
 	console.log(`✓ All platform binaries copied to ${binDir}`)
@@ -161,7 +161,7 @@ async function copyCliBinaries() {
 
 /**
  * Copy proto descriptors directory
- * The proto/descriptor_set.pb file is needed by clino-core for gRPC reflection
+ * The proto/descriptor_set.pb file is needed by clica-core for gRPC reflection
  */
 async function copyProtoDescriptors() {
 	console.log("Copying proto descriptors...")
@@ -192,7 +192,7 @@ async function copyProtoDescriptors() {
 
 /**
  * Copy ripgrep binary for the current platform
- * Ripgrep is needed by clino-core for file searching
+ * Ripgrep is needed by clica-core for file searching
  */
 async function copyRipgrepBinary() {
 	const currentPlatform = getCurrentPlatform()
@@ -221,7 +221,7 @@ async function copyRipgrepBinary() {
 		}
 	}
 
-	// Copy ripgrep binary to the root of dist-standalone (where clino-core.js is)
+	// Copy ripgrep binary to the root of dist-standalone (where clica-core.js is)
 	await cpr(ripgrepBinarySource, ripgrepBinaryDest)
 
 	// Make it executable (Unix only)
@@ -285,9 +285,9 @@ async function createNpmPackageFiles() {
 	console.log(`✓ README.md copied from ${readmeSource}`)
 
 	// Copy man page from cli/man/ directory
-	const manPageSource = path.join("cli", "man", "clino.1")
+	const manPageSource = path.join("cli", "man", "clica.1")
 	const manDir = path.join(BUILD_DIR, "man")
-	const manPageDest = path.join(manDir, "clino.1")
+	const manPageDest = path.join(manDir, "clica.1")
 
 	if (!fs.existsSync(manPageSource)) {
 		console.error(`Error: Man page not found at ${manPageSource}`)
@@ -339,7 +339,7 @@ async function createNpmIgnoreFile() {
 binaries/
 ripgrep-binaries/
 standalone.zip
-clino-core.js.map
+clica-core.js.map
 package-lock.json
 tree-sitter*.wasm
 node_modules/vscode
@@ -385,13 +385,13 @@ function setupBinaries() {
 	const { platform, arch } = getPlatformInfo();
 	const platformSuffix = \`\${platform}-\${arch}\`;
 	
-	console.log(\`Setting up Clino CLI for \${platformSuffix}...\`);
+	console.log(\`Setting up Clica CLI for \${platformSuffix}...\`);
 
 	const binDir = path.join(__dirname, 'bin');
 	
 	// Check if platform-specific binaries exist
-	const clineSource = path.join(binDir, \`clino-\${platformSuffix}\`);
-	const clineHostSource = path.join(binDir, \`clino-host-\${platformSuffix}\`);
+	const clineSource = path.join(binDir, \`clica-\${platformSuffix}\`);
+	const clineHostSource = path.join(binDir, \`clica-host-\${platformSuffix}\`);
 	
 	if (!fs.existsSync(clineSource)) {
 		console.error(\`Error: Binary not found for platform \${platformSuffix}\`);
@@ -407,8 +407,8 @@ function setupBinaries() {
 	}
 
 	// Create symlinks or copies to the generic names
-	const clineTarget = path.join(binDir, 'clino');
-	const clineHostTarget = path.join(binDir, 'clino-host');
+	const clineTarget = path.join(binDir, 'clica');
+	const clineHostTarget = path.join(binDir, 'clica-host');
 	
 	// Remove existing files if they exist
 	[clineTarget, clineHostTarget].forEach(target => {
@@ -462,10 +462,10 @@ function setupBinaries() {
 		}
 	}
 
-	console.log('✓ Clino CLI installation complete');
+	console.log('✓ Clica CLI installation complete');
 }
 
-// Create fake_node_modules with vscode stub (needed for clino-core)
+// Create fake_node_modules with vscode stub (needed for clica-core)
 function setupFakeNodeModules() {
 	const fakeNodeModulesDir = path.join(__dirname, 'fake_node_modules');
 	const vscodeSource = path.join(__dirname, 'node_modules', 'vscode');
@@ -518,8 +518,8 @@ try {
 	
 	console.log('');
 	console.log('Usage:');
-	console.log('  clino        - Start Clino CLI');
-	console.log('  clino-host   - Start Clino host service');
+	console.log('  clica        - Start Clica CLI');
+	console.log('  clica-host   - Start Clica host service');
 	console.log('');
 } catch (error) {
 	console.error(\`Installation failed: \${error.message}\`);
@@ -540,7 +540,7 @@ try {
  * to download the binary.
  *
  * The modules are downloaded to dist-standalone/binaries/{os}-{platform}/.
- * When clino-core is installed, the installer should use the correct module for the current platform.
+ * When clica-core is installed, the installer should use the correct module for the current platform.
  */
 async function packageAllBinaryDeps() {
 	// Check for native .node modules.
@@ -560,7 +560,7 @@ async function packageAllBinaryDeps() {
 		console.log(`Installing binaries for ${module}...`)
 		const src = path.join(BUILD_DIR, "node_modules", module)
 		if (!fs.existsSync(src)) {
-			console.warn(`Warning: Trying to install binaries for the module '${module}', but it is not being used by clino.`)
+			console.warn(`Warning: Trying to install binaries for the module '${module}', but it is not being used by clica.`)
 			continue
 		}
 
@@ -633,7 +633,7 @@ async function zipDistribution() {
 	// Exclude the same files as the VCE vscode extension packager.
 	const isIgnored = createIsIgnored(extensionIgnores)
 
-	// Add the whole clino directory under "extension", except the for the ignored files.
+	// Add the whole clica directory under "extension", except the for the ignored files.
 	archive.directory(process.cwd(), "extension", (entry) => {
 		if (isIgnored(entry.name)) {
 			//log_verbose("Ignoring", entry.name)

@@ -30,7 +30,7 @@ export class VercelAIGatewayHandler implements ApiHandler {
 					baseURL: "https://ai-gateway.vercel.sh/v1",
 					apiKey: this.options.vercelAiGatewayApiKey,
 					defaultHeaders: {
-						"x-title": "Clino",
+						"x-title": "Clica",
 					},
 				})
 			} catch (error: any) {

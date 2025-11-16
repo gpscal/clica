@@ -1,4 +1,4 @@
-import { KeyValuePair, StringRequest } from "@shared/proto/clino/common"
+import { KeyValuePair, StringRequest } from "@shared/proto/clica/common"
 import { Controller } from ".."
 
 /**

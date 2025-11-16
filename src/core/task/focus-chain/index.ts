@@ -2,7 +2,7 @@ import { FocusChainSettings } from "@shared/FocusChainSettings"
 import * as chokidar from "chokidar"
 import * as fs from "fs/promises"
 import { telemetryService } from "@/services/telemetry"
-import { ClinoSay } from "../../../shared/ExtensionMessage"
+import { ClicaSay } from "../../../shared/ExtensionMessage"
 import { Mode } from "../../../shared/storage/types"
 import { writeFile } from "../../../utils/fs"
 import { ensureTaskDirectoryExists } from "../../storage/disk"
@@ -22,7 +22,7 @@ export interface FocusChainDependencies {
 	mode: Mode
 	stateManager: StateManager
 	postStateToWebview: () => Promise<void>
-	say: (type: ClinoSay, text?: string, images?: string[], files?: string[], partial?: boolean) => Promise<number | undefined>
+	say: (type: ClicaSay, text?: string, images?: string[], files?: string[], partial?: boolean) => Promise<number | undefined>
 	focusChainSettings: FocusChainSettings
 }
 
@@ -32,7 +32,7 @@ export class FocusChainManager {
 	private stateManager: StateManager
 	private postStateToWebview: () => Promise<void>
 	private say: (
-		type: ClinoSay,
+		type: ClicaSay,
 		text?: string,
 		images?: string[],
 		files?: string[],

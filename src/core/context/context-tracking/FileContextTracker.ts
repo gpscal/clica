@@ -1,5 +1,5 @@
 import { getTaskMetadata, readTaskHistoryFromState, saveTaskMetadata } from "@core/storage/disk"
-import type { ClinoMessage } from "@shared/ExtensionMessage"
+import type { ClicaMessage } from "@shared/ExtensionMessage"
 import chokidar, { FSWatcher } from "chokidar"
 import * as path from "path"
 import * as vscode from "vscode"
@@ -8,17 +8,17 @@ import { getCwd } from "@/utils/path"
 import type { FileMetadataEntry } from "./ContextTrackerTypes"
 
 // This class is responsible for tracking file operations that may result in stale context.
-// If a user modifies a file outside of Clino, the context may become stale and need to be updated.
-// We do not want Clino to reload the context every time a file is modified, so we use this class merely
-// to inform Clino that the change has occurred, and tell Clino to reload the file before making
-// any changes to it. This fixes an issue with diff editing, where Clino was unable to complete a diff edit.
-// a diff edit because the file was modified since Clino last read it.
+// If a user modifies a file outside of Clica, the context may become stale and need to be updated.
+// We do not want Clica to reload the context every time a file is modified, so we use this class merely
+// to inform Clica that the change has occurred, and tell Clica to reload the file before making
+// any changes to it. This fixes an issue with diff editing, where Clica was unable to complete a diff edit.
+// a diff edit because the file was modified since Clica last read it.
 
 // FileContextTracker
 /**
 This class is responsible for tracking file operations.
-If the full contents of a file are passed to Clino via a tool, mention, or edit, the file is marked as active.
-If a file is modified outside of Clino, we detect and track this change to prevent stale context.
+If the full contents of a file are passed to Clica via a tool, mention, or edit, the file is marked as active.
+If a file is modified outside of Clica, we detect and track this change to prevent stale context.
 This is used when restoring a task (non-git "checkpoint" restore), and mid-task.
 */
 export class FileContextTracker {
@@ -66,9 +66,9 @@ export class FileContextTracker {
 		// Track file changes
 		watcher.on("change", () => {
 			if (this.recentlyEditedByCline.has(filePath)) {
-				this.recentlyEditedByCline.delete(filePath) // This was an edit by Clino, no need to inform Clino
+				this.recentlyEditedByCline.delete(filePath) // This was an edit by Clica, no need to inform Clica
 			} else {
-				this.recentlyModifiedFiles.add(filePath) // This was a user edit, we will inform Clino
+				this.recentlyModifiedFiles.add(filePath) // This was a user edit, we will inform Clica
 				this.trackFileContext(filePath, "user_edited") // Update the task metadata with file tracking
 			}
 		})
@@ -79,7 +79,7 @@ export class FileContextTracker {
 
 	/**
 	 * Tracks a file operation in metadata and sets up a watcher for the file
-	 * This is the main entry point for FileContextTracker and is called when a file is passed to Clino via a tool, mention, or edit.
+	 * This is the main entry point for FileContextTracker and is called when a file is passed to Clica via a tool, mention, or edit.
 	 */
 	async trackFileContext(filePath: string, operation: "read_tool" | "user_edited" | "cline_edited" | "file_mentioned") {
 		try {
@@ -141,13 +141,13 @@ export class FileContextTracker {
 					this.recentlyModifiedFiles.add(filePath)
 					break
 
-				// cline_edited: Clino has edited the file
+				// cline_edited: Clica has edited the file
 				case "cline_edited":
 					newEntry.cline_read_date = now
 					newEntry.cline_edit_date = now
 					break
 
-				// read_tool/file_mentioned: Clino has read the file via a tool or file mention
+				// read_tool/file_mentioned: Clica has read the file via a tool or file mention
 				case "read_tool":
 				case "file_mentioned":
 					newEntry.cline_read_date = now
@@ -171,7 +171,7 @@ export class FileContextTracker {
 	}
 
 	/**
-	 * Marks a file as edited by Clino to prevent false positives in file watchers
+	 * Marks a file as edited by Clica to prevent false positives in file watchers
 	 */
 	markFileAsEditedByCline(filePath: string): void {
 		this.recentlyEditedByCline.add(filePath)
@@ -187,14 +187,14 @@ export class FileContextTracker {
 	}
 
 	/**
-	 * Detects files that were edited by Clino or users after a specific message timestamp
+	 * Detects files that were edited by Clica or users after a specific message timestamp
 	 * This is used when restoring checkpoints to warn about potential file content mismatches
 	 */
-	async detectFilesEditedAfterMessage(messageTs: number, deletedMessages: ClinoMessage[]): Promise<string[]> {
+	async detectFilesEditedAfterMessage(messageTs: number, deletedMessages: ClicaMessage[]): Promise<string[]> {
 		const editedFiles: string[] = []
 
 		try {
-			// Check task metadata for files that were edited by Clino or users after the message timestamp
+			// Check task metadata for files that were edited by Clica or users after the message timestamp
 			const taskMetadata = await getTaskMetadata(this.taskId)
 
 			if (taskMetadata?.files_in_context) {

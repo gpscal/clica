@@ -1,5 +1,5 @@
-import { Empty } from "@shared/proto/clino/common"
-import { ExecuteQuickWinRequest } from "@shared/proto/clino/task"
+import { Empty } from "@shared/proto/clica/common"
+import { ExecuteQuickWinRequest } from "@shared/proto/clica/task"
 import type { Controller } from "../index"
 
 /**
@@ -11,7 +11,7 @@ import type { Controller } from "../index"
  * @example
  * // Usage from webview:
  * import { TaskServiceClient } from "@/services/grpc-client"
- * import { ExecuteQuickWinRequest } from "@shared/proto/clino/task"
+ * import { ExecuteQuickWinRequest } from "@shared/proto/clica/task"
  *
  * const request: ExecuteQuickWinRequest = {
  *   command: "npm install",

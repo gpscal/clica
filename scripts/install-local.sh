@@ -12,11 +12,11 @@ DIM='\033[2m'
 NC='\033[0m'
 
 # Configuration
-INSTALL_DIR="${CLINE_INSTALL_DIR:-$HOME/.clino/cli}"
+INSTALL_DIR="${CLINE_INSTALL_DIR:-$HOME/.clica/cli}"
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 echo ""
-echo -e "${MAGENTA}${BOLD}Installing Clino CLI from local build${NC}"
+echo -e "${MAGENTA}${BOLD}Installing Clica CLI from local build${NC}"
 echo ""
 
 # Always rebuild CLI to ensure latest changes
@@ -28,7 +28,7 @@ else
     echo -e "${YELLOW}⚠${NC}  CLI build may have issues - check output above"
 fi
 
-# Always rebuild standalone to ensure latest clino-core.js
+# Always rebuild standalone to ensure latest clica-core.js
 echo -e "${CYAN}→${NC} ${DIM}Rebuilding standalone package (this may take ~30 seconds)...${NC}"
 if npm run compile-standalone 2>&1 | tail -5; then
     echo -e "${GREEN}✓${NC} Standalone package rebuilt"
@@ -49,7 +49,7 @@ fi
 # Create installation directory
 mkdir -p "$INSTALL_DIR/bin"
 
-# Copy standalone package first (includes node_modules, clino-core.js, etc.)
+# Copy standalone package first (includes node_modules, clica-core.js, etc.)
 rsync -a --exclude='bin' "$PROJECT_ROOT/dist-standalone/" "$INSTALL_DIR/"
 
 # Detect platform for native modules
@@ -67,8 +67,8 @@ fi
 
 # Copy binaries (this will create/overwrite the bin directory)
 mkdir -p "$INSTALL_DIR/bin"
-cp "$PROJECT_ROOT/cli/bin/clino" "$INSTALL_DIR/bin/"
-cp "$PROJECT_ROOT/cli/bin/clino-host" "$INSTALL_DIR/bin/"
+cp "$PROJECT_ROOT/cli/bin/clica" "$INSTALL_DIR/bin/"
+cp "$PROJECT_ROOT/cli/bin/clica-host" "$INSTALL_DIR/bin/"
 
 # Use system Node.js (symlink to avoid copying large binary)
 if command -v node >/dev/null 2>&1; then
@@ -80,11 +80,11 @@ else
 fi
 
 # Make binaries executable
-chmod +x "$INSTALL_DIR/bin/clino"
-chmod +x "$INSTALL_DIR/bin/clino-host"
+chmod +x "$INSTALL_DIR/bin/clica"
+chmod +x "$INSTALL_DIR/bin/clica-host"
 chmod +x "$INSTALL_DIR/bin/node" 2>/dev/null || true
 
-# Create fake_node_modules with vscode stub (needed for clino-core)
+# Create fake_node_modules with vscode stub (needed for clica-core)
 if [ -d "$INSTALL_DIR/node_modules/vscode" ] && [ ! -d "$INSTALL_DIR/fake_node_modules" ]; then
     echo -e "${CYAN}→${NC} ${DIM}Creating fake_node_modules with vscode stub...${NC}"
     mkdir -p "$INSTALL_DIR/fake_node_modules"
@@ -118,7 +118,7 @@ fi
 
 if ! grep -q "$BIN_DIR" "$SHELL_CONFIG" 2>/dev/null; then
     echo "" >> "$SHELL_CONFIG"
-    echo "# Clino CLI" >> "$SHELL_CONFIG"
+    echo "# Clica CLI" >> "$SHELL_CONFIG"
     echo "export PATH=\"$BIN_DIR:\$PATH\"" >> "$SHELL_CONFIG"
     echo -e "${GREEN}✓${NC} Added to PATH in ${CYAN}$(basename $SHELL_CONFIG)${NC}"
 else
@@ -128,7 +128,7 @@ fi
 echo ""
 echo -e "${GREEN}${BOLD}Installation complete!${NC}"
 echo ""
-echo -e "Run this to start using ${MAGENTA}${BOLD}clino${NC} immediately:"
+echo -e "Run this to start using ${MAGENTA}${BOLD}clica${NC} immediately:"
 echo ""
 echo -e "${YELLOW}${BOLD}    exec \$SHELL${NC}"
 echo ""

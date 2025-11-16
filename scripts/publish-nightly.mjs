@@ -8,8 +8,8 @@
  * 1. Backs up the original package.json
  * 2. Updates package.json with:
  *    - New version (major.minor.timestamp format)
- *    - Changes name to "clino-nightly"
- *    - Changes displayName to "Clino (Nightly)"
+ *    - Changes name to "clica-nightly"
+ *    - Changes displayName to "Clica (Nightly)"
  * 3. Packages the extension as a .vsix file
  * 4. Publishes to VS Code Marketplace (if VSCE_PAT is set)
  * 5. Publishes to OpenVSX Registry (if OVSX_PAT is set)
@@ -55,8 +55,8 @@ const log = {
 // Configuration
 const config = {
 	// The name and display name for the nightly version
-	nightlyName: "clino-nightly",
-	nightlyDisplayName: "Clino (Nightly)",
+	nightlyName: "clica-nightly",
+	nightlyDisplayName: "Clica (Nightly)",
 	projectRoot: path.join(__dirname, ".."),
 	get packageJsonPath() {
 		return path.join(this.projectRoot, "package.json")
@@ -68,7 +68,7 @@ const config = {
 		return path.join(this.projectRoot, "dist")
 	},
 	get vsixPath() {
-		return path.join(this.distDir, "clino-nightly.vsix")
+		return path.join(this.distDir, "clica-nightly.vsix")
 	},
 }
 
@@ -167,9 +167,9 @@ class NightlyPublisher {
 	 * Update package.json with nightly configuration
 	 */
 	updatePackageJson() {
-		// Replace any occurrences clino. or claude-dev with nightly name
+		// Replace any occurrences clica. or claude-dev with nightly name
 		const rawContent = fs.readFileSync(config.packageJsonPath, "utf-8")
-		const content = rawContent.replaceAll("claude-dev", config.nightlyName).replaceAll('"clino.', `"${config.nightlyName}.`)
+		const content = rawContent.replaceAll("claude-dev", config.nightlyName).replaceAll('"clica.', `"${config.nightlyName}.`)
 
 		const pkg = JSON.parse(content)
 		const currentVersion = pkg.version

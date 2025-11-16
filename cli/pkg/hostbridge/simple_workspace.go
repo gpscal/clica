@@ -5,8 +5,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/clino/grpc-go/clino"
-	"github.com/clino/grpc-go/host"
+	"github.com/clica/grpc-go/clica"
+	"github.com/clica/grpc-go/host"
 )
 
 // SimpleWorkspaceService implements a basic workspace service without complex dependencies
@@ -60,7 +60,7 @@ func (s *SimpleWorkspaceService) GetDiagnostics(ctx context.Context, req *host.G
 
 	// For console implementation, return empty diagnostics
 	return &host.GetDiagnosticsResponse{
-		FileDiagnostics: []*clino.FileDiagnostics{},
+		FileDiagnostics: []*clica.FileDiagnostics{},
 	}, nil
 }
 
@@ -74,9 +74,9 @@ func (s *SimpleWorkspaceService) OpenInFileExplorerPanel(ctx context.Context, re
 	return &host.OpenInFileExplorerPanelResponse{}, nil
 }
 
-// OpenClinoSidebarPanel opens the Clino sidebar panel - no-op for console implementation
-func (s *SimpleWorkspaceService) OpenClinoSidebarPanel(ctx context.Context, req *host.OpenClinoSidebarPanelRequest) (*host.OpenClinoSidebarPanelResponse, error) {
-	return &host.OpenClinoSidebarPanelResponse{}, nil
+// OpenClicaSidebarPanel opens the Clica sidebar panel - no-op for console implementation
+func (s *SimpleWorkspaceService) OpenClicaSidebarPanel(ctx context.Context, req *host.OpenClicaSidebarPanelRequest) (*host.OpenClicaSidebarPanelResponse, error) {
+	return &host.OpenClicaSidebarPanelResponse{}, nil
 }
 
 // OpenTerminalPanel opens the terminal panel - no-op for console implementation

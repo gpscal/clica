@@ -1,5 +1,5 @@
-import { Empty } from "@shared/proto/clino/common"
-import { AutoApprovalSettingsRequest } from "@shared/proto/clino/state"
+import { Empty } from "@shared/proto/clica/common"
+import { AutoApprovalSettingsRequest } from "@shared/proto/clica/state"
 import { Controller } from ".."
 
 /**

@@ -1,4 +1,4 @@
-import { LanguageModelChatSelector } from "@shared/proto/clino/models"
+import { LanguageModelChatSelector } from "@shared/proto/clica/models"
 
 /**
  * Represents a VS Code language model in the native VS Code format

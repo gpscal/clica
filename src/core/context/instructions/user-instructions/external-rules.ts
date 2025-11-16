@@ -6,7 +6,7 @@ import {
 } from "@core/context/instructions/user-instructions/rule-helpers"
 import { formatResponse } from "@core/prompts/responses"
 import { GlobalFileNames } from "@core/storage/disk"
-import { ClinoRulesToggles } from "@shared/clino-rules"
+import { ClicaRulesToggles } from "@shared/clica-rules"
 import { fileExistsAtPath, isDirectory } from "@utils/fs"
 import fs from "fs/promises"
 import path from "path"
@@ -19,8 +19,8 @@ export async function refreshExternalRulesToggles(
 	controller: Controller,
 	workingDirectory: string,
 ): Promise<{
-	windsurfLocalToggles: ClinoRulesToggles
-	cursorLocalToggles: ClinoRulesToggles
+	windsurfLocalToggles: ClicaRulesToggles
+	cursorLocalToggles: ClicaRulesToggles
 }> {
 	// local windsurf toggles
 	const localWindsurfRulesToggles = controller.stateManager.getWorkspaceStateKey("localWindsurfRulesToggles")
@@ -51,7 +51,7 @@ export async function refreshExternalRulesToggles(
 /**
  * Gather formatted windsurf rules
  */
-export const getLocalWindsurfRules = async (cwd: string, toggles: ClinoRulesToggles) => {
+export const getLocalWindsurfRules = async (cwd: string, toggles: ClicaRulesToggles) => {
 	const windsurfRulesFilePath = path.resolve(cwd, GlobalFileNames.windsurfRules)
 
 	let windsurfRulesFileInstructions: string | undefined
@@ -77,7 +77,7 @@ export const getLocalWindsurfRules = async (cwd: string, toggles: ClinoRulesTogg
 /**
  * Gather formatted cursor rules, which can come from two sources
  */
-export const getLocalCursorRules = async (cwd: string, toggles: ClinoRulesToggles) => {
+export const getLocalCursorRules = async (cwd: string, toggles: ClicaRulesToggles) => {
 	// we first check for the .cursorrules file
 	const cursorRulesFilePath = path.resolve(cwd, GlobalFileNames.cursorRulesFile)
 	let cursorRulesFileInstructions: string | undefined

@@ -6,18 +6,18 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/clino/cli/pkg/cli/global"
-	"github.com/clino/grpc-go/client"
-	"github.com/clino/grpc-go/clino"
+	"github.com/clica/cli/pkg/cli/global"
+	"github.com/clica/grpc-go/client"
+	"github.com/clica/grpc-go/clica"
 )
 
 type Manager struct {
-	client        *client.ClinoClient
+	client        *client.ClicaClient
 	clientAddress string
 }
 
 func NewManager(ctx context.Context, address string) (*Manager, error) {
-	var c *client.ClinoClient
+	var c *client.ClicaClient
 	var err error
 
 	if address != "" {
@@ -47,9 +47,9 @@ func (m *Manager) GetCurrentInstance() string {
 	return m.clientAddress
 }
 
-func (m *Manager) UpdateSettings(ctx context.Context, settings *clino.Settings, secrets *clino.Secrets) error {
-	request := &clino.UpdateSettingsRequestCli{
-		Metadata: &clino.Metadata{},
+func (m *Manager) UpdateSettings(ctx context.Context, settings *clica.Settings, secrets *clica.Secrets) error {
+	request := &clica.UpdateSettingsRequestCli{
+		Metadata: &clica.Metadata{},
 		Settings: settings,
 		Secrets:  secrets,
 	}
@@ -66,7 +66,7 @@ func (m *Manager) UpdateSettings(ctx context.Context, settings *clino.Settings, 
 }
 
 func (m *Manager) GetState(ctx context.Context) (map[string]interface{}, error) {
-	state, err := m.client.State.GetLatestState(ctx, &clino.EmptyRequest{})
+	state, err := m.client.State.GetLatestState(ctx, &clica.EmptyRequest{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to get state: %w", err)
 	}

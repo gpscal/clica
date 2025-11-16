@@ -4,16 +4,16 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/clino/cli/pkg/cli/global"
-	"github.com/clino/cli/pkg/cli/task"
-	"github.com/clino/grpc-go/clino"
+	"github.com/clica/cli/pkg/cli/global"
+	"github.com/clica/cli/pkg/cli/task"
+	"github.com/clica/grpc-go/clica"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/fieldmaskpb"
 )
 
 // updateApiConfigurationPartial is a helper that calls the gRPC method with optional verbose logging.
 // This replaces the Manager.updateApiConfigurationPartial method to keep auth-specific code in the auth package.
-func updateApiConfigurationPartial(ctx context.Context, manager *task.Manager, request *clino.UpdateApiConfigurationPartialRequest) error {
+func updateApiConfigurationPartial(ctx context.Context, manager *task.Manager, request *clica.UpdateApiConfigurationPartialRequest) error {
 	if global.Config.Verbose {
 		fmt.Println("[DEBUG] Updating API configuration (partial)")
 		if request.UpdateMask != nil && len(request.UpdateMask.Paths) > 0 {
@@ -57,16 +57,16 @@ type ProviderFields struct {
 }
 
 // GetProviderFields returns the field mapping for a given provider
-func GetProviderFields(provider clino.ApiProvider) (ProviderFields, error) {
+func GetProviderFields(provider clica.ApiProvider) (ProviderFields, error) {
 	switch provider {
-	case clino.ApiProvider_ANTHROPIC:
+	case clica.ApiProvider_ANTHROPIC:
 		return ProviderFields{
 			APIKeyField:          "apiKey",
 			PlanModeModelIDField: "planModeApiModelId",
 			ActModeModelIDField:  "actModeApiModelId",
 		}, nil
 
-	case clino.ApiProvider_OPENAI:
+	case clica.ApiProvider_OPENAI:
 		return ProviderFields{
 			APIKeyField:                          "openAiApiKey",
 			BaseURLField:                         "openAiBaseUrl",
@@ -76,7 +76,7 @@ func GetProviderFields(provider clino.ApiProvider) (ProviderFields, error) {
 			ActModeProviderSpecificModelIDField:  "actModeOpenAiModelId",
 		}, nil
 
-	case clino.ApiProvider_OPENROUTER:
+	case clica.ApiProvider_OPENROUTER:
 		return ProviderFields{
 			APIKeyField:                          "openRouterApiKey",
 			PlanModeModelIDField:                 "planModeApiModelId",
@@ -87,14 +87,14 @@ func GetProviderFields(provider clino.ApiProvider) (ProviderFields, error) {
 			ActModeProviderSpecificModelIDField:  "actModeOpenRouterModelId",
 		}, nil
 
-	case clino.ApiProvider_XAI:
+	case clica.ApiProvider_XAI:
 		return ProviderFields{
 			APIKeyField:          "xaiApiKey",
 			PlanModeModelIDField: "planModeApiModelId",
 			ActModeModelIDField:  "actModeApiModelId",
 		}, nil
 
-	case clino.ApiProvider_BEDROCK:
+	case clica.ApiProvider_BEDROCK:
 		return ProviderFields{
 			APIKeyField:                          "awsAccessKey",
 			PlanModeModelIDField:                 "planModeApiModelId",
@@ -103,21 +103,21 @@ func GetProviderFields(provider clino.ApiProvider) (ProviderFields, error) {
 			ActModeProviderSpecificModelIDField:  "actModeAwsBedrockCustomModelBaseId",
 		}, nil
 
-	case clino.ApiProvider_GEMINI:
+	case clica.ApiProvider_GEMINI:
 		return ProviderFields{
 			APIKeyField:          "geminiApiKey",
 			PlanModeModelIDField: "planModeApiModelId",
 			ActModeModelIDField:  "actModeApiModelId",
 		}, nil
 
-	case clino.ApiProvider_OPENAI_NATIVE:
+	case clica.ApiProvider_OPENAI_NATIVE:
 		return ProviderFields{
 			APIKeyField:          "openAiNativeApiKey",
 			PlanModeModelIDField: "planModeApiModelId",
 			ActModeModelIDField:  "actModeApiModelId",
 		}, nil
 
-	case clino.ApiProvider_OLLAMA:
+	case clica.ApiProvider_OLLAMA:
 		return ProviderFields{
 			APIKeyField:                          "ollamaBaseUrl",
 			PlanModeModelIDField:                 "planModeApiModelId",
@@ -126,14 +126,14 @@ func GetProviderFields(provider clino.ApiProvider) (ProviderFields, error) {
 			ActModeProviderSpecificModelIDField:  "actModeOllamaModelId",
 		}, nil
 
-	case clino.ApiProvider_CEREBRAS:
+	case clica.ApiProvider_CEREBRAS:
 		return ProviderFields{
 			APIKeyField:          "cerebrasApiKey",
 			PlanModeModelIDField: "planModeApiModelId",
 			ActModeModelIDField:  "actModeApiModelId",
 		}, nil
 
-	case clino.ApiProvider_CLINO:
+	case clica.ApiProvider_CLICA:
 		return ProviderFields{
 			APIKeyField:                          "clineApiKey",
 			PlanModeModelIDField:                 "planModeApiModelId",
@@ -144,7 +144,7 @@ func GetProviderFields(provider clino.ApiProvider) (ProviderFields, error) {
 			ActModeProviderSpecificModelIDField:  "actModeOpenRouterModelId",
 		}, nil
 
-	case clino.ApiProvider_OCA:
+	case clica.ApiProvider_OCA:
 		return ProviderFields{
 			APIKeyField:                          "ocaApiKey",
 			PlanModeModelIDField:                 "planModeApiModelId",
@@ -174,7 +174,7 @@ type ProviderUpdatesPartial struct {
 // GetModelIDFieldName returns the appropriate model ID field name for a provider and mode.
 // This helper centralizes the logic for determining whether to use provider-specific
 // or generic model ID fields.
-func GetModelIDFieldName(provider clino.ApiProvider, mode string) (string, error) {
+func GetModelIDFieldName(provider clica.ApiProvider, mode string) (string, error) {
 	fields, err := GetProviderFields(provider)
 	if err != nil {
 		return "", err
@@ -244,7 +244,7 @@ func buildProviderFieldMask(fields ProviderFields, includeAPIKey bool, includeMo
 }
 
 // setAPIKeyField sets the appropriate API key field in the config based on the field name
-func setAPIKeyField(apiConfig *clino.ModelsApiConfiguration, fieldName string, value *string) {
+func setAPIKeyField(apiConfig *clica.ModelsApiConfiguration, fieldName string, value *string) {
 	switch fieldName {
 	case "apiKey":
 		apiConfig.ApiKey = value
@@ -265,14 +265,14 @@ func setAPIKeyField(apiConfig *clino.ModelsApiConfiguration, fieldName string, v
 	case "cerebrasApiKey":
 		apiConfig.CerebrasApiKey = value
 	case "clineApiKey":
-		apiConfig.ClinoApiKey = value
+		apiConfig.ClineApiKey = value
 	case "ocaApiKey":
 		apiConfig.OcaApiKey = value
 	}
 }
 
 // setProviderSpecificModelID sets the appropriate provider-specific model ID fields when possible
-func setProviderSpecificModelID(apiConfig *clino.ModelsApiConfiguration, fieldName string, value *string) {
+func setProviderSpecificModelID(apiConfig *clica.ModelsApiConfiguration, fieldName string, value *string) {
 	switch fieldName {
 	case "planModeOpenAiModelId":
 		apiConfig.PlanModeOpenAiModelId = value
@@ -293,7 +293,7 @@ func setProviderSpecificModelID(apiConfig *clino.ModelsApiConfiguration, fieldNa
 }
 
 // AddProviderPartial configures a new provider with all necessary fields using partial updates.
-func AddProviderPartial(ctx context.Context, manager *task.Manager, provider clino.ApiProvider, modelID string, apiKey string, baseURL string, modelInfo interface{}) error {
+func AddProviderPartial(ctx context.Context, manager *task.Manager, provider clica.ApiProvider, modelID string, apiKey string, baseURL string, modelInfo interface{}) error {
 	// Get field mapping for this provider
 	fields, err := GetProviderFields(provider)
 	if err != nil {
@@ -301,7 +301,7 @@ func AddProviderPartial(ctx context.Context, manager *task.Manager, provider cli
 	}
 
 	// Build a ModelsApiConfiguration with only the relevant provider fields set
-	apiConfig := &clino.ModelsApiConfiguration{}
+	apiConfig := &clica.ModelsApiConfiguration{}
 
 	// Set API key field
 	if apiKey != "" || fields.APIKeyField != "ollamaBaseUrl" {
@@ -326,7 +326,7 @@ func AddProviderPartial(ctx context.Context, manager *task.Manager, provider cli
 
 	// Set model info if applicable and provided
 	if fields.PlanModeModelInfoField != "" && modelInfo != nil {
-		if openRouterInfo, ok := modelInfo.(*clino.OpenRouterModelInfo); ok {
+		if openRouterInfo, ok := modelInfo.(*clica.OpenRouterModelInfo); ok {
 			apiConfig.PlanModeOpenRouterModelInfo = openRouterInfo
 			apiConfig.ActModeOpenRouterModelInfo = openRouterInfo
 		}
@@ -340,7 +340,7 @@ func AddProviderPartial(ctx context.Context, manager *task.Manager, provider cli
 	fieldMask := &fieldmaskpb.FieldMask{Paths: fieldPaths}
 
 	// Apply the partial update
-	request := &clino.UpdateApiConfigurationPartialRequest{
+	request := &clica.UpdateApiConfigurationPartialRequest{
 		ApiConfiguration: apiConfig,
 		UpdateMask:       fieldMask,
 	}
@@ -354,7 +354,7 @@ func AddProviderPartial(ctx context.Context, manager *task.Manager, provider cli
 
 // UpdateProviderPartial updates specific fields for an existing provider using partial updates.
 // If setAsActive is true, this will also set the provider as the active provider for both Plan and Act modes.
-func UpdateProviderPartial(ctx context.Context, manager *task.Manager, provider clino.ApiProvider, updates ProviderUpdatesPartial, setAsActive bool) error {
+func UpdateProviderPartial(ctx context.Context, manager *task.Manager, provider clica.ApiProvider, updates ProviderUpdatesPartial, setAsActive bool) error {
 	// Get field mapping for this provider
 	fields, err := GetProviderFields(provider)
 	if err != nil {
@@ -362,7 +362,7 @@ func UpdateProviderPartial(ctx context.Context, manager *task.Manager, provider 
 	}
 
 	// Build a ModelsApiConfiguration with only the fields being updated
-	apiConfig := &clino.ModelsApiConfiguration{}
+	apiConfig := &clica.ModelsApiConfiguration{}
 
 	// Set provider enum for BOTH Plan and Act modes if setAsActive is true
 	if setAsActive {
@@ -394,7 +394,7 @@ func UpdateProviderPartial(ctx context.Context, manager *task.Manager, provider 
 
 	// Update model info if provided
 	if updates.ModelInfo != nil && fields.PlanModeModelInfoField != "" {
-		if openRouterInfo, ok := updates.ModelInfo.(*clino.OpenRouterModelInfo); ok {
+		if openRouterInfo, ok := updates.ModelInfo.(*clica.OpenRouterModelInfo); ok {
 			apiConfig.PlanModeOpenRouterModelInfo = openRouterInfo
 			apiConfig.ActModeOpenRouterModelInfo = openRouterInfo
 		}
@@ -407,7 +407,7 @@ func UpdateProviderPartial(ctx context.Context, manager *task.Manager, provider 
 	fieldMask := &fieldmaskpb.FieldMask{Paths: fieldPaths}
 
 	// Apply the partial update
-	request := &clino.UpdateApiConfigurationPartialRequest{
+	request := &clica.UpdateApiConfigurationPartialRequest{
 		ApiConfiguration: apiConfig,
 		UpdateMask:       fieldMask,
 	}
@@ -420,7 +420,7 @@ func UpdateProviderPartial(ctx context.Context, manager *task.Manager, provider 
 }
 
 // RemoveProviderPartial removes a provider by clearing its API key using partial updates
-func RemoveProviderPartial(ctx context.Context, manager *task.Manager, provider clino.ApiProvider) error {
+func RemoveProviderPartial(ctx context.Context, manager *task.Manager, provider clica.ApiProvider) error {
 	// Get field mapping for this provider
 	fields, err := GetProviderFields(provider)
 	if err != nil {
@@ -429,12 +429,12 @@ func RemoveProviderPartial(ctx context.Context, manager *task.Manager, provider 
 
 	// Build an EMPTY ModelsApiConfiguration (or one with empty API key field)
 	// Fields in the mask without values will be cleared
-	apiConfig := &clino.ModelsApiConfiguration{}
+	apiConfig := &clica.ModelsApiConfiguration{}
 
 	// Build field mask with only the API key field(s)
 	// For Bedrock, include both access key and secret key
 	fieldPaths := []string{fields.APIKeyField}
-	if provider == clino.ApiProvider_BEDROCK {
+	if provider == clica.ApiProvider_BEDROCK {
 		fieldPaths = append(fieldPaths, "awsSecretKey")
 	}
 
@@ -442,7 +442,7 @@ func RemoveProviderPartial(ctx context.Context, manager *task.Manager, provider 
 	fieldMask := &fieldmaskpb.FieldMask{Paths: fieldPaths}
 
 	// Apply the partial update (clearing API key by including in mask without value)
-	request := &clino.UpdateApiConfigurationPartialRequest{
+	request := &clica.UpdateApiConfigurationPartialRequest{
 		ApiConfiguration: apiConfig,
 		UpdateMask:       fieldMask,
 	}
@@ -455,7 +455,7 @@ func RemoveProviderPartial(ctx context.Context, manager *task.Manager, provider 
 }
 
 // setBaseURLField sets the appropriate base URL field in the config based on the field name
-func setBaseURLField(apiConfig *clino.ModelsApiConfiguration, fieldName string, value *string) {
+func setBaseURLField(apiConfig *clica.ModelsApiConfiguration, fieldName string, value *string) {
 	switch fieldName {
 	case "ocaBaseUrl":
 		apiConfig.OcaBaseUrl = value
@@ -479,7 +479,7 @@ func setBaseURLField(apiConfig *clino.ModelsApiConfiguration, fieldName string, 
 }
 
 // setRefreshTokenField sets the appropriate refresh token field in the config
-func setRefreshTokenField(apiConfig *clino.ModelsApiConfiguration, fieldName string, value *string) {
+func setRefreshTokenField(apiConfig *clica.ModelsApiConfiguration, fieldName string, value *string) {
 	switch fieldName {
 	case "ocaRefreshToken":
 		apiConfig.OcaRefreshToken = value
@@ -487,7 +487,7 @@ func setRefreshTokenField(apiConfig *clino.ModelsApiConfiguration, fieldName str
 }
 
 // setModeField sets the appropriate mode field in the config
-func setModeField(apiConfig *clino.ModelsApiConfiguration, fieldName string, value *string) {
+func setModeField(apiConfig *clica.ModelsApiConfiguration, fieldName string, value *string) {
 	switch fieldName {
 	case "ocaMode":
 		apiConfig.OcaMode = value
@@ -514,7 +514,7 @@ type OcaOptionalFields struct {
 }
 
 // setBedrockOptionalFields sets optional Bedrock-specific fields in the API configuration
-func setBedrockOptionalFields(apiConfig *clino.ModelsApiConfiguration, fields *BedrockOptionalFields) {
+func setBedrockOptionalFields(apiConfig *clica.ModelsApiConfiguration, fields *BedrockOptionalFields) {
 	if fields == nil {
 		return
 	}
@@ -549,7 +549,7 @@ func setBedrockOptionalFields(apiConfig *clino.ModelsApiConfiguration, fields *B
 }
 
 // setOcaOptionalFields sets optional Oca-specific fields in the API configuration
-func setOcaOptionalFields(apiConfig *clino.ModelsApiConfiguration, fields *OcaOptionalFields) {
+func setOcaOptionalFields(apiConfig *clica.ModelsApiConfiguration, fields *OcaOptionalFields) {
 	if fields == nil {
 		return
 	}

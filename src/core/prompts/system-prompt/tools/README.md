@@ -1,10 +1,10 @@
 # Tool Registration System
 
-This directory contains the tool registration system for Clino tools. The system automatically collects and registers all tool variants with the `ClinoToolSet` provider.
+This directory contains the tool registration system for Clica tools. The system automatically collects and registers all tool variants with the `ClicaToolSet` provider.
 
 ## Overview
 
-Each tool file in this directory exports a `{toolName}_variants` array containing tool specifications for different prompt variants (e.g., Claude, GPT). The registration system automatically imports all these variants and registers them with the `ClinoToolSet` provider.
+Each tool file in this directory exports a `{toolName}_variants` array containing tool specifications for different prompt variants (e.g., Claude, GPT). The registration system automatically imports all these variants and registers them with the `ClicaToolSet` provider.
 
 ## Files
 
@@ -37,14 +37,14 @@ console.log(summary);
 ### Using Registered Tools
 
 ```typescript
-import { ClinoToolSet } from "../registry/ClinoToolSet";
+import { ClicaToolSet } from "../registry/ClicaToolSet";
 import { PromptVariant } from "@/shared/tools";
 
 // Get all tools for a specific variant
-const claudeTools = ClinoToolSet.getTools(PromptVariant.CLAUDE);
+const claudeTools = ClicaToolSet.getTools(PromptVariant.CLAUDE);
 
 // Get a specific tool by name
-const writeToFileTool = ClinoToolSet.getToolByName("write_to_file", PromptVariant.CLAUDE);
+const writeToFileTool = ClicaToolSet.getToolByName("write_to_file", PromptVariant.CLAUDE);
 ```
 
 ## Tool Structure
@@ -52,7 +52,7 @@ const writeToFileTool = ClinoToolSet.getToolByName("write_to_file", PromptVarian
 Each tool file follows this pattern:
 
 ```typescript
-import { ClinoDefaultTool, PromptVariant, type ClineToolSpec } from "@/shared/tools";
+import { ClicaDefaultTool, PromptVariant, type ClineToolSpec } from "@/shared/tools";
 
 const claude: ClineToolSpec = {
     variant: PromptVariant.CLAUDE,

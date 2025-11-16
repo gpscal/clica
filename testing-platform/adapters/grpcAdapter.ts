@@ -1,31 +1,31 @@
-import { AccountServiceClient } from "@clino-grpc/account"
-import { BrowserServiceClient } from "@clino-grpc/browser"
-import { CheckpointsServiceClient } from "@clino-grpc/checkpoints"
-import { CommandsServiceClient } from "@clino-grpc/commands"
-import { FileServiceClient } from "@clino-grpc/file"
-import { McpServiceClient } from "@clino-grpc/mcp"
-import { ModelsServiceClient } from "@clino-grpc/models"
-import { SlashServiceClient } from "@clino-grpc/slash"
-import { StateServiceClient } from "@clino-grpc/state"
-import { TaskServiceClient } from "@clino-grpc/task"
-import { UiServiceClient } from "@clino-grpc/ui"
-import { WebServiceClient } from "@clino-grpc/web"
+import { AccountServiceClient } from "@clica-grpc/account"
+import { BrowserServiceClient } from "@clica-grpc/browser"
+import { CheckpointsServiceClient } from "@clica-grpc/checkpoints"
+import { CommandsServiceClient } from "@clica-grpc/commands"
+import { FileServiceClient } from "@clica-grpc/file"
+import { McpServiceClient } from "@clica-grpc/mcp"
+import { ModelsServiceClient } from "@clica-grpc/models"
+import { SlashServiceClient } from "@clica-grpc/slash"
+import { StateServiceClient } from "@clica-grpc/state"
+import { TaskServiceClient } from "@clica-grpc/task"
+import { UiServiceClient } from "@clica-grpc/ui"
+import { WebServiceClient } from "@clica-grpc/web"
 import { credentials } from "@grpc/grpc-js"
 import { promisify } from "util"
 
 const serviceRegistry = {
-	"clino.AccountService": AccountServiceClient,
-	"clino.BrowserService": BrowserServiceClient,
-	"clino.CheckpointsService": CheckpointsServiceClient,
-	"clino.CommandsService": CommandsServiceClient,
-	"clino.FileService": FileServiceClient,
-	"clino.McpService": McpServiceClient,
-	"clino.ModelsService": ModelsServiceClient,
-	"clino.SlashService": SlashServiceClient,
-	"clino.StateService": StateServiceClient,
-	"clino.TaskService": TaskServiceClient,
-	"clino.UiService": UiServiceClient,
-	"clino.WebService": WebServiceClient,
+	"clica.AccountService": AccountServiceClient,
+	"clica.BrowserService": BrowserServiceClient,
+	"clica.CheckpointsService": CheckpointsServiceClient,
+	"clica.CommandsService": CommandsServiceClient,
+	"clica.FileService": FileServiceClient,
+	"clica.McpService": McpServiceClient,
+	"clica.ModelsService": ModelsServiceClient,
+	"clica.SlashService": SlashServiceClient,
+	"clica.StateService": StateServiceClient,
+	"clica.TaskService": TaskServiceClient,
+	"clica.UiService": UiServiceClient,
+	"clica.WebService": WebServiceClient,
 } as const
 
 export type ServiceClients = {

@@ -77,5 +77,5 @@ export interface OrganizationUsageTransaction {
 	userId: string
 }
 
-// Used in clino.ts provider and in webview-ui/src/components/chat/ChatRow.tsx to display the login button
-export const CLINE_ACCOUNT_AUTH_ERROR_MESSAGE = "Unauthorized: Please sign in to Clino before trying again."
+// Used in clica.ts provider and in webview-ui/src/components/chat/ChatRow.tsx to display the login button
+export const CLINE_ACCOUNT_AUTH_ERROR_MESSAGE = "Unauthorized: Please sign in to Clica before trying again."

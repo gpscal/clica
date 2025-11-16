@@ -1,5 +1,5 @@
-import { EmptyRequest } from "@shared/proto/clino/common"
-import { State } from "@shared/proto/clino/state"
+import { EmptyRequest } from "@shared/proto/clica/common"
+import { State } from "@shared/proto/clica/state"
 import { ExtensionState } from "@/shared/ExtensionMessage"
 import { getRequestRegistry, StreamingResponseHandler } from "../grpc-handler"
 import { Controller } from "../index"

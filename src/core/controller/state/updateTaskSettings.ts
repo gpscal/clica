@@ -1,9 +1,9 @@
-import { Empty } from "@shared/proto/clino/common"
+import { Empty } from "@shared/proto/clica/common"
 import {
 	PlanActMode,
 	OpenaiReasoningEffort as ProtoOpenaiReasoningEffort,
 	UpdateTaskSettingsRequest,
-} from "@shared/proto/clino/state"
+} from "@shared/proto/clica/state"
 import { convertProtoToApiProvider } from "@shared/proto-conversions/models/api-configuration-conversion"
 import { Mode, OpenaiReasoningEffort } from "@/shared/storage/types"
 import { Controller } from ".."

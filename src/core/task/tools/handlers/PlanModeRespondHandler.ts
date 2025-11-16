@@ -2,15 +2,15 @@ import type { ToolUse } from "@core/assistant-message"
 import { formatResponse } from "@core/prompts/responses"
 import { findLast, parsePartialArrayString } from "@shared/array"
 import { telemetryService } from "@/services/telemetry"
-import { ClinoPlanModeResponse } from "@/shared/ExtensionMessage"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaPlanModeResponse } from "@/shared/ExtensionMessage"
+import { ClicaDefaultTool } from "@/shared/tools"
 import type { ToolResponse } from "../../index"
 import type { IPartialBlockHandler, IToolHandler } from "../ToolExecutorCoordinator"
 import type { TaskConfig } from "../types/TaskConfig"
 import type { StronglyTypedUIHelpers } from "../types/UIHelpers"
 
 export class PlanModeRespondHandler implements IToolHandler, IPartialBlockHandler {
-	readonly name = ClinoDefaultTool.PLAN_MODE
+	readonly name = ClicaDefaultTool.PLAN_MODE
 
 	constructor() {}
 
@@ -28,7 +28,7 @@ export class PlanModeRespondHandler implements IToolHandler, IPartialBlockHandle
 		const sharedMessage = {
 			response: uiHelpers.removeClosingTag(block, "response", response),
 			options: parsePartialArrayString(uiHelpers.removeClosingTag(block, "options", optionsRaw)),
-		} satisfies ClinoPlanModeResponse
+		} satisfies ClicaPlanModeResponse
 
 		await uiHelpers.ask(this.name, JSON.stringify(sharedMessage), true).catch(() => {})
 	}
@@ -73,13 +73,13 @@ export class PlanModeRespondHandler implements IToolHandler, IPartialBlockHandle
 
 			if (switchSuccessful) {
 				// Complete the plan mode response tool call (this is a unique case where we auto-respond to the user with an ask response)
-				const lastPlanMessage = findLast(config.messageState.getClinoMessages(), (m: any) => m.ask === this.name)
+				const lastPlanMessage = findLast(config.messageState.getClicaMessages(), (m: any) => m.ask === this.name)
 				if (lastPlanMessage) {
 					lastPlanMessage.text = JSON.stringify({
 						...sharedMessage,
-					} satisfies ClinoPlanModeResponse)
+					} satisfies ClicaPlanModeResponse)
 					lastPlanMessage.partial = false
-					await config.messageState.saveClinoMessagesAndUpdateHistory()
+					await config.messageState.saveClicaMessagesAndUpdateHistory()
 				}
 
 				// we dont need to process any text, options, files or other content here
@@ -111,13 +111,13 @@ export class PlanModeRespondHandler implements IToolHandler, IPartialBlockHandle
 			telemetryService.captureOptionSelected(config.ulid, options.length, "plan")
 			// Valid option selected, don't show user message in UI
 			// Update last plan message with selected option
-			const lastPlanMessage = findLast(config.messageState.getClinoMessages(), (m: any) => m.ask === this.name)
+			const lastPlanMessage = findLast(config.messageState.getClicaMessages(), (m: any) => m.ask === this.name)
 			if (lastPlanMessage) {
 				lastPlanMessage.text = JSON.stringify({
 					...sharedMessage,
 					selected: text,
-				} satisfies ClinoPlanModeResponse)
-				await config.messageState.saveClinoMessagesAndUpdateHistory()
+				} satisfies ClicaPlanModeResponse)
+				await config.messageState.saveClicaMessagesAndUpdateHistory()
 			}
 		} else {
 			// Option not selected, send user feedback

@@ -13,7 +13,7 @@ interface CheckpointAddResult {
 /**
  * GitOperations Class
  *
- * Handles git-specific operations for Clino's Checkpoints system.
+ * Handles git-specific operations for Clica's Checkpoints system.
  *
  * Key responsibilities:
  * - Git repository initialization and configuration
@@ -83,7 +83,7 @@ export class GitOperations {
 		// Configure repo with git settings
 		await git.addConfig("core.worktree", cwd)
 		await git.addConfig("commit.gpgSign", "false")
-		await git.addConfig("user.name", "Clino Checkpoint")
+		await git.addConfig("user.name", "Clica Checkpoint")
 		await git.addConfig("user.email", "checkpoint@localhost")
 
 		// Set up LFS patterns

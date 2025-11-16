@@ -7,8 +7,8 @@ import { parseWorkspaceInlinePath } from "@/core/workspace/utils/parseWorkspaceI
 import { WorkspacePathAdapter } from "@/core/workspace/WorkspacePathAdapter"
 import { resolveWorkspacePath } from "@/core/workspace/WorkspaceResolver"
 import { telemetryService } from "@/services/telemetry"
-import { ClinoSayTool } from "@/shared/ExtensionMessage"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaSayTool } from "@/shared/ExtensionMessage"
+import { ClicaDefaultTool } from "@/shared/tools"
 import type { ToolResponse } from "../../index"
 import { showNotificationForApprovalIfAutoApprovalEnabled } from "../../utils"
 import type { IFullyManagedTool } from "../ToolExecutorCoordinator"
@@ -18,7 +18,7 @@ import type { StronglyTypedUIHelpers } from "../types/UIHelpers"
 import { ToolResultUtils } from "../utils/ToolResultUtils"
 
 export class SearchFilesToolHandler implements IFullyManagedTool {
-	readonly name = ClinoDefaultTool.SEARCH
+	readonly name = ClicaDefaultTool.SEARCH
 
 	constructor(private validator: ToolValidator) {}
 
@@ -188,7 +188,7 @@ export class SearchFilesToolHandler implements IFullyManagedTool {
 			regex: uiHelpers.removeClosingTag(block, "regex", regex),
 			filePattern: uiHelpers.removeClosingTag(block, "file_pattern", filePattern),
 			operationIsLocatedInWorkspace: await isLocatedInWorkspace(relPath),
-		} satisfies ClinoSayTool
+		} satisfies ClicaSayTool
 
 		const partialMessage = JSON.stringify(sharedMessageProps)
 
@@ -296,7 +296,7 @@ export class SearchFilesToolHandler implements IFullyManagedTool {
 			regex: regex,
 			filePattern: filePattern,
 			operationIsLocatedInWorkspace: await isLocatedInWorkspace(parsedPath),
-		} satisfies ClinoSayTool
+		} satisfies ClicaSayTool
 
 		const completeMessage = JSON.stringify(sharedMessageProps)
 
@@ -312,7 +312,7 @@ export class SearchFilesToolHandler implements IFullyManagedTool {
 			telemetryService.captureToolUsage(config.ulid, block.name, config.api.getModel().id, true, true, workspaceContext)
 		} else {
 			// Manual approval flow
-			const notificationMessage = `Clino wants to search files for ${regex}`
+			const notificationMessage = `Clica wants to search files for ${regex}`
 
 			// Show notification
 			showNotificationForApprovalIfAutoApprovalEnabled(

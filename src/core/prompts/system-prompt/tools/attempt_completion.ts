@@ -1,8 +1,8 @@
 import { ModelFamily } from "@/shared/prompts"
-import { ClinoDefaultTool } from "@/shared/tools"
+import { ClicaDefaultTool } from "@/shared/tools"
 import type { ClineToolSpec } from "../spec"
 
-const id = ClinoDefaultTool.ATTEMPT
+const id = ClicaDefaultTool.ATTEMPT
 
 const generic: ClineToolSpec = {
 	variant: ModelFamily.GENERIC,
@@ -31,7 +31,7 @@ IMPORTANT NOTE: This tool CANNOT be used until you've confirmed from the user th
 			instruction:
 				"A checklist showing task progress after this tool use is completed. (See 'Updating Task Progress' section for more details)",
 			usage: "Checklist here (required if you used task_progress in previous tool uses)",
-			dependencies: [ClinoDefaultTool.TODO],
+			dependencies: [ClicaDefaultTool.TODO],
 			description:
 				"If you were using task_progress to update the task progress, you must include the completed list in the result as well.",
 		},

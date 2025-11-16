@@ -9,8 +9,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/clino/cli/pkg/cli/display"
-	"github.com/clino/cli/pkg/cli/global"
+	"github.com/clica/cli/pkg/cli/display"
+	"github.com/clica/cli/pkg/cli/global"
 )
 
 // KeyboardProtocol manages enhanced keyboard protocol support for detecting
@@ -541,7 +541,7 @@ func SetupWezTermKeybindings() (bool, string) {
 
 	// Keybinding to add (insert before final return statement)
 	keybinding := `
--- Shift+Enter for newlines (added by Clino CLI)
+-- Shift+Enter for newlines (added by Clica CLI)
 config.keys = config.keys or {}
 table.insert(config.keys, {
   key = 'Enter',
@@ -615,14 +615,14 @@ func SetupAlacrittyKeybindings() (bool, string) {
 	var keybinding string
 	if strings.HasSuffix(configPath, ".yml") || strings.HasSuffix(configPath, ".yaml") {
 		keybinding = `
-# Shift+Enter for newlines (added by Clino CLI)
+# Shift+Enter for newlines (added by Clica CLI)
 key_bindings:
   - { key: Return, mods: Shift, chars: "\x1b\n" }
 `
 	} else {
 		// TOML format
 		keybinding = `
-# Shift+Enter for newlines (added by Clino CLI)
+# Shift+Enter for newlines (added by Clica CLI)
 [[keyboard.bindings]]
 key = "Return"
 mods = "Shift"
@@ -670,7 +670,7 @@ func SetupKittyKeybindings() (bool, string) {
 	}
 
 	// Keybinding to add
-	keybinding := "# Shift+Enter for newlines (added by Clino CLI)\nmap shift+enter send_text all \\x1b\\n\n"
+	keybinding := "# Shift+Enter for newlines (added by Clica CLI)\nmap shift+enter send_text all \\x1b\\n\n"
 
 	// Append to config
 	newContent := append(existingContent, []byte(keybinding)...)
